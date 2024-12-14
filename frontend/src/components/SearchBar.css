@@ -1,68 +1,384 @@
+/* SearchBar Component - Modern Glassmorphism Design */
+
 .search-bar-container {
   position: relative;
   width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .search-form {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-3);
+  align-items: stretch;
 }
 
+/* Search Input Wrapper with Glassmorphism */
+.search-input-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
+  border: 2px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4) var(--space-6);
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-md);
+}
+
+.search-input-wrapper:hover {
+  border-color: rgba(99, 102, 241, 0.3);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Focused State with Gradient Border and Glow */
+.search-input-wrapper.focused {
+  border-color: transparent;
+  background: var(--glass-bg);
+  box-shadow: 
+    0 0 0 2px var(--color-primary),
+    var(--glow-primary),
+    var(--shadow-xl);
+  transform: translateY(-2px);
+}
+
+/* Search Icon with Pulse Animation */
+.search-icon-wrapper {
+  display: flex;
+  align-items: center;
+  margin-right: var(--space-3);
+  color: var(--color-text-tertiary);
+  transition: color var(--transition-fast);
+}
+
+.search-input-wrapper.focused .search-icon-wrapper {
+  color: var(--color-primary);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Search Input */
 .search-input {
   flex: 1;
-  padding: 0.875rem 1.25rem;
-  font-size: 1rem;
-  border: 2px solid var(--border-color);
-  border-radius: 12px;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  transition: border-color 0.2s;
-}
-
-.search-input:focus {
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  padding: 0;
+  min-width: 0;
 }
 
+.search-input::placeholder {
+  color: var(--color-text-tertiary);
+  font-weight: var(--font-weight-normal);
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  margin-left: var(--space-3);
+  color: var(--color-primary);
+}
+
+.spinner-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Search Button with Gradient */
 .search-button {
-  padding: 0.875rem 2rem;
-  background: var(--primary-color);
+  padding: var(--space-4) var(--space-8);
+  background: var(--gradient-primary);
   color: white;
   border: none;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 600;
+  border-radius: var(--radius-xl);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-md);
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.search-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
 }
 
 .search-button:hover {
-  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg), var(--glow-primary);
 }
 
-.suggestions-list {
+.search-button:hover::before {
+  opacity: 1;
+}
+
+.search-button:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-md);
+}
+
+.search-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.search-button:disabled:hover {
+  transform: none;
+  box-shadow: var(--shadow-md);
+}
+
+/* Autocomplete Dropdown with Glassmorphism */
+.suggestions-dropdown {
   position: absolute;
-  top: 100%;
+  top: calc(100% + var(--space-3));
   left: 0;
   right: 0;
-  margin-top: 0.5rem;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  list-style: none;
-  padding: 0.5rem 0;
-  z-index: 10;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur-xl));
+  -webkit-backdrop-filter: blur(var(--blur-xl));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  z-index: var(--z-dropdown);
+  max-height: 400px;
+  overflow-y: auto;
+  animation: slideIn var(--transition-normal) var(--ease-out);
 }
 
-.suggestion-item {
-  padding: 0.75rem 1.25rem;
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Suggestions Section */
+.suggestions-section {
+  padding: var(--space-2);
+}
+
+.suggestions-section + .suggestions-section {
+  border-top: 1px solid var(--glass-border);
+}
+
+/* Suggestions Header */
+.suggestions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-1);
+}
+
+.suggestions-title {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-tertiary);
+}
+
+.clear-recent-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  color: var(--text-primary);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.clear-recent-btn:hover {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--color-secondary);
+}
+
+/* Suggestions List */
+.suggestions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Suggestion Item */
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  color: var(--color-text-primary);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.suggestion-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--color-primary);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
 }
 
 .suggestion-item:hover,
 .suggestion-item.selected {
-  background: var(--hover-bg);
+  background: rgba(99, 102, 241, 0.1);
+  transform: translateX(4px);
+}
+
+.suggestion-item:hover::before,
+.suggestion-item.selected::before {
+  opacity: 0.05;
+}
+
+.suggestion-icon {
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+  transition: color var(--transition-fast);
+}
+
+.suggestion-item:hover .suggestion-icon,
+.suggestion-item.selected .suggestion-icon {
+  color: var(--color-primary);
+}
+
+.suggestion-text {
+  flex: 1;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Scrollbar for Suggestions */
+.suggestions-dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+
+.suggestions-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.suggestions-dropdown::-webkit-scrollbar-thumb {
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-full);
+}
+
+.suggestions-dropdown::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-tertiary);
+}
+
+/* Highlight Matching Text */
+.highlight {
+  background: var(--color-primary);
+  color: white;
+  padding: 0.125em 0.25em;
+  border-radius: var(--radius-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .search-form {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .search-input-wrapper {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .search-input {
+    font-size: var(--font-size-base);
+  }
+
+  .search-button {
+    width: 100%;
+    padding: var(--space-3) var(--space-6);
+  }
+
+  .suggestions-list {
+    max-height: 300px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .search-input {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .search-input-wrapper,
+  .search-button,
+  .suggestion-item,
+  .suggestions-list {
+    animation: none;
+    transition: none;
+  }
+
+  .search-input-wrapper.focused .search-icon-wrapper {
+    animation: none;
+  }
+
+  .spinner-icon {
+    animation: none;
+  }
+}
+
+/* Focus Visible for Keyboard Navigation */
+.search-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.suggestion-item:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  border-radius: var(--radius-md);
 }

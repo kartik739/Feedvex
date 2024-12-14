@@ -50,7 +50,7 @@ export function loadConfig(): SystemConfig {
     reddit: {
       clientId: getEnvVar('REDDIT_CLIENT_ID', ''),
       clientSecret: getEnvVar('REDDIT_CLIENT_SECRET', ''),
-      userAgent: getEnvVar('REDDIT_USER_AGENT', 'reddit-search-engine/1.0'),
+      userAgent: getEnvVar('REDDIT_USER_AGENT', 'Feedvex/1.0'),
       subreddits: getEnvVar('REDDIT_SUBREDDITS', 'programming')
         .split(',')
         .map((s) => s.trim()),
@@ -62,13 +62,13 @@ export function loadConfig(): SystemConfig {
     },
     ranking: {
       algorithm: getEnvVar('RANKING_ALGORITHM', 'bm25'),
-      bm25K1: getEnvNumber('BM25_K1', 1.2),
+      bm25K1: getEnvNumber('BM25_K1', 1.5),
       bm25B: getEnvNumber('BM25_B', 0.75),
       textWeight: getEnvNumber('TEXT_WEIGHT', 0.7),
-      recencyWeight: getEnvNumber('RECENCY_WEIGHT', 0.2),
-      popularityWeight: getEnvNumber('POPULARITY_WEIGHT', 0.3),
-      engagementWeight: getEnvNumber('ENGAGEMENT_WEIGHT', 0.1),
-      relevanceWeight: getEnvNumber('RELEVANCE_WEIGHT', 0.4),
+      recencyWeight: getEnvNumber('RECENCY_WEIGHT', 0.15),
+      popularityWeight: getEnvNumber('POPULARITY_WEIGHT', 0.10),
+      engagementWeight: getEnvNumber('ENGAGEMENT_WEIGHT', 0.05),
+      relevanceWeight: getEnvNumber('RELEVANCE_WEIGHT', 0.0),
       recencyDecayDays: getEnvNumber('RECENCY_DECAY_DAYS', 7),
     },
     cache: {

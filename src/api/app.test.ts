@@ -10,6 +10,8 @@ import { Indexer } from '../services/indexer';
 import { TextProcessor } from '../services/text-processor';
 import { Ranker } from '../services/ranker';
 import { Document } from '../models/document';
+import { AuthService } from '../services/auth';
+import { Pool } from 'pg';
 
 describe('API Application', () => {
   let app: Express;
@@ -19,6 +21,7 @@ describe('API Application', () => {
   let analyticsService: AnalyticsService;
   let documentStore: DocumentStore;
   let indexer: Indexer;
+  let authService: AuthService;
 
   beforeEach(() => {
     // Set up services
@@ -30,6 +33,10 @@ describe('API Application', () => {
     autocompleteService = new AutocompleteService();
     rateLimiter = new RateLimiter({ requestsPerWindow: 100, windowSeconds: 60 });
     analyticsService = new AnalyticsService();
+    
+    // Create mock auth service
+    const mockPool = {} as Pool;
+    authService = new AuthService(mockPool, 'test-secret');
 
     // Create app
     app = createApp(
@@ -39,6 +46,7 @@ describe('API Application', () => {
       analyticsService,
       documentStore,
       indexer,
+      authService,
       { enableLogging: false }
     );
 
@@ -251,6 +259,7 @@ describe('API Application', () => {
         analyticsService,
         documentStore,
         indexer,
+        authService,
         { enableLogging: false }
       );
 

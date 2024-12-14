@@ -1,0 +1,20 @@
+/* FeedVex Design System - Main Styles Entry Point */
+
+/* Import design tokens first */
+@import './tokens.css';
+
+/* Import reset */
+@import './reset.css';
+
+/* Import base styles */
+@import './base.css';
+
+/* Import utilities */
+@import './utilities.css';
+
+/* Root element styles */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}

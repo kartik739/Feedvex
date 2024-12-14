@@ -20,7 +20,7 @@ describe('Configuration', () => {
 
     expect(config.reddit.clientId).toBe('test_client_id');
     expect(config.reddit.clientSecret).toBe('test_client_secret');
-    expect(config.reddit.userAgent).toBe('reddit-search-engine/1.0');
+    expect(config.reddit.userAgent).toBe('Feedvex/1.0');
     expect(config.reddit.subreddits).toEqual(['programming']);
     expect(config.ranking.algorithm).toBe('bm25');
     expect(config.ranking.bm25K1).toBe(1.5);
@@ -31,7 +31,7 @@ describe('Configuration', () => {
   it('should load configuration with custom values', () => {
     process.env.REDDIT_CLIENT_ID = 'custom_id';
     process.env.REDDIT_CLIENT_SECRET = 'custom_secret';
-    process.env.SUBREDDITS = 'technology,science,programming';
+    process.env.REDDIT_SUBREDDITS = 'technology,science,programming';
     process.env.PORT = '8080';
     process.env.BM25_K1 = '2.0';
     process.env.BM25_B = '0.5';
@@ -81,7 +81,7 @@ describe('Configuration', () => {
   it('should throw error when CACHE_TTL is not positive', () => {
     process.env.REDDIT_CLIENT_ID = 'test_id';
     process.env.REDDIT_CLIENT_SECRET = 'test_secret';
-    process.env.CACHE_TTL = '0';
+    process.env.CACHE_TTL_SECONDS = '0';
 
     expect(() => loadConfig()).toThrow(/Cache TTL must be positive/);
   });

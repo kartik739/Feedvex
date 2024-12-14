@@ -1,11 +1,38 @@
 .search-results {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-4);
+}
+
+/* Stagger animation for cards */
+.search-results .result-card {
+  animation: fadeInUp var(--transition-normal) var(--ease-out) backwards;
+}
+
+.search-results .result-card:nth-child(1) { animation-delay: 0ms; }
+.search-results .result-card:nth-child(2) { animation-delay: 50ms; }
+.search-results .result-card:nth-child(3) { animation-delay: 100ms; }
+.search-results .result-card:nth-child(4) { animation-delay: 150ms; }
+.search-results .result-card:nth-child(5) { animation-delay: 200ms; }
+.search-results .result-card:nth-child(6) { animation-delay: 250ms; }
+.search-results .result-card:nth-child(7) { animation-delay: 300ms; }
+.search-results .result-card:nth-child(8) { animation-delay: 350ms; }
+.search-results .result-card:nth-child(9) { animation-delay: 400ms; }
+.search-results .result-card:nth-child(10) { animation-delay: 450ms; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .no-results {
   text-align: center;
-  padding: 3rem 1rem;
-  color: var(--text-secondary);
+  padding: var(--space-12) var(--space-4);
+  color: var(--color-text-secondary);
 }

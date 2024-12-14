@@ -32,17 +32,32 @@ export const CollectorConfigSchema = z.object({
 });
 
 // Ranking algorithm configuration schema
-export const RankingConfigSchema = z.object({
-  algorithm: z.enum(['tfidf', 'bm25']),
-  bm25K1: z.number().nonnegative('BM25 k1 parameter must be non-negative'),
-  bm25B: z.number().min(0).max(1, 'BM25 b parameter must be between 0 and 1'),
-  textWeight: z.number().nonnegative('Text weight must be non-negative'),
-  recencyWeight: z.number().nonnegative('Recency weight must be non-negative'),
-  popularityWeight: z.number().nonnegative('Popularity weight must be non-negative'),
-  engagementWeight: z.number().nonnegative('Engagement weight must be non-negative'),
-  relevanceWeight: z.number().nonnegative('Relevance weight must be non-negative'),
-  recencyDecayDays: z.number().positive('Recency decay days must be positive'),
-});
+export const RankingConfigSchema = z
+  .object({
+    algorithm: z.enum(['tfidf', 'bm25']),
+    bm25K1: z.number().nonnegative('BM25 k1 parameter must be non-negative'),
+    bm25B: z.number().min(0).max(1, 'BM25 b parameter must be between 0 and 1'),
+    textWeight: z.number().nonnegative('Text weight must be non-negative'),
+    recencyWeight: z.number().nonnegative('Recency weight must be non-negative'),
+    popularityWeight: z.number().nonnegative('Popularity weight must be non-negative'),
+    engagementWeight: z.number().nonnegative('Engagement weight must be non-negative'),
+    relevanceWeight: z.number().nonnegative('Relevance weight must be non-negative'),
+    recencyDecayDays: z.number().positive('Recency decay days must be positive'),
+  })
+  .refine(
+    (data) => {
+      const sum =
+        data.textWeight +
+        data.recencyWeight +
+        data.popularityWeight +
+        data.engagementWeight +
+        data.relevanceWeight;
+      return Math.abs(sum - 1.0) < 0.0001; // Allow for floating point precision
+    },
+    {
+      message: 'Ranking weights (text, recency, popularity, engagement, relevance) must sum to 1.0',
+    }
+  );
 
 // Redis configuration schema
 export const RedisConfigSchema = z.object({
