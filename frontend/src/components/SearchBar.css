@@ -107,6 +107,79 @@
   }
 }
 
+/* Voice Search Button */
+.voice-search-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: var(--space-3);
+  padding: var(--space-2);
+  background: transparent;
+  border: 2px solid var(--color-text-tertiary);
+  border-radius: var(--radius-full);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.voice-search-button:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: rgba(99, 102, 241, 0.1);
+  transform: scale(1.05);
+}
+
+.voice-search-button.listening {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: rgba(239, 68, 68, 0.1);
+  animation: voicePulse 1.5s ease-in-out infinite;
+}
+
+.voice-icon {
+  z-index: 2;
+  position: relative;
+}
+
+/* Voice Pulse Animation */
+.voice-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-full);
+  transform: translate(-50%, -50%);
+  animation: voiceRipple 1.5s ease-out infinite;
+}
+
+@keyframes voicePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0.1);
+  }
+}
+
+@keyframes voiceRipple {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
+}
+
 /* Search Button with Gradient */
 .search-button {
   padding: var(--space-4) var(--space-8);
@@ -336,6 +409,12 @@
     font-size: var(--font-size-base);
   }
 
+  .voice-search-button {
+    width: 36px;
+    height: 36px;
+    margin-left: var(--space-2);
+  }
+
   .search-button {
     width: 100%;
     padding: var(--space-3) var(--space-6);
@@ -357,7 +436,8 @@
   .search-input-wrapper,
   .search-button,
   .suggestion-item,
-  .suggestions-list {
+  .suggestions-list,
+  .voice-search-button {
     animation: none;
     transition: none;
   }
@@ -369,10 +449,24 @@
   .spinner-icon {
     animation: none;
   }
+
+  .voice-search-button.listening {
+    animation: none;
+  }
+
+  .voice-pulse {
+    animation: none;
+    display: none;
+  }
 }
 
 /* Focus Visible for Keyboard Navigation */
 .search-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.voice-search-button:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }

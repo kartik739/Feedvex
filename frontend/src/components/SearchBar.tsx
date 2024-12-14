@@ -1,7 +1,42 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, Loader2, Clock } from 'lucide-react';
+import { Search, Loader2, Clock, Mic, MicOff } from 'lucide-react';
 import { api } from '../services/api';
 import './SearchBar.css';
+
+// TypeScript declarations for Web Speech API
+interface SpeechRecognitionEvent extends Event {
+  results: SpeechRecognitionResultList;
+  resultIndex: number;
+}
+
+interface SpeechRecognitionErrorEvent extends Event {
+  error: string;
+  message?: string;
+}
+
+interface SpeechRecognition extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  start(): void;
+  stop(): void;
+  abort(): void;
+  onstart: ((this: SpeechRecognition, ev: Event) => any) | null;
+  onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null;
+  onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any) | null;
+  onend: ((this: SpeechRecognition, ev: Event) => any) | null;
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition: {
+      new (): SpeechRecognition;
+    };
+    webkitSpeechRecognition: {
+      new (): SpeechRecognition;
+    };
+  }
+}
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -19,7 +54,10 @@ export default function SearchBar({ onSearch, initialQuery = '' }: SearchBarProp
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [isVoiceSupported, setIsVoiceSupported] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   // Load recent searches from localStorage
   useEffect(() => {
@@ -32,6 +70,82 @@ export default function SearchBar({ onSearch, initialQuery = '' }: SearchBarProp
       }
     }
   }, []);
+
+  // Initialize speech recognition
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (SpeechRecognition) {
+      setIsVoiceSupported(true);
+      const recognition = new SpeechRecognition();
+      
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+      
+      recognition.onstart = () => {
+        setIsListening(true);
+      };
+      
+      recognition.onresult = (event: SpeechRecognitionEvent) => {
+        let interimTranscript = '';
+        let finalTranscript = '';
+        
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript;
+          } else {
+            interimTranscript += transcript;
+          }
+        }
+        
+        // Update query with interim results for real-time feedback
+        if (interimTranscript) {
+          setQuery(interimTranscript);
+        }
+        
+        // When final result is available, set it and potentially search
+        if (finalTranscript) {
+          setQuery(finalTranscript);
+          // Auto-search if the transcript seems complete (ends with punctuation or is long enough)
+          if (finalTranscript.trim().length > 2 && 
+              (finalTranscript.endsWith('.') || finalTranscript.endsWith('?') || finalTranscript.endsWith('!'))) {
+            setTimeout(() => {
+              onSearch(finalTranscript.trim());
+              addToRecentSearches(finalTranscript.trim());
+            }, 500);
+          }
+        }
+      };
+      
+      recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+        
+        // Show user-friendly error messages
+        if (event.error === 'not-allowed') {
+          alert('Microphone access denied. Please allow microphone access to use voice search.');
+        } else if (event.error === 'no-speech') {
+          // This is normal, just means no speech was detected
+        } else {
+          console.warn('Voice search error:', event.error);
+        }
+      };
+      
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+      
+      recognitionRef.current = recognition;
+    }
+    
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
+      }
+    };
+  }, [onSearch]);
 
   useEffect(() => {
     setQuery(initialQuery);
@@ -133,6 +247,21 @@ export default function SearchBar({ onSearch, initialQuery = '' }: SearchBarProp
     }
   };
 
+  const toggleVoiceSearch = () => {
+    if (!isVoiceSupported || !recognitionRef.current) {
+      alert('Voice search is not supported in your browser. Please try Chrome, Edge, or Safari.');
+      return;
+    }
+    
+    if (isListening) {
+      recognitionRef.current.stop();
+    } else {
+      // Clear current query when starting voice search
+      setQuery('');
+      recognitionRef.current.start();
+    }
+  };
+
   return (
     <div className="search-bar-container">
       <form onSubmit={handleSubmit} className="search-form">
@@ -144,7 +273,7 @@ export default function SearchBar({ onSearch, initialQuery = '' }: SearchBarProp
             ref={inputRef}
             type="text"
             className="search-input"
-            placeholder="Search Reddit posts and comments..."
+            placeholder={isListening ? "Listening..." : "Search Reddit posts and comments..."}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => {
@@ -157,6 +286,22 @@ export default function SearchBar({ onSearch, initialQuery = '' }: SearchBarProp
             }}
             onKeyDown={handleKeyDown}
           />
+          {isVoiceSupported && (
+            <button
+              type="button"
+              className={`voice-search-button ${isListening ? 'listening' : ''}`}
+              onClick={toggleVoiceSearch}
+              title={isListening ? "Stop voice search" : "Start voice search"}
+              aria-label={isListening ? "Stop voice search" : "Start voice search"}
+            >
+              {isListening ? (
+                <MicOff className="voice-icon" size={20} />
+              ) : (
+                <Mic className="voice-icon" size={20} />
+              )}
+              {isListening && <div className="voice-pulse" />}
+            </button>
+          )}
           {isLoading && (
             <div className="loading-spinner">
               <Loader2 className="spinner-icon" size={20} />
