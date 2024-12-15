@@ -18,6 +18,26 @@
   /* Ensure proper stacking context */
   position: relative;
   will-change: transform;
+  overflow: hidden;
+}
+
+/* Gradient border effect on hover */
+.result-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: var(--radius-lg);
+  padding: 2px;
+  background: var(--gradient-primary);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity var(--transition-fast) var(--ease-out);
+  pointer-events: none;
 }
 
 .result-card:hover {
@@ -25,10 +45,14 @@
   transform: scale(1.02);
   
   /* Increase shadow on hover */
-  box-shadow: var(--shadow-xl);
+  box-shadow: var(--shadow-xl), var(--glow-primary);
   
-  /* Enhance border on hover */
-  border-color: rgba(99, 102, 241, 0.3);
+  /* Show gradient border */
+  border-color: transparent;
+}
+
+.result-card:hover::before {
+  opacity: 1;
 }
 
 .result-header {
@@ -37,55 +61,112 @@
   margin-bottom: var(--space-3);
   font-size: var(--font-size-sm);
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .result-type {
-  padding: var(--space-1) var(--space-2);
-  background: var(--color-primary);
+  padding: var(--space-1) var(--space-3);
+  background: var(--gradient-primary);
   color: white;
-  border-radius: var(--radius-sm);
-  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   font-size: var(--font-size-xs);
-  transition: background var(--transition-fast) var(--ease-out);
+  letter-spacing: 0.05em;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast) var(--ease-out);
+}
+
+.result-card:hover .result-type {
+  transform: scale(1.05);
 }
 
 .result-subreddit {
   color: var(--color-primary);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   transition: color var(--transition-fast) var(--ease-out);
+  cursor: pointer;
+}
+
+.result-subreddit:hover {
+  color: var(--color-secondary);
 }
 
 .result-date {
   color: var(--color-text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
 }
 
 .result-title {
   display: block;
   font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
+  font-weight: var(--font-weight-bold);
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   text-decoration: none;
   margin-bottom: var(--space-3);
   line-height: var(--line-height-tight);
-  transition: color var(--transition-fast) var(--ease-out);
+  transition: transform var(--transition-fast) var(--ease-out);
 }
 
-.result-title:hover {
-  color: var(--color-primary);
+.result-card:hover .result-title {
+  transform: translateX(4px);
 }
 
 .result-snippet {
   color: var(--color-text-secondary);
   line-height: var(--line-height-relaxed);
+  margin-bottom: var(--space-2);
+  font-size: var(--font-size-base);
+  transition: max-height var(--transition-normal) var(--ease-out);
+  overflow: hidden;
+}
+
+.result-snippet-container {
   margin-bottom: var(--space-4);
 }
 
-.result-snippet mark {
-  background: rgba(99, 102, 241, 0.2);
-  padding: var(--space-1) var(--space-2);
+.expand-button {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  padding: var(--space-1) 0;
+  transition: color var(--transition-fast) var(--ease-out);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.expand-button:hover {
+  color: var(--color-secondary);
+}
+
+.expand-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
   border-radius: var(--radius-sm);
-  font-weight: var(--font-weight-medium);
+}
+
+.result-snippet mark {
+  background: var(--color-primary);
+  color: white;
+  padding: 0.125em 0.375em;
+  border-radius: var(--radius-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.result-title mark {
+  background: var(--color-primary);
+  color: white;
+  padding: 0.125em 0.375em;
+  border-radius: var(--radius-sm);
+  font-weight: var(--font-weight-semibold);
 }
 
 .result-footer {
@@ -94,4 +175,90 @@
   font-size: var(--font-size-sm);
   color: var(--color-text-tertiary);
   flex-wrap: wrap;
+  align-items: center;
+}
+
+.result-footer > span {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  transition: color var(--transition-fast) var(--ease-out);
+}
+
+.result-author:hover,
+.result-score:hover,
+.result-comments:hover {
+  color: var(--color-primary);
+}
+
+.result-relevance {
+  margin-left: auto;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary);
+  background: rgba(99, 102, 241, 0.1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .result-card {
+    padding: var(--space-4);
+  }
+
+  .result-title {
+    font-size: var(--font-size-lg);
+  }
+
+  .result-footer {
+    gap: var(--space-3);
+  }
+
+  .result-relevance {
+    margin-left: 0;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Accessibility - Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .result-card,
+  .result-type,
+  .result-title {
+    transition: none;
+  }
+
+  .result-card:hover {
+    transform: none;
+  }
+
+  .result-card:hover .result-type,
+  .result-card:hover .result-title {
+    transform: none;
+  }
+}
+
+/* Focus Visible for Keyboard Navigation */
+.result-title:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+/* Ripple Effect */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.3);
+  transform: scale(0);
+  animation: ripple-animation 0.6s ease-out;
+  pointer-events: none;
+}
+
+@keyframes ripple-animation {
+  to {
+    transform: scale(2);
+    opacity: 0;
+  }
 }
