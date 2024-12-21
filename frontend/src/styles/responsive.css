@@ -1,0 +1,561 @@
+/* Responsive Design Utilities */
+
+/* ===== Mobile Optimizations (< 640px) ===== */
+@media (max-width: 639px) {
+  /* Container adjustments */
+  .container {
+    padding: 0 var(--space-3);
+  }
+
+  /* Typography scaling */
+  :root {
+    --font-size-3xl: 1.5rem;    /* 24px - reduced from 30px */
+    --font-size-4xl: 1.875rem;  /* 30px - reduced from 36px */
+    --font-size-5xl: 2.25rem;   /* 36px - reduced from 48px */
+    --font-size-6xl: 2.5rem;    /* 40px - reduced from 60px */
+  }
+
+  /* Stack cards vertically */
+  .grid-cols-2,
+  .grid-cols-3,
+  .grid-cols-4 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  /* Larger touch targets (minimum 44px) */
+  button,
+  a.button,
+  input[type="button"],
+  input[type="submit"],
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  /* Simplified navigation */
+  .nav-links {
+    display: none;
+  }
+
+  .mobile-menu-button {
+    display: flex;
+  }
+
+  /* Full-width cards on mobile */
+  .result-card,
+  .feature-card,
+  .stat-card {
+    width: 100%;
+  }
+
+  /* Reduce spacing on mobile */
+  .section-padding {
+    padding: var(--space-8) 0;
+  }
+
+  /* Mobile-friendly forms */
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 44px;
+  }
+
+  /* Hide secondary content on mobile */
+  .mobile-hidden {
+    display: none !important;
+  }
+
+  /* Mobile-specific layouts */
+  .mobile-stack {
+    flex-direction: column;
+  }
+
+  /* Adjust modal/dialog sizing */
+  .modal,
+  .dialog {
+    width: 95vw;
+    max-width: 95vw;
+    margin: var(--space-2);
+  }
+
+  /* Mobile search bar */
+  .search-bar {
+    width: 100%;
+  }
+
+  .search-bar input {
+    font-size: 16px;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  /* Mobile pagination */
+  .pagination {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .pagination-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Hide page numbers on very small screens */
+  .pagination-numbers {
+    display: none;
+  }
+
+  .pagination-prev-next {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  /* Mobile header */
+  .header {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .header-logo {
+    font-size: var(--font-size-xl);
+  }
+
+  /* Mobile footer */
+  .footer {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .footer-links {
+    flex-direction: column;
+    gap: var(--space-4);
+    text-align: center;
+  }
+
+  /* Mobile stats */
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  /* Mobile hero section */
+  .hero {
+    padding: var(--space-12) var(--space-4);
+    min-height: auto;
+  }
+
+  .hero-title {
+    font-size: var(--font-size-4xl);
+  }
+
+  .hero-subtitle {
+    font-size: var(--font-size-lg);
+  }
+
+  /* Mobile result cards */
+  .result-card {
+    padding: var(--space-4);
+  }
+
+  .result-card-title {
+    font-size: var(--font-size-lg);
+  }
+
+  .result-card-snippet {
+    font-size: var(--font-size-sm);
+  }
+
+  /* Mobile autocomplete */
+  .autocomplete-dropdown {
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+
+  /* Mobile filters */
+  .filters {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--color-bg-primary);
+    border-top: 1px solid var(--glass-border);
+    padding: var(--space-4);
+    z-index: var(--z-fixed);
+    transform: translateY(100%);
+    transition: transform var(--transition-normal);
+  }
+
+  .filters.open {
+    transform: translateY(0);
+  }
+
+  /* Bottom navigation bar (optional) */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--blur-lg));
+    border-top: 1px solid var(--glass-border);
+    padding: var(--space-2) 0;
+    z-index: var(--z-fixed);
+  }
+
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-2);
+    min-width: 60px;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: var(--font-size-xs);
+    transition: color var(--transition-fast);
+  }
+
+  .bottom-nav-item.active {
+    color: var(--color-primary);
+  }
+
+  .bottom-nav-icon {
+    font-size: var(--font-size-xl);
+  }
+}
+
+/* ===== Tablet Optimizations (640px - 1024px) ===== */
+@media (min-width: 640px) and (max-width: 1023px) {
+  /* 2-column grid for results */
+  .results-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  /* Collapsible sidebar */
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    background: var(--color-bg-primary);
+    border-right: 1px solid var(--glass-border);
+    transform: translateX(-100%);
+    transition: transform var(--transition-normal);
+    z-index: var(--z-fixed);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-normal);
+    z-index: calc(var(--z-fixed) - 1);
+  }
+
+  .sidebar-overlay.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* Adaptive spacing */
+  .container {
+    padding: 0 var(--space-6);
+  }
+
+  .section-padding {
+    padding: var(--space-12) 0;
+  }
+
+  /* Tablet header */
+  .header {
+    padding: var(--space-4) var(--space-6);
+  }
+
+  /* Tablet hero */
+  .hero {
+    padding: var(--space-16) var(--space-6);
+  }
+
+  /* 2-column feature cards */
+  .features-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+
+  /* 2-column stats */
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+
+  /* Tablet forms */
+  .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .form-grid .full-width {
+    grid-column: 1 / -1;
+  }
+
+  /* Tablet modals */
+  .modal {
+    max-width: 600px;
+  }
+}
+
+/* ===== Desktop Optimizations (> 1024px) ===== */
+@media (min-width: 1024px) {
+  /* 3-column grid for results */
+  .results-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+
+  /* Fixed sidebar navigation */
+  .sidebar {
+    position: sticky;
+    top: calc(var(--header-height, 80px) + var(--space-4));
+    width: 280px;
+    max-height: calc(100vh - var(--header-height, 80px) - var(--space-8));
+    overflow-y: auto;
+  }
+
+  .main-with-sidebar {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: var(--space-8);
+  }
+
+  /* Enhanced hover effects on desktop */
+  .hover-lift:hover {
+    transform: translateY(-8px);
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+
+  /* Desktop-specific animations */
+  .desktop-animate {
+    transition: all var(--transition-normal);
+  }
+
+  /* 3-column feature cards */
+  .features-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+
+  /* 4-column stats */
+  .stats-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+
+  /* Desktop forms */
+  .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+
+  /* Desktop modals */
+  .modal {
+    max-width: 800px;
+  }
+
+  /* Desktop header with more spacing */
+  .header {
+    padding: var(--space-6) var(--space-8);
+  }
+
+  /* Desktop hero */
+  .hero {
+    padding: var(--space-24) var(--space-8);
+  }
+
+  /* Show desktop-only content */
+  .desktop-only {
+    display: block;
+  }
+
+  /* Keyboard shortcuts hint */
+  .keyboard-shortcut {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-family: var(--font-family-mono);
+    color: var(--color-text-tertiary);
+  }
+}
+
+/* ===== Landscape Orientation Adjustments ===== */
+@media (max-height: 600px) and (orientation: landscape) {
+  /* Reduce vertical spacing in landscape */
+  .hero {
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .section-padding {
+    padding: var(--space-6) 0;
+  }
+
+  /* Adjust modal height */
+  .modal {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}
+
+/* ===== Print Styles ===== */
+@media print {
+  /* Hide navigation and interactive elements */
+  .header,
+  .footer,
+  .sidebar,
+  .bottom-nav,
+  button,
+  .pagination {
+    display: none !important;
+  }
+
+  /* Optimize for print */
+  body {
+    background: white;
+    color: black;
+  }
+
+  .result-card {
+    page-break-inside: avoid;
+    border: 1px solid #ccc;
+    margin-bottom: var(--space-4);
+  }
+
+  /* Remove shadows and effects */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
+
+/* ===== Accessibility - Reduced Motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== High Contrast Mode ===== */
+@media (prefers-contrast: high) {
+  :root {
+    --color-text-primary: #000000;
+    --color-bg-primary: #ffffff;
+  }
+
+  [data-theme="dark"] {
+    --color-text-primary: #ffffff;
+    --color-bg-primary: #000000;
+  }
+
+  /* Increase border visibility */
+  .glass,
+  .glass-card,
+  .result-card {
+    border-width: 2px;
+    border-color: currentColor;
+  }
+}
+
+/* ===== Touch Device Optimizations ===== */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .hover-lift:hover,
+  .hover-scale:hover {
+    transform: none;
+  }
+
+  /* Increase tap target sizes */
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+  }
+
+  /* Remove hover-only tooltips */
+  .tooltip:hover::after {
+    display: none;
+  }
+}
+
+/* ===== Utility Classes for Responsive Design ===== */
+.mobile-only {
+  display: block;
+}
+
+.tablet-only,
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .mobile-only,
+  .desktop-only {
+    display: none;
+  }
+
+  .tablet-only {
+    display: block;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mobile-only,
+  .tablet-only {
+    display: none;
+  }
+
+  .desktop-only {
+    display: block;
+  }
+}
+
+/* Responsive text alignment */
+.text-mobile-center {
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .text-mobile-center {
+    text-align: left;
+  }
+}
+
+/* Responsive flex direction */
+.flex-mobile-col {
+  flex-direction: column;
+}
+
+@media (min-width: 640px) {
+  .flex-mobile-col {
+    flex-direction: row;
+  }
+}

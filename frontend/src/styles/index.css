@@ -12,6 +12,9 @@
 /* Import utilities */
 @import './utilities.css';
 
+/* Import responsive styles */
+@import './responsive.css';
+
 /* Root element styles */
 #root {
   min-height: 100vh;

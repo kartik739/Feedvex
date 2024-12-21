@@ -1,0 +1,78 @@
+.offline-notification {
+  position: fixed;
+  top: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-tooltip);
+  animation: slideDown var(--transition-normal) ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.offline-notification-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-6);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.offline-notification.offline .offline-notification-content {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.offline-notification.online .offline-notification-content {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.offline-notification-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: var(--font-size-base);
+}
+
+.offline-notification-message {
+  white-space: nowrap;
+}
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+  .offline-notification {
+    top: var(--space-2);
+    left: var(--space-2);
+    right: var(--space-2);
+    transform: none;
+  }
+
+  .offline-notification-content {
+    padding: var(--space-2) var(--space-4);
+  }
+
+  .offline-notification-message {
+    white-space: normal;
+    font-size: var(--font-size-xs);
+  }
+}
