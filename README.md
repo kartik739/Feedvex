@@ -17,12 +17,16 @@ A production-quality Reddit search engine with a modern React frontend. Features
 - **Production Ready**: Docker containerization, monitoring, and structured logging
 
 ### Frontend
-- **Modern UI**: React + TypeScript with Vite
+- **Modern UI**: React 19 + TypeScript with Vite
+- **Design System**: Glassmorphism effects, custom CSS variables, responsive design
+- **Dark Mode**: System preference detection with manual toggle
 - **Authentication**: Login/signup with JWT tokens
 - **Search Interface**: Real-time autocomplete, result highlighting, pagination
 - **User Dashboard**: Profile management and search statistics
-- **Theme Support**: Light/dark mode with persistent preferences
-- **Responsive Design**: Mobile-friendly interface
+- **Accessibility**: WCAG compliant with keyboard navigation and screen reader support
+- **Performance**: Code splitting, lazy loading, optimized assets
+- **Error Handling**: Error boundaries, network error recovery, offline detection
+- **Responsive Design**: Mobile-first design with tablet and desktop optimizations
 
 ## Project Structure
 
@@ -38,7 +42,12 @@ A production-quality Reddit search engine with a modern React frontend. Features
 │   │   ├── components/   # Reusable UI components
 │   │   ├── pages/        # Page components
 │   │   ├── services/     # API client
-│   │   └── store/        # State management (Zustand)
+│   │   ├── store/        # State management (Zustand)
+│   │   ├── hooks/        # Custom React hooks
+│   │   ├── utils/        # Utility functions
+│   │   ├── styles/       # Global styles and design tokens
+│   │   └── test/         # Test setup and utilities
+│   ├── vitest.config.ts  # Test configuration
 │   └── Dockerfile        # Frontend container
 ├── scripts/              # Database initialization
 ├── config/               # Prometheus & Grafana config
@@ -105,14 +114,31 @@ npm install
 
 # Configure API URL
 cp .env.example .env
-# Edit .env if needed
+# Edit VITE_API_URL if needed (default: http://localhost:3000)
 
 # Start development server
 npm run dev
+# Frontend will be available at http://localhost:5173
 
-# Or build for production
+# Run tests
+npm test
+
+# Build for production
 npm run build
+
+# Preview production build
+npm run preview
 ```
+
+### Frontend Features
+
+The frontend includes:
+- **Responsive Design**: Mobile (<640px), Tablet (640-1024px), Desktop (>1024px)
+- **Accessibility**: ARIA labels, keyboard navigation, screen reader support
+- **Performance**: Lazy loading, code splitting, optimized images
+- **Error Handling**: Error boundaries, network error recovery, offline detection
+- **Loading States**: Skeleton loaders, loading spinners, button loading states
+- **Theme Support**: Light/dark mode with smooth transitions
 
 ## API Endpoints
 
@@ -156,10 +182,22 @@ npm run format       # Format code
 
 # Frontend
 cd frontend
-npm run dev          # Start Vite dev server
+npm run dev          # Start Vite dev server (http://localhost:5173)
+npm test             # Run Vitest tests
+npm run test:ui      # Run tests with UI
+npm run test:coverage # Generate coverage report
 npm run build        # Build for production
 npm run preview      # Preview production build
+npm run lint         # Lint code
 ```
+
+### Frontend Development Tips
+
+- **Hot Module Replacement**: Changes are reflected instantly without full page reload
+- **Component Testing**: Tests are located in `__tests__` folders next to components
+- **Accessibility Testing**: Use keyboard navigation and screen readers during development
+- **Responsive Testing**: Test on different screen sizes using browser dev tools
+- **Performance**: Use React DevTools Profiler to identify performance bottlenecks
 
 ## Testing
 
