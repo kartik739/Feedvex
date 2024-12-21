@@ -16,6 +16,16 @@ export interface QueryConfig {
 }
 
 /**
+ * Search filters for advanced search
+ */
+export interface SearchFilters {
+  subreddit?: string; // Filter by specific subreddit
+  dateFrom?: Date; // Filter documents from this date onwards
+  dateTo?: Date; // Filter documents up to this date
+  sortBy?: 'relevance' | 'date' | 'score'; // Sort order
+}
+
+/**
  * Search result for a single document
  */
 export interface SearchResult {
@@ -82,12 +92,19 @@ export class QueryProcessor {
    * Processes a search query and returns ranked results
    * Requirements 7.1-7.6: Apply text processing, retrieve documents, rank, paginate, generate snippets
    * Requirements 8.1-8.3: Check cache, return cached results, store results with TTL
+   * Requirement 18.2: Support search filters (date range, subreddit, sort)
    * @param query Search query string
    * @param page Page number (1-indexed)
    * @param pageSize Number of results per page
+   * @param filters Optional search filters
    * @returns Search results with pagination metadata
    */
-  processQuery(query: string, page: number = 1, pageSize?: number): SearchResults {
+  processQuery(
+    query: string,
+    page: number = 1,
+    pageSize?: number,
+    filters?: SearchFilters
+  ): SearchResults {
     const startTime = Date.now();
 
     // Validate and normalize pagination parameters
@@ -135,14 +152,20 @@ export class QueryProcessor {
     // Requirement 7.2: Retrieve all documents containing at least one query term
     const matchingDocIds = this.getMatchingDocuments(queryTerms);
 
+    // Requirement 18.2: Apply filters to matching documents
+    const filteredDocIds = this.applyFilters(matchingDocIds, filters);
+
     // Requirement 7.3: Pass to ranker for scoring
-    const scoredDocs = this.ranker.rankDocuments(queryTerms, matchingDocIds);
+    const scoredDocs = this.ranker.rankDocuments(queryTerms, filteredDocIds);
+
+    // Requirement 18.2: Apply sort order if specified
+    const sortedDocs = this.applySorting(scoredDocs, filters?.sortBy);
 
     // Requirement 7.4: Support pagination
-    const totalCount = scoredDocs.length;
+    const totalCount = sortedDocs.length;
     const startIdx = (normalizedPage - 1) * normalizedPageSize;
     const endIdx = startIdx + normalizedPageSize;
-    const paginatedDocs = scoredDocs.slice(startIdx, endIdx);
+    const paginatedDocs = sortedDocs.slice(startIdx, endIdx);
 
     // Requirement 7.5: Include document metadata for each result
     const results: SearchResult[] = paginatedDocs.map((scoredDoc) => {
@@ -213,6 +236,81 @@ export class QueryProcessor {
     }
 
     return Array.from(docIdSet);
+  }
+
+  /**
+   * Applies filters to matching documents
+   * Requirement 18.2: Support date range, subreddit filters
+   * @param docIds Array of document IDs to filter
+   * @param filters Optional search filters
+   * @returns Filtered array of document IDs
+   */
+  private applyFilters(docIds: string[], filters?: SearchFilters): string[] {
+    if (!filters) {
+      return docIds;
+    }
+
+    return docIds.filter((docId) => {
+      const doc = this.documentStore.getById(docId);
+      if (!doc) {
+        return false;
+      }
+
+      // Filter by subreddit
+      if (filters.subreddit && doc.subreddit.toLowerCase() !== filters.subreddit.toLowerCase()) {
+        return false;
+      }
+
+      // Filter by date range
+      if (filters.dateFrom && doc.createdUtc < filters.dateFrom) {
+        return false;
+      }
+
+      if (filters.dateTo && doc.createdUtc > filters.dateTo) {
+        return false;
+      }
+
+      return true;
+    });
+  }
+
+  /**
+   * Applies sorting to scored documents
+   * Requirement 18.2: Support sort by relevance, date, or score
+   * @param scoredDocs Array of scored documents
+   * @param sortBy Sort order (default: relevance)
+   * @returns Sorted array of scored documents
+   */
+  private applySorting(
+    scoredDocs: Array<{ docId: string; score: number }>,
+    sortBy: 'relevance' | 'date' | 'score' = 'relevance'
+  ): Array<{ docId: string; score: number }> {
+    if (sortBy === 'relevance') {
+      // Already sorted by relevance score from ranker
+      return scoredDocs;
+    }
+
+    if (sortBy === 'date') {
+      // Sort by creation date (newest first)
+      return [...scoredDocs].sort((a, b) => {
+        const docA = this.documentStore.getById(a.docId);
+        const docB = this.documentStore.getById(b.docId);
+        if (!docA || !docB) return 0;
+        return docB.createdUtc.getTime() - docA.createdUtc.getTime();
+      });
+    }
+
+    if (sortBy === 'score') {
+      // Sort by Reddit score (highest first)
+      return [...scoredDocs].sort((a, b) => {
+        const docA = this.documentStore.getById(a.docId);
+        const docB = this.documentStore.getById(b.docId);
+        if (!docA || !docB) return 0;
+        return docB.redditScore - docA.redditScore;
+      });
+    }
+
+    return scoredDocs;
   }
 
   /**

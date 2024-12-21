@@ -39,6 +39,7 @@
     "@types/pg": "^8.16.0",
     "@types/supertest": "^6.0.3",
     "@types/uuid": "^10.0.0",
+    "@types/ws": "^8.5.10",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "@typescript-eslint/parser": "^6.17.0",
     "concurrently": "^9.2.1",
@@ -72,6 +73,7 @@
     "snoowrap": "^1.23.0",
     "uuid": "^13.0.0",
     "winston": "^3.19.0",
+    "ws": "^8.16.0",
     "zod": "^4.3.6"
   }
 }

@@ -8,6 +8,7 @@ import { AnalyticsService } from '../services/analytics';
 import { DocumentStore } from '../services/document-store';
 import { Indexer } from '../services/indexer';
 import { AuthService } from '../services/auth';
+import { SearchHistoryService } from '../services/search-history';
 import { register } from '../utils/metrics';
 import { logger } from '../utils/logger';
 import { correlationContext } from '../utils/correlation';
@@ -45,6 +46,7 @@ export function createApp(
   documentStore: DocumentStore,
   indexer: Indexer,
   authService: AuthService,
+  searchHistoryService: SearchHistoryService,
   config: ApiConfig = {}
 ): Express {
   const app = express();
@@ -288,7 +290,7 @@ export function createApp(
   // POST /api/v1/search endpoint (Requirement 13.1, 13.6, 16.2)
   app.post('/api/v1/search', async (req: Request, res: Response) => {
     try {
-      const { query, page = 1, pageSize = 10 } = req.body;
+      const { query, page = 1, pageSize = 10, filters } = req.body;
 
       // Requirement 13.4: Validate input
       if (!query || typeof query !== 'string' || query.trim() === '') {
@@ -324,9 +326,35 @@ export function createApp(
         } as ErrorResponse);
       }
 
+      // Requirement 18.2: Validate and parse filters
+      let parsedFilters;
+      if (filters) {
+        parsedFilters = {
+          subreddit: filters.subreddit,
+          dateFrom: filters.dateFrom ? new Date(filters.dateFrom) : undefined,
+          dateTo: filters.dateTo ? new Date(filters.dateTo) : undefined,
+          sortBy: filters.sortBy || 'relevance',
+        };
+
+        // Validate sortBy
+        if (
+          parsedFilters.sortBy &&
+          !['relevance', 'date', 'score'].includes(parsedFilters.sortBy)
+        ) {
+          return res.status(400).json({
+            error: {
+              code: 'INVALID_SORT',
+              message: 'Sort must be one of: relevance, date, score',
+              details: { field: 'filters.sortBy', value: parsedFilters.sortBy },
+              requestId: (req as any).requestId,
+            },
+          } as ErrorResponse);
+        }
+      }
+
       // Process query
       const startTime = Date.now();
-      const results = await queryProcessor.processQuery(query, page, pageSize);
+      const results = await queryProcessor.processQuery(query, page, pageSize, parsedFilters);
       const latency = Date.now() - startTime;
 
       // Log analytics (Requirement 18.4: Handle analytics service failures gracefully)
@@ -335,6 +363,20 @@ export function createApp(
       } catch (error) {
         // Analytics unavailable - log and continue
         logger.warn('Failed to log analytics', {
+          error: error instanceof Error ? error.message : String(error),
+          correlationId: (req as any).requestId,
+        });
+      }
+
+      // Requirement 18.3: Store search history for authenticated users
+      try {
+        const userId = await getUserIdFromToken(req.headers.authorization);
+        if (userId) {
+          searchHistoryService.addEntry(userId, query, results.totalCount);
+        }
+      } catch (error) {
+        // History service unavailable - log and continue
+        logger.warn('Failed to store search history', {
           error: error instanceof Error ? error.message : String(error),
           correlationId: (req as any).requestId,
         });
@@ -539,6 +581,146 @@ export function createApp(
       res.json({ success: true });
     } catch (error) {
       logger.error('Click logging error', { error, requestId: (req as any).requestId });
+      res.status(500).json({
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'An internal error occurred',
+          requestId: (req as any).requestId,
+        },
+      } as ErrorResponse);
+    }
+  });
+
+  // Helper function to extract user ID from auth token
+  const getUserIdFromToken = async (authHeader: string | undefined): Promise<string | null> => {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return null;
+    }
+
+    const token = authHeader.substring(7);
+    try {
+      const user = await authService.verifyToken(token);
+      return user ? user.id : null;
+    } catch (error) {
+      return null;
+    }
+  };
+
+  // GET /api/v1/history endpoint - Retrieve user's search history
+  // Requirement 18.3: Retrieve history endpoint
+  app.get('/api/v1/history', async (req: Request, res: Response) => {
+    try {
+      const userId = await getUserIdFromToken(req.headers.authorization);
+
+      if (!userId) {
+        return res.status(401).json({
+          error: {
+            code: 'UNAUTHORIZED',
+            message: 'Valid authorization token required',
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+
+      const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 50;
+
+      if (isNaN(limit) || limit < 1 || limit > 100) {
+        return res.status(400).json({
+          error: {
+            code: 'INVALID_LIMIT',
+            message: 'Limit must be between 1 and 100',
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+
+      const history = searchHistoryService.getHistory(userId, limit);
+      res.json({ history });
+    } catch (error) {
+      logger.error('History retrieval error', { error, requestId: (req as any).requestId });
+      res.status(500).json({
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'An internal error occurred',
+          requestId: (req as any).requestId,
+        },
+      } as ErrorResponse);
+    }
+  });
+
+  // DELETE /api/v1/history/:entryId endpoint - Delete specific history entry
+  // Requirement 18.3: Delete history endpoint
+  app.delete('/api/v1/history/:entryId', async (req: Request, res: Response) => {
+    try {
+      const userId = await getUserIdFromToken(req.headers.authorization);
+
+      if (!userId) {
+        return res.status(401).json({
+          error: {
+            code: 'UNAUTHORIZED',
+            message: 'Valid authorization token required',
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+
+      const { entryId } = req.params;
+
+      if (!entryId) {
+        return res.status(400).json({
+          error: {
+            code: 'INVALID_ENTRY_ID',
+            message: 'Entry ID is required',
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+
+      const deleted = searchHistoryService.deleteEntry(userId, entryId);
+
+      if (!deleted) {
+        return res.status(404).json({
+          error: {
+            code: 'ENTRY_NOT_FOUND',
+            message: 'History entry not found',
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+
+      res.json({ success: true });
+    } catch (error) {
+      logger.error('History deletion error', { error, requestId: (req as any).requestId });
+      res.status(500).json({
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'An internal error occurred',
+          requestId: (req as any).requestId,
+        },
+      } as ErrorResponse);
+    }
+  });
+
+  // DELETE /api/v1/history endpoint - Clear all history for user
+  // Requirement 18.3: Delete history endpoint
+  app.delete('/api/v1/history', async (req: Request, res: Response) => {
+    try {
+      const userId = await getUserIdFromToken(req.headers.authorization);
+
+      if (!userId) {
+        return res.status(401).json({
+          error: {
+            code: 'UNAUTHORIZED',
+            message: 'Valid authorization token required',
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+
+      const deletedCount = searchHistoryService.clearHistory(userId);
+      res.json({ success: true, deletedCount });
+    } catch (error) {
+      logger.error('History clear error', { error, requestId: (req as any).requestId });
       res.status(500).json({
         error: {
           code: 'INTERNAL_ERROR',

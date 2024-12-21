@@ -30,14 +30,16 @@ A production-quality Reddit search engine with a modern React frontend. Features
 
 ## Project Structure
 
+This is a monorepo containing both backend and frontend:
+
 ```
-├── src/                    # Backend source code
+├── src/                    # Backend (Node.js + TypeScript)
 │   ├── models/            # Data models and types
 │   ├── services/          # Business logic components
 │   ├── utils/             # Utility functions
 │   ├── api/               # REST API endpoints
 │   └── config/            # Configuration management
-├── frontend/              # Frontend React application
+├── frontend/              # Frontend (React + TypeScript)
 │   ├── src/
 │   │   ├── components/   # Reusable UI components
 │   │   ├── pages/        # Page components
@@ -49,10 +51,13 @@ A production-quality Reddit search engine with a modern React frontend. Features
 │   │   └── test/         # Test setup and utilities
 │   ├── vitest.config.ts  # Test configuration
 │   └── Dockerfile        # Frontend container
-├── scripts/              # Database initialization
+├── scripts/              # Database initialization and utilities
 ├── config/               # Prometheus & Grafana config
+├── .kiro/                # Kiro specs and configuration
 └── docker-compose.yml    # Multi-container orchestration
 ```
+
+> **Note:** See [MONOREPO_STRUCTURE.md](MONOREPO_STRUCTURE.md) for detailed monorepo documentation.
 
 ## Quick Start with Docker
 

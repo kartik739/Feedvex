@@ -9,6 +9,8 @@ import { Indexer } from './services/indexer';
 import { TextProcessor } from './services/text-processor';
 import { Ranker } from './services/ranker';
 import { QueryCache } from './services/query-cache';
+import { WebSocketStatsService } from './services/websocket-stats';
+import { SearchHistoryService } from './services/search-history';
 import { logger } from './utils/logger';
 
 async function startServer() {
@@ -51,6 +53,9 @@ async function startServer() {
     const analyticsService = new AnalyticsService();
     const autocompleteService = new AutocompleteService();
     const rateLimiter = new RateLimiter();
+    const searchHistoryService = new SearchHistoryService({
+      maxEntriesPerUser: 100,
+    });
 
     // Auth service disabled - requires database
     // const authService = new AuthService(mockPool, config.security.jwtSecret, '7d');
@@ -79,6 +84,7 @@ async function startServer() {
       documentStore,
       indexer,
       authService,
+      searchHistoryService,
       {
         port: config.port,
         corsOrigins: config.cors?.origins?.split(',') || ['*'],
@@ -96,12 +102,29 @@ async function startServer() {
       });
       console.log(`\n🚀 Server running at http://localhost:${config.port}`);
       console.log(`📝 API docs: http://localhost:${config.port}/api/v1/health`);
+      console.log(`🔌 WebSocket stats: ws://localhost:${config.port}/ws/stats`);
       console.log(`⚠️  Note: Using in-memory storage (no database required)\n`);
     });
+
+    // Initialize WebSocket stats service
+    const wsStatsService = new WebSocketStatsService(
+      analyticsService,
+      documentStore,
+      indexer,
+      {
+        updateInterval: 5000, // Update every 5 seconds
+        enableHeartbeat: true,
+        heartbeatInterval: 30000, // Heartbeat every 30 seconds
+      }
+    );
+    wsStatsService.initialize(server, '/ws/stats');
 
     // Graceful shutdown
     const shutdown = async () => {
       logger.info('Shutting down gracefully...');
+
+      // Shutdown WebSocket service first
+      wsStatsService.shutdown();
 
       server.close(() => {
         logger.info('HTTP server closed');
