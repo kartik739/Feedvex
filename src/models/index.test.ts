@@ -96,9 +96,7 @@ describe('Index Data Structures', () => {
 
     it('should throw error for empty postings array', () => {
       const invalid = { ...validEntry, postings: [] };
-      expect(() => validateIndexEntry(invalid)).toThrow(
-        'IndexEntry postings must not be empty'
-      );
+      expect(() => validateIndexEntry(invalid)).toThrow('IndexEntry postings must not be empty');
     });
 
     it('should throw error when documentFrequency does not match postings length', () => {

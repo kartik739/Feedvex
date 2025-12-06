@@ -1,13 +1,13 @@
 /**
  * Index data structures for the search engine
- * 
+ *
  * An inverted index maps terms (words) to the documents containing them.
  * This allows fast lookup: given a search term, quickly find all matching documents.
  */
 
 /**
  * PostingsList represents all occurrences of a term in a single document
- * 
+ *
  * Example: If "machine" appears 3 times in document "doc-123" at positions 5, 12, 45:
  * {
  *   docId: "doc-123",
@@ -23,7 +23,7 @@ export interface PostingsList {
 
 /**
  * IndexEntry represents all information about a single term across all documents
- * 
+ *
  * Example: The word "machine" appears in 3 documents:
  * {
  *   term: "machine",
@@ -43,10 +43,10 @@ export interface IndexEntry {
 
 /**
  * InvertedIndex is the main data structure for the search engine
- * 
+ *
  * It maps each term to its postings list and tracks document statistics
  * needed for ranking algorithms (BM25, TF-IDF)
- * 
+ *
  * Structure:
  * {
  *   termToPostings: {
@@ -66,20 +66,20 @@ export interface IndexEntry {
 export interface InvertedIndex {
   // Maps term → list of documents containing it
   termToPostings: Map<string, PostingsList[]>;
-  
+
   // Maps docId → number of tokens in that document (for BM25 length normalization)
   documentLengths: Map<string, number>;
-  
+
   // Total number of documents in the index
   totalDocuments: number;
-  
+
   // Average document length (for BM25 calculation)
   averageDocumentLength: number;
 }
 
 /**
  * Serializable version of InvertedIndex for JSON storage
- * 
+ *
  * Maps can't be directly serialized to JSON, so we convert them to objects
  */
 export interface SerializableInvertedIndex {
@@ -103,7 +103,7 @@ export function createEmptyIndex(): InvertedIndex {
 
 /**
  * Serializes an inverted index to a JSON-compatible format
- * 
+ *
  * Converts Maps to plain objects so they can be saved to disk
  */
 export function serializeIndex(index: InvertedIndex): SerializableInvertedIndex {
@@ -117,7 +117,7 @@ export function serializeIndex(index: InvertedIndex): SerializableInvertedIndex 
 
 /**
  * Deserializes an inverted index from JSON format
- * 
+ *
  * Converts plain objects back to Maps for efficient lookup
  */
 export function deserializeIndex(serialized: SerializableInvertedIndex): InvertedIndex {
@@ -136,7 +136,7 @@ export function calculateAverageDocumentLength(documentLengths: Map<string, numb
   if (documentLengths.size === 0) {
     return 0;
   }
-  
+
   const totalLength = Array.from(documentLengths.values()).reduce((sum, len) => sum + len, 0);
   return totalLength / documentLengths.size;
 }
@@ -144,23 +144,25 @@ export function calculateAverageDocumentLength(documentLengths: Map<string, numb
 /**
  * Validates a PostingsList
  */
-export function validatePostingsList(posting: Partial<PostingsList>): asserts posting is PostingsList {
+export function validatePostingsList(
+  posting: Partial<PostingsList>
+): asserts posting is PostingsList {
   if (!posting.docId || typeof posting.docId !== 'string' || posting.docId.trim() === '') {
     throw new Error('PostingsList docId must be a non-empty string');
   }
-  
+
   if (typeof posting.termFrequency !== 'number' || posting.termFrequency < 1) {
     throw new Error('PostingsList termFrequency must be a positive number');
   }
-  
+
   if (!Array.isArray(posting.positions)) {
     throw new Error('PostingsList positions must be an array');
   }
-  
+
   if (posting.positions.length === 0) {
     throw new Error('PostingsList positions must not be empty');
   }
-  
+
   // Validate positions are non-negative and sorted
   for (let i = 0; i < posting.positions.length; i++) {
     const pos = posting.positions[i];
@@ -171,7 +173,7 @@ export function validatePostingsList(posting: Partial<PostingsList>): asserts po
       throw new Error('PostingsList positions must be in ascending order');
     }
   }
-  
+
   // Validate termFrequency matches positions length
   if (posting.termFrequency !== posting.positions.length) {
     throw new Error(
@@ -187,24 +189,24 @@ export function validateIndexEntry(entry: Partial<IndexEntry>): asserts entry is
   if (!entry.term || typeof entry.term !== 'string' || entry.term.trim() === '') {
     throw new Error('IndexEntry term must be a non-empty string');
   }
-  
+
   if (typeof entry.documentFrequency !== 'number' || entry.documentFrequency < 1) {
     throw new Error('IndexEntry documentFrequency must be a positive number');
   }
-  
+
   if (!Array.isArray(entry.postings)) {
     throw new Error('IndexEntry postings must be an array');
   }
-  
+
   if (entry.postings.length === 0) {
     throw new Error('IndexEntry postings must not be empty');
   }
-  
+
   // Validate each posting
   for (const posting of entry.postings) {
     validatePostingsList(posting);
   }
-  
+
   // Validate documentFrequency matches postings length
   if (entry.documentFrequency !== entry.postings.length) {
     throw new Error(
@@ -216,47 +218,49 @@ export function validateIndexEntry(entry: Partial<IndexEntry>): asserts entry is
 /**
  * Validates an InvertedIndex
  */
-export function validateInvertedIndex(index: Partial<InvertedIndex>): asserts index is InvertedIndex {
+export function validateInvertedIndex(
+  index: Partial<InvertedIndex>
+): asserts index is InvertedIndex {
   if (!(index.termToPostings instanceof Map)) {
     throw new Error('InvertedIndex termToPostings must be a Map');
   }
-  
+
   if (!(index.documentLengths instanceof Map)) {
     throw new Error('InvertedIndex documentLengths must be a Map');
   }
-  
+
   if (typeof index.totalDocuments !== 'number' || index.totalDocuments < 0) {
     throw new Error('InvertedIndex totalDocuments must be a non-negative number');
   }
-  
+
   if (typeof index.averageDocumentLength !== 'number' || index.averageDocumentLength < 0) {
     throw new Error('InvertedIndex averageDocumentLength must be a non-negative number');
   }
-  
+
   // Validate totalDocuments matches documentLengths size
   if (index.totalDocuments !== index.documentLengths.size) {
     throw new Error(
       `InvertedIndex totalDocuments (${index.totalDocuments}) must match documentLengths size (${index.documentLengths.size})`
     );
   }
-  
+
   // Validate document lengths are positive
   for (const [docId, length] of index.documentLengths.entries()) {
     if (typeof length !== 'number' || length < 1) {
       throw new Error(`Document length for ${docId} must be a positive number`);
     }
   }
-  
+
   // Validate each index entry
   for (const [term, postings] of index.termToPostings.entries()) {
     if (typeof term !== 'string' || term.trim() === '') {
       throw new Error('Index term must be a non-empty string');
     }
-    
+
     if (!Array.isArray(postings) || postings.length === 0) {
       throw new Error(`Postings for term "${term}" must be a non-empty array`);
     }
-    
+
     for (const posting of postings) {
       validatePostingsList(posting);
     }

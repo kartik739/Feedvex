@@ -37,8 +37,11 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@types/natural": "^5.1.5",
+    "cheerio": "^1.1.0",
     "dotenv": "^16.3.1",
     "fast-check": "^3.15.0",
+    "natural": "^8.1.0",
     "zod": "^4.3.6"
   }
 }

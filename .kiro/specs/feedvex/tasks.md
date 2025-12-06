@@ -1,8 +1,8 @@
-# Implementation Plan: Reddit Search Engine
+# Implementation Plan: Feedvex
 
 ## Overview
 
-This implementation plan breaks down the Reddit search engine into incremental, testable steps using TypeScript. The approach follows a bottom-up strategy: building core data structures and utilities first, then processing components, then the query layer, and finally the API and infrastructure. Each major component includes property-based tests to validate correctness properties from the design document.
+This implementation plan breaks down the Feedvex Reddit search engine into incremental, testable steps using TypeScript. The approach follows a bottom-up strategy: building core data structures and utilities first, then processing components, then the query layer, and finally the API and infrastructure. Each major component includes property-based tests to validate correctness properties from the design document.
 
 ## Tasks
 
@@ -34,8 +34,8 @@ This implementation plan breaks down the Reddit search engine into incremental, 
     - Implement configuration validation with Zod or similar
     - _Requirements: 19.1, 19.2, 19.3, 19.4_
 
-- [ ] 3. Implement text processing pipeline
-  - [ ] 3.1 Create TextProcessor class with HTML stripping
+- [x] 3. Implement text processing pipeline
+  - [x] 3.1 Create TextProcessor class with HTML stripping
     - Use cheerio or jsdom to strip HTML tags
     - Implement lowercase normalization
     - _Requirements: 2.1, 2.2_
@@ -48,7 +48,7 @@ This implementation plan breaks down the Reddit search engine into incremental, 
     - **Property 5: Case normalization**
     - **Validates: Requirements 2.2**
   
-  - [ ] 3.4 Implement tokenization
+  - [x] 3.4 Implement tokenization
     - Use natural or compromise library for tokenization
     - Split on whitespace and punctuation boundaries
     - Track token positions
@@ -62,7 +62,7 @@ This implementation plan breaks down the Reddit search engine into incremental, 
     - **Property 8: Position preservation**
     - **Validates: Requirements 2.6**
   
-  - [ ] 3.7 Implement stopword removal
+  - [x] 3.7 Implement stopword removal
     - Load English stopwords list
     - Filter tokens against stopwords
     - _Requirements: 2.4_
@@ -71,20 +71,20 @@ This implementation plan breaks down the Reddit search engine into incremental, 
     - **Property 7: Stopword removal**
     - **Validates: Requirements 2.4**
   
-  - [ ] 3.9 Implement stemming using Porter Stemmer
+  - [x] 3.9 Implement stemming using Porter Stemmer
     - Use natural library's PorterStemmer
     - Apply stemming to filtered tokens
     - _Requirements: 2.5_
   
-  - [ ] 3.10 Create batch processing method
+  - [x] 3.10 Create batch processing method
     - Implement processDocument and processBatch methods
     - _Requirements: 2.1-2.6_
 
-- [ ] 4. Checkpoint - Ensure text processing tests pass
+- [x] 4. Checkpoint - Ensure text processing tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Implement inverted index
-  - [ ] 5.1 Create Indexer class with core indexing logic
+- [x] 5. Implement inverted index
+  - [x] 5.1 Create Indexer class with core indexing logic
     - Implement indexDocument method to build postings lists
     - Store term frequency and positions for each term-document pair
     - Maintain document length statistics
@@ -94,7 +94,7 @@ This implementation plan breaks down the Reddit search engine into incremental, 
     - **Property 9: Complete index entry storage**
     - **Validates: Requirements 3.1, 3.2, 3.3**
   
-  - [ ] 5.3 Implement index update and removal
+  - [x] 5.3 Implement index update and removal
     - Implement updateDocument to replace existing entries
     - Implement removeDocument to clean up entries
     - _Requirements: 3.4_
@@ -103,7 +103,7 @@ This implementation plan breaks down the Reddit search engine into incremental, 
     - **Property 10: Index update idempotence**
     - **Validates: Requirements 3.4**
   
-  - [ ] 5.5 Implement index persistence
+  - [x] 5.5 Implement index persistence
     - Serialize index to JSON file
     - Implement load method to restore index from file
     - _Requirements: 3.5, 12.2_
@@ -112,7 +112,7 @@ This implementation plan breaks down the Reddit search engine into incremental, 
     - **Property 11: Index persistence round-trip**
     - **Validates: Requirements 3.5, 12.2**
   
-  - [ ] 5.7 Implement index query methods
+  - [x] 5.7 Implement index query methods
     - Implement getPostings, getDocumentFrequency, getTotalDocuments
     - Calculate and cache average document length
     - _Requirements: 3.1_

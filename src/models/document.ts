@@ -79,7 +79,7 @@ export function validateDocument(doc: Partial<Document>): asserts doc is Documen
   // Validate string fields are not empty
   const stringFields: (keyof Document)[] = ['id', 'title', 'content', 'url', 'author', 'subreddit'];
   for (const field of stringFields) {
-    if (typeof doc[field] !== 'string' || (doc[field] as string).trim() === '') {
+    if (typeof doc[field] !== 'string' || doc[field].trim() === '') {
       throw new DocumentValidationError(`Field ${field} must be a non-empty string`);
     }
   }

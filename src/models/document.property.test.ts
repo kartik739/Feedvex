@@ -1,10 +1,5 @@
 import * as fc from 'fast-check';
-import {
-  Document,
-  validateDocument,
-  createDocument,
-  DocumentValidationError,
-} from './document';
+import { Document, validateDocument, createDocument, DocumentValidationError } from './document';
 
 /**
  * Property-based tests for Document model
@@ -23,19 +18,19 @@ describe('Document Model - Property-Based Tests', () => {
   describe('Property 3: Complete metadata storage', () => {
     // Custom arbitraries for generating valid documents
     const documentTypeArb = fc.constantFrom('post' as const, 'comment' as const);
-    
+
     const uuidArb = fc.uuid();
-    
+
     const nonEmptyStringArb = fc
       .string({ minLength: 1, maxLength: 200 })
       .filter((s) => s.trim().length > 0);
-    
+
     const urlArb = fc.webUrl();
-    
+
     const redditScoreArb = fc.integer({ min: -1000000, max: 1000000 });
-    
+
     const commentCountArb = fc.nat({ max: 100000 });
-    
+
     const dateArb = fc.date({
       min: new Date('2020-01-01'),
       max: new Date('2025-12-31'),
