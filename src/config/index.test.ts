@@ -48,7 +48,7 @@ describe('Configuration', () => {
     delete process.env.REDDIT_CLIENT_ID;
     delete process.env.REDDIT_CLIENT_SECRET;
 
-    expect(() => loadConfig()).toThrow('Reddit API credentials are required');
+    expect(() => loadConfig()).toThrow(/Reddit client ID is required/);
   });
 
   it('should throw error when ranking weights do not sum to 1', () => {
@@ -59,7 +59,7 @@ describe('Configuration', () => {
     process.env.POPULARITY_WEIGHT = '0.2';
     process.env.ENGAGEMENT_WEIGHT = '0.2';
 
-    expect(() => loadConfig()).toThrow(/Ranking weights must sum to 1.0/);
+    expect(() => loadConfig()).toThrow(/Ranking weights.*must sum to 1\.0/);
   });
 
   it('should throw error when BM25_K1 is negative', () => {
@@ -67,7 +67,7 @@ describe('Configuration', () => {
     process.env.REDDIT_CLIENT_SECRET = 'test_secret';
     process.env.BM25_K1 = '-1';
 
-    expect(() => loadConfig()).toThrow('BM25_K1 must be non-negative');
+    expect(() => loadConfig()).toThrow(/BM25 k1 parameter must be non-negative/);
   });
 
   it('should throw error when BM25_B is out of range', () => {
@@ -75,7 +75,7 @@ describe('Configuration', () => {
     process.env.REDDIT_CLIENT_SECRET = 'test_secret';
     process.env.BM25_B = '1.5';
 
-    expect(() => loadConfig()).toThrow('BM25_B must be between 0 and 1');
+    expect(() => loadConfig()).toThrow(/BM25 b parameter must be between 0 and 1/);
   });
 
   it('should throw error when CACHE_TTL is not positive', () => {
@@ -83,7 +83,7 @@ describe('Configuration', () => {
     process.env.REDDIT_CLIENT_SECRET = 'test_secret';
     process.env.CACHE_TTL = '0';
 
-    expect(() => loadConfig()).toThrow('CACHE_TTL must be positive');
+    expect(() => loadConfig()).toThrow(/Cache TTL must be positive/);
   });
 
   it('should throw error when environment variable is not a valid number', () => {

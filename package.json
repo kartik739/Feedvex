@@ -13,7 +13,13 @@
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write \"src/**/*.ts\""
   },
-  "keywords": ["search-engine", "reddit", "typescript", "bm25", "information-retrieval"],
+  "keywords": [
+    "search-engine",
+    "reddit",
+    "typescript",
+    "bm25",
+    "information-retrieval"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
@@ -32,6 +38,7 @@
   },
   "dependencies": {
     "dotenv": "^16.3.1",
-    "fast-check": "^3.15.0"
+    "fast-check": "^3.15.0",
+    "zod": "^4.3.6"
   }
 }
