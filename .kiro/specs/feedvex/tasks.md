@@ -117,8 +117,8 @@ This implementation plan breaks down the Feedvex Reddit search engine into incre
     - Calculate and cache average document length
     - _Requirements: 3.1_
 
-- [ ] 6. Implement ranking algorithms
-  - [ ] 6.1 Create Ranker class with TF-IDF implementation
+- [x] 6. Implement ranking algorithms
+  - [x] 6.1 Create Ranker class with TF-IDF implementation
     - Implement calculateTF for term frequency
     - Implement calculateIDF for inverse document frequency
     - Implement calculateTFIDF combining TF and IDF
@@ -140,7 +140,7 @@ This implementation plan breaks down the Feedvex Reddit search engine into incre
     - **Property 15: Multi-term TF-IDF aggregation**
     - **Validates: Requirements 4.4**
   
-  - [ ] 6.6 Implement BM25 ranking algorithm
+  - [x] 6.6 Implement BM25 ranking algorithm
     - Implement calculateBM25 with k1 and b parameters
     - Apply document length normalization
     - _Requirements: 5.1, 5.3_
@@ -153,7 +153,7 @@ This implementation plan breaks down the Feedvex Reddit search engine into incre
     - **Property 18: BM25 formula correctness**
     - **Validates: Requirements 5.3**
   
-  - [ ] 6.9 Implement multi-factor ranking
+  - [x] 6.9 Implement multi-factor ranking
     - Implement calculateRecencyScore with exponential decay
     - Implement calculatePopularityScore using log scaling
     - Implement calculateEngagementScore using log scaling
@@ -176,7 +176,7 @@ This implementation plan breaks down the Feedvex Reddit search engine into incre
     - **Property 22: Engagement monotonicity**
     - **Validates: Requirements 6.4**
   
-  - [ ] 6.14 Implement rankDocuments method
+  - [x] 6.14 Implement rankDocuments method
     - Score all documents for a query
     - Sort by score in descending order
     - _Requirements: 4.5, 5.4_
@@ -185,7 +185,7 @@ This implementation plan breaks down the Feedvex Reddit search engine into incre
     - **Property 16: Score-based sorting**
     - **Validates: Requirements 4.5, 5.4**
 
-- [ ] 7. Checkpoint - Ensure ranking tests pass
+- [x] 7. Checkpoint - Ensure ranking tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 8. Implement query processing
