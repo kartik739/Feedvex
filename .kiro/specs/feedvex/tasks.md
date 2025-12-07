@@ -188,8 +188,8 @@ This implementation plan breaks down the Feedvex Reddit search engine into incre
 - [x] 7. Checkpoint - Ensure ranking tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. Implement query processing
-  - [ ] 8.1 Create QueryProcessor class
+- [x] 8. Implement query processing
+  - [x] 8.1 Create QueryProcessor class
     - Integrate TextProcessor for query normalization
     - Implement getMatchingDocuments to retrieve candidates from index
     - _Requirements: 7.1, 7.2_
@@ -202,7 +202,7 @@ This implementation plan breaks down the Feedvex Reddit search engine into incre
     - **Property 24: Retrieval completeness**
     - **Validates: Requirements 7.2**
   
-  - [ ] 8.4 Implement pagination logic
+  - [x] 8.4 Implement pagination logic
     - Implement page slicing with configurable page size
     - Return total count and page metadata
     - _Requirements: 7.4_
@@ -211,7 +211,7 @@ This implementation plan breaks down the Feedvex Reddit search engine into incre
     - **Property 25: Pagination correctness**
     - **Validates: Requirements 7.4**
   
-  - [ ] 8.6 Implement snippet generation
+  - [x] 8.6 Implement snippet generation
     - Extract text fragments containing query terms
     - Include surrounding context (50 characters before/after)
     - Highlight query terms in snippets
@@ -221,7 +221,7 @@ This implementation plan breaks down the Feedvex Reddit search engine into incre
     - **Property 27: Snippet query term inclusion**
     - **Validates: Requirements 7.6**
   
-  - [ ] 8.8 Implement processQuery method
+  - [x] 8.8 Implement processQuery method
     - Orchestrate query processing pipeline
     - Return SearchResults with all metadata
     - _Requirements: 7.5_
@@ -230,8 +230,8 @@ This implementation plan breaks down the Feedvex Reddit search engine into incre
     - **Property 26: Result metadata completeness**
     - **Validates: Requirements 7.5**
 
-- [ ] 9. Implement caching layer
-  - [ ] 9.1 Create QueryCache class using Redis
+- [x] 9. Implement caching layer
+  - [x] 9.1 Create QueryCache class using Redis
     - Set up ioredis client
     - Implement get/set methods with TTL
     - Generate cache keys from query parameters
@@ -241,24 +241,24 @@ This implementation plan breaks down the Feedvex Reddit search engine into incre
     - **Property 28: Cache hit equivalence**
     - **Validates: Requirements 8.2**
   
-  - [ ] 9.3 Implement cache invalidation
+  - [x] 9.3 Implement cache invalidation
     - Implement invalidate method with pattern matching
     - Implement clear method
     - _Requirements: 8.5_
   
-  - [ ] 9.4 Implement cache statistics
+  - [x] 9.4 Implement cache statistics
     - Track hits, misses, and hit rate
     - Expose getStats method
     - _Requirements: 8.2_
   
-  - [ ] 9.5 Integrate cache with QueryProcessor
+  - [x] 9.5 Integrate cache with QueryProcessor
     - Check cache before processing
     - Store results after processing
     - Handle cache unavailability gracefully
     - _Requirements: 8.1, 8.2, 8.3, 18.4_
 
 - [ ] 10. Implement rate limiting
-  - [ ] 10.1 Create RateLimiter class using Redis
+  - [x] 10.1 Create RateLimiter class using Redis
     - Implement sliding window algorithm with sorted sets
     - Track requests per client ID
     - _Requirements: 9.1, 9.5_
@@ -271,12 +271,12 @@ This implementation plan breaks down the Feedvex Reddit search engine into incre
     - **Property 30: Sliding window burst prevention**
     - **Validates: Requirements 9.5**
   
-  - [ ] 10.4 Implement rate limit checking
+  - [x] 10.4 Implement rate limit checking
     - Implement checkRateLimit method
     - Return remaining quota and reset time
     - _Requirements: 9.2, 9.3, 9.4_
   
-  - [ ] 10.5 Write unit tests for rate limit enforcement
+  - [x] 10.5 Write unit tests for rate limit enforcement
     - Test limit exceeded scenario
     - Test Retry-After header
     - _Requirements: 9.2, 9.3_
