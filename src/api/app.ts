@@ -7,6 +7,9 @@ import { RateLimiter } from '../services/rate-limiter';
 import { AnalyticsService } from '../services/analytics';
 import { DocumentStore } from '../services/document-store';
 import { Indexer } from '../services/indexer';
+import { register } from '../utils/metrics';
+import { logger } from '../utils/logger';
+import { correlationContext } from '../utils/correlation';
 
 /**
  * Configuration for the API server
@@ -57,21 +60,21 @@ export function createApp(
   if (config.enableLogging !== false) {
     app.use((req: Request, res: Response, next: NextFunction) => {
       const startTime = Date.now();
-      const requestId = `req-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const requestId = correlationContext.generateId();
       
-      // Store request ID for error handling
+      // Store request ID for error handling and correlation
       (req as any).requestId = requestId;
+      correlationContext.setId(requestId);
 
       res.on('finish', () => {
         const duration = Date.now() - startTime;
-        console.log(JSON.stringify({
-          requestId,
+        logger.info('HTTP request', {
+          correlationId: requestId,
           method: req.method,
           path: req.path,
           status: res.statusCode,
           duration: `${duration}ms`,
-          timestamp: new Date().toISOString(),
-        }));
+        });
       });
 
       next();
@@ -79,8 +82,9 @@ export function createApp(
   } else {
     // Even without logging, we need to set requestId for error responses
     app.use((req: Request, res: Response, next: NextFunction) => {
-      const requestId = `req-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const requestId = correlationContext.generateId();
       (req as any).requestId = requestId;
+      correlationContext.setId(requestId);
       next();
     });
   }
@@ -107,6 +111,24 @@ export function createApp(
     rateLimiter.recordRequest(clientId);
 
     next();
+  });
+
+  // GET /api/v1/metrics endpoint (Requirement 16.1, 16.2, 16.7)
+  app.get('/api/v1/metrics', async (req: Request, res: Response) => {
+    try {
+      res.set('Content-Type', register.contentType);
+      const metrics = await register.metrics();
+      res.send(metrics);
+    } catch (error) {
+      logger.error('Metrics error', { error });
+      res.status(500).json({
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'An internal error occurred while retrieving metrics',
+          requestId: (req as any).requestId,
+        },
+      } as ErrorResponse);
+    }
   });
 
   // POST /api/v1/search endpoint (Requirement 13.1, 13.6, 16.2)
@@ -153,14 +175,22 @@ export function createApp(
       const results = await queryProcessor.processQuery(query, page, pageSize);
       const latency = Date.now() - startTime;
 
-      // Log analytics
-      analyticsService.logQuery(query, results.totalCount, latency);
+      // Log analytics (Requirement 18.4: Handle analytics service failures gracefully)
+      try {
+        analyticsService.logQuery(query, results.totalCount, latency);
+      } catch (error) {
+        // Analytics unavailable - log and continue
+        logger.warn('Failed to log analytics', { 
+          error: error instanceof Error ? error.message : String(error),
+          correlationId: (req as any).requestId,
+        });
+      }
 
       // Requirement 13.6: Return JSON response
       res.json(results);
     } catch (error) {
       // Requirement 13.5: Handle internal errors
-      console.error('Search error:', error);
+      logger.error('Search error', { error, requestId: (req as any).requestId });
       res.status(500).json({
         error: {
           code: 'INTERNAL_ERROR',
@@ -203,7 +233,7 @@ export function createApp(
       const suggestions = autocompleteService.getSuggestions(prefix, limitNum);
       res.json({ suggestions });
     } catch (error) {
-      console.error('Autocomplete error:', error);
+      logger.error('Autocomplete error', { error, requestId: (req as any).requestId });
       res.status(500).json({
         error: {
           code: 'INTERNAL_ERROR',
@@ -214,31 +244,76 @@ export function createApp(
     }
   });
 
-  // GET /api/v1/health endpoint (Requirement 13.3, 14.4, 16.6)
+  // GET /api/v1/health endpoint (Requirement 13.3, 14.4, 16.6, 18.3)
   app.get('/api/v1/health', async (req: Request, res: Response) => {
     try {
-      const health = {
-        status: 'healthy' as 'healthy' | 'degraded' | 'unhealthy',
+      let overallStatus: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
+      
+      const health: {
+        status: 'healthy' | 'degraded' | 'unhealthy';
+        timestamp: string;
+        components: {
+          documentStore: {
+            status: 'healthy' | 'unhealthy';
+            totalDocuments: number;
+          };
+          index: {
+            status: 'healthy' | 'unhealthy';
+            totalDocuments: number;
+            totalTerms: number;
+          };
+          cache: {
+            status: 'healthy' | 'unhealthy';
+          };
+        };
+      } = {
+        status: overallStatus,
         timestamp: new Date().toISOString(),
         components: {
           documentStore: {
-            status: 'healthy' as const,
-            totalDocuments: documentStore.getTotalDocuments(),
+            status: 'healthy',
+            totalDocuments: 0,
           },
           index: {
-            status: 'healthy' as const,
-            totalDocuments: indexer.getTotalDocuments(),
-            totalTerms: indexer.getStats().totalTerms,
+            status: 'healthy',
+            totalDocuments: 0,
+            totalTerms: 0,
           },
           cache: {
-            status: 'healthy' as const,
+            status: 'healthy',
           },
         },
       };
 
+      // Check document store (Requirement 18.3: Return 503 when database unavailable)
+      try {
+        health.components.documentStore.totalDocuments = documentStore.getTotalDocuments();
+      } catch (error) {
+        health.components.documentStore.status = 'unhealthy';
+        overallStatus = 'unhealthy';
+        logger.error('Document store health check failed', { error });
+      }
+
+      // Check index
+      try {
+        health.components.index.totalDocuments = indexer.getTotalDocuments();
+        health.components.index.totalTerms = indexer.getStats().totalTerms;
+      } catch (error) {
+        health.components.index.status = 'unhealthy';
+        overallStatus = 'degraded';
+        logger.error('Index health check failed', { error });
+      }
+
+      health.status = overallStatus;
+
+      // Return 503 if unhealthy (database unavailable)
+      if (overallStatus === 'unhealthy') {
+        return res.status(503).json(health);
+      }
+
       res.json(health);
     } catch (error) {
-      console.error('Health check error:', error);
+      logger.error('Health check error', { error });
       res.status(503).json({
         status: 'unhealthy',
         timestamp: new Date().toISOString(),
@@ -270,7 +345,7 @@ export function createApp(
 
       res.json(stats);
     } catch (error) {
-      console.error('Stats error:', error);
+      logger.error('Stats error', { error, requestId: (req as any).requestId });
       res.status(500).json({
         error: {
           code: 'INTERNAL_ERROR',
@@ -296,10 +371,20 @@ export function createApp(
         } as ErrorResponse);
       }
 
-      analyticsService.logClick(query, docId, position);
+      // Requirement 18.4: Handle analytics service failures gracefully
+      try {
+        analyticsService.logClick(query, docId, position);
+      } catch (error) {
+        // Analytics unavailable - log but return success to client
+        logger.warn('Failed to log click', { 
+          error: error instanceof Error ? error.message : String(error),
+          correlationId: (req as any).requestId,
+        });
+      }
+
       res.json({ success: true });
     } catch (error) {
-      console.error('Click logging error:', error);
+      logger.error('Click logging error', { error, requestId: (req as any).requestId });
       res.status(500).json({
         error: {
           code: 'INTERNAL_ERROR',
@@ -323,7 +408,11 @@ export function createApp(
 
   // Global error handler (Requirement 13.5, 16.11)
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error('Unhandled error:', err);
+    logger.error('Unhandled error', { 
+      error: err.message, 
+      stack: err.stack,
+      requestId: (req as any).requestId 
+    });
     res.status(500).json({
       error: {
         code: 'INTERNAL_ERROR',

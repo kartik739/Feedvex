@@ -127,6 +127,17 @@ describe('RedditCollector', () => {
 
   describe('retry logic', () => {
     it('should retry on failure with exponential backoff', async () => {
+      // Create a new collector for this test to avoid circuit breaker state
+      const freshCollector = new RedditCollector(
+        {
+          clientId: 'test',
+          clientSecret: 'test',
+          userAgent: 'test',
+          subreddits: ['test'],
+        },
+        documentStore
+      );
+
       // Test the withRetry method directly
       let attempts = 0;
       const mockFn = async () => {
@@ -137,19 +148,30 @@ describe('RedditCollector', () => {
         return 'success';
       };
 
-      const result = await (collector as any).withRetry(mockFn, 'Test operation');
+      const result = await (freshCollector as any).withRetry(mockFn, 'Test operation');
 
       expect(attempts).toBe(3);
       expect(result).toBe('success');
     });
 
     it('should fail after max retry attempts', async () => {
+      // Create a new collector for this test to avoid circuit breaker state
+      const freshCollector = new RedditCollector(
+        {
+          clientId: 'test',
+          clientSecret: 'test',
+          userAgent: 'test',
+          subreddits: ['test'],
+        },
+        documentStore
+      );
+
       const mockFn = async () => {
         throw new Error('Persistent failure');
       };
 
       await expect(
-        (collector as any).withRetry(mockFn, 'Test operation')
+        (freshCollector as any).withRetry(mockFn, 'Test operation')
       ).rejects.toThrow('failed after 3 attempts');
     });
   });

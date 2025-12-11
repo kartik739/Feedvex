@@ -1,5 +1,7 @@
 import { Document, createDocument } from '../models/document';
 import { DocumentStore } from './ranker';
+import CircuitBreaker from 'opossum';
+import { logger } from '../utils/logger';
 
 /**
  * Configuration for Reddit data collection
@@ -36,13 +38,14 @@ interface RetryConfig {
 
 /**
  * RedditCollector fetches content from Reddit API with reliability and efficiency
- * Implements requirements 1.1-1.8
+ * Implements requirements 1.1-1.8, 18.5
  */
 export class RedditCollector {
   private config: RedditConfig;
   private documentStore: DocumentStore;
   private processedIds: Set<string>; // For duplicate detection (Requirement 1.3)
   private retryConfig: RetryConfig;
+  private circuitBreaker: CircuitBreaker; // Requirement 18.5
 
   constructor(config: RedditConfig, documentStore: DocumentStore) {
     this.config = {
@@ -60,12 +63,45 @@ export class RedditCollector {
       maxDelayMs: 60000, // 60 seconds
       multiplier: 2,
     };
+
+    // Requirement 18.5: Circuit breaker for Reddit API
+    this.circuitBreaker = new CircuitBreaker(this.makeApiCall.bind(this), {
+      timeout: 30000, // 30 seconds
+      errorThresholdPercentage: 80, // Open circuit if 80% of requests fail (more lenient for testing)
+      resetTimeout: 60000, // Try again after 60 seconds
+      rollingCountTimeout: 10000, // 10 second window
+      rollingCountBuckets: 10,
+      volumeThreshold: 5, // Minimum number of requests before circuit can open
+    });
+
+    // Circuit breaker event handlers
+    this.circuitBreaker.on('open', () => {
+      logger.warn('Circuit breaker opened - Reddit API calls will be blocked');
+    });
+
+    this.circuitBreaker.on('halfOpen', () => {
+      logger.info('Circuit breaker half-open - testing Reddit API');
+    });
+
+    this.circuitBreaker.on('close', () => {
+      logger.info('Circuit breaker closed - Reddit API calls resumed');
+    });
+  }
+
+  /**
+   * Make an API call (wrapped by circuit breaker)
+   * @param fn Function to execute
+   * @returns Result of the function
+   */
+  private async makeApiCall<T>(fn: () => Promise<T>): Promise<T> {
+    return fn();
   }
 
   /**
    * Executes a function with retry logic and exponential backoff
    * Requirement 1.2: Retry the request with exponential backoff up to 3 attempts
    * Requirement 1.5: Respect rate limits and delay subsequent requests
+   * Requirement 18.5: Use circuit breaker to prevent cascading failures
    * @param fn Function to execute
    * @param context Description of the operation for logging
    * @returns Result of the function
@@ -78,7 +114,9 @@ export class RedditCollector {
     
     for (let attempt = 1; attempt <= this.retryConfig.maxAttempts; attempt++) {
       try {
-        return await fn();
+        // Use circuit breaker for API calls
+        const result = await this.circuitBreaker.fire(fn);
+        return result as T;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
         
@@ -87,6 +125,9 @@ export class RedditCollector {
         
         if (attempt === this.retryConfig.maxAttempts && !isRateLimitError) {
           // Last attempt failed and not a rate limit error, throw error
+          logger.error(`${context} failed after ${this.retryConfig.maxAttempts} attempts`, {
+            error: lastError.message,
+          });
           throw new Error(
             `${context} failed after ${this.retryConfig.maxAttempts} attempts: ${lastError.message}`
           );
@@ -101,11 +142,9 @@ export class RedditCollector {
         // If rate limit error, use a longer delay
         if (isRateLimitError) {
           delay = Math.max(delay, 60000); // Wait at least 60 seconds for rate limits
-          console.warn(
-            `${context} hit rate limit. Waiting ${delay}ms before retrying...`
-          );
+          logger.warn(`${context} hit rate limit. Waiting ${delay}ms before retrying...`);
         } else {
-          console.warn(
+          logger.warn(
             `${context} failed (attempt ${attempt}/${this.retryConfig.maxAttempts}): ${lastError.message}. Retrying in ${delay}ms...`
           );
         }
@@ -231,12 +270,11 @@ export class RedditCollector {
     const endTime = new Date();
 
     // Requirement 1.7: Log document counts and errors
-    console.log(
+    logger.info(
       `Collection cycle completed: ${documentsCollected} documents collected from ${subredditsProcessed.length} subreddits`
     );
     if (errors.length > 0) {
-      console.error(`Errors encountered: ${errors.length}`);
-      errors.forEach(err => console.error(err));
+      logger.error(`Errors encountered: ${errors.length}`, { errors });
     }
 
     return {

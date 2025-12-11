@@ -3,6 +3,7 @@ import { Indexer } from './indexer';
 import { Ranker, ScoredDocument, DocumentStore } from './ranker';
 import { Document } from '../models/document';
 import { QueryCache } from './query-cache';
+import { logger } from '../utils/logger';
 
 /**
  * Configuration for QueryProcessor
@@ -97,11 +98,19 @@ export class QueryProcessor {
     const normalizedPage = Math.max(1, page);
 
     // Requirement 8.1: Check cache before processing
+    // Requirement 18.4: Handle cache unavailability gracefully
     if (this.config.enableCache && this.cache) {
-      const cached = this.cache.get(query, normalizedPage, normalizedPageSize);
-      if (cached) {
-        // Requirement 8.2: Return cached results immediately
-        return cached;
+      try {
+        const cached = this.cache.get(query, normalizedPage, normalizedPageSize);
+        if (cached) {
+          // Requirement 8.2: Return cached results immediately
+          return cached;
+        }
+      } catch (error) {
+        // Cache unavailable - log and continue without cache
+        logger.warn('Cache unavailable, continuing without cache', { 
+          error: error instanceof Error ? error.message : String(error) 
+        });
       }
     }
 
@@ -172,8 +181,16 @@ export class QueryProcessor {
     };
 
     // Requirement 8.3: Store results in cache with TTL
+    // Requirement 18.4: Handle cache unavailability gracefully
     if (this.config.enableCache && this.cache) {
-      this.cache.set(query, normalizedPage, normalizedPageSize, searchResults);
+      try {
+        this.cache.set(query, normalizedPage, normalizedPageSize, searchResults);
+      } catch (error) {
+        // Cache unavailable - log and continue
+        logger.warn('Failed to store results in cache', { 
+          error: error instanceof Error ? error.message : String(error) 
+        });
+      }
     }
 
     return searchResults;
