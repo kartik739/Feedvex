@@ -1,0 +1,70 @@
+.result-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: box-shadow 0.2s;
+}
+
+.result-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.result-header {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.result-type {
+  padding: 0.25rem 0.5rem;
+  background: var(--primary-color);
+  color: white;
+  border-radius: 4px;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.result-subreddit {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.result-date {
+  color: var(--text-secondary);
+}
+
+.result-title {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+.result-title:hover {
+  color: var(--primary-color);
+}
+
+.result-snippet {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.result-snippet mark {
+  background: rgba(99, 102, 241, 0.2);
+  padding: 0.125rem 0.25rem;
+  border-radius: 2px;
+}
+
+.result-footer {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}

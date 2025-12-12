@@ -1,9 +1,10 @@
 # Feedvex
 
-A production-quality search engine that collects, processes, indexes, and searches Reddit content using advanced ranking algorithms (TF-IDF and BM25).
+A production-quality Reddit search engine with a modern React frontend. Features advanced ranking algorithms (TF-IDF and BM25), real-time autocomplete, user authentication, and comprehensive analytics.
 
 ## Features
 
+### Backend
 - **Data Collection**: Concurrent Reddit API fetching with retry logic and duplicate detection
 - **Text Processing**: HTML stripping, tokenization, stopword removal, and stemming
 - **Inverted Index**: Fast document retrieval with term frequencies and positions
@@ -12,65 +13,123 @@ A production-quality search engine that collects, processes, indexes, and search
 - **Rate Limiting**: Sliding window algorithm to prevent abuse
 - **Autocomplete**: Trie-based prefix matching for query suggestions
 - **Analytics**: Search usage tracking and click-through rate analysis
-- **Production Ready**: Docker containerization, CI/CD, monitoring, and logging
+- **Authentication**: JWT-based user authentication with bcrypt password hashing
+- **Production Ready**: Docker containerization, monitoring, and structured logging
+
+### Frontend
+- **Modern UI**: React + TypeScript with Vite
+- **Authentication**: Login/signup with JWT tokens
+- **Search Interface**: Real-time autocomplete, result highlighting, pagination
+- **User Dashboard**: Profile management and search statistics
+- **Theme Support**: Light/dark mode with persistent preferences
+- **Responsive Design**: Mobile-friendly interface
 
 ## Project Structure
 
 ```
-src/
-├── models/       # Data models and types
-├── services/     # Business logic components
-├── utils/        # Utility functions
-├── api/          # REST API endpoints
-├── config/       # Configuration management
-└── index.ts      # Application entry point
+├── src/                    # Backend source code
+│   ├── models/            # Data models and types
+│   ├── services/          # Business logic components
+│   ├── utils/             # Utility functions
+│   ├── api/               # REST API endpoints
+│   └── config/            # Configuration management
+├── frontend/              # Frontend React application
+│   ├── src/
+│   │   ├── components/   # Reusable UI components
+│   │   ├── pages/        # Page components
+│   │   ├── services/     # API client
+│   │   └── store/        # State management (Zustand)
+│   └── Dockerfile        # Frontend container
+├── scripts/              # Database initialization
+├── config/               # Prometheus & Grafana config
+└── docker-compose.yml    # Multi-container orchestration
 ```
 
-## Getting Started
+## Quick Start with Docker
+
+The easiest way to run Feedvex is using Docker Compose:
+
+```bash
+# 1. Clone the repository
+git clone <repository-url>
+cd feedvex
+
+# 2. Copy and configure environment variables
+cp .env.example .env
+# Edit .env with your Reddit API credentials
+
+# 3. Start all services
+docker-compose up -d
+
+# 4. Access the application
+# Frontend: http://localhost:8080
+# API: http://localhost:3000
+# Grafana: http://localhost:3001
+```
+
+## Manual Installation
 
 ### Prerequisites
 
-- Node.js 18+ and npm
-- PostgreSQL 14+
+- Node.js 20+ and npm
+- PostgreSQL 15+
 - Redis 7+
 - Reddit API credentials
 
-### Installation
-
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Copy `.env.example` to `.env` and configure:
-   ```bash
-   cp .env.example .env
-   ```
-
-4. Update `.env` with your Reddit API credentials and other settings
-
-### Development
+### Backend Setup
 
 ```bash
-# Run in development mode
+# Install dependencies
+npm install
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your settings
+
+# Initialize database
+psql -U postgres -f scripts/init-db.sql
+
+# Build and start
+npm run build
+npm start
+```
+
+### Frontend Setup
+
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Configure API URL
+cp .env.example .env
+# Edit .env if needed
+
+# Start development server
 npm run dev
 
-# Run tests
-npm test
-
-# Run tests with coverage
-npm run test:coverage
-
-# Lint code
-npm run lint
-
-# Format code
-npm run format
-
-# Build for production
+# Or build for production
 npm run build
 ```
+
+## API Endpoints
+
+### Authentication
+- `POST /api/v1/auth/register` - Register new user
+- `POST /api/v1/auth/login` - Login user
+- `GET /api/v1/auth/me` - Get current user
+
+### Search
+- `POST /api/v1/search` - Search documents
+- `GET /api/v1/autocomplete` - Get query suggestions
+- `POST /api/v1/click` - Log click event
+
+### System
+- `GET /api/v1/health` - Health check
+- `GET /api/v1/stats` - System statistics
+- `GET /api/v1/metrics` - Prometheus metrics
 
 ## Configuration
 
@@ -79,10 +138,28 @@ See `.env.example` for all available configuration options.
 Key settings:
 - **REDDIT_CLIENT_ID**: Your Reddit API client ID
 - **REDDIT_CLIENT_SECRET**: Your Reddit API client secret
-- **SUBREDDITS**: Comma-separated list of subreddits to index
+- **REDDIT_SUBREDDITS**: Comma-separated list of subreddits to index
+- **JWT_SECRET**: Secret key for JWT token signing
 - **RANKING_ALGORITHM**: Choose between 'tfidf' or 'bm25'
-- **BM25_K1**: Term saturation parameter (default: 1.5)
+- **BM25_K1**: Term saturation parameter (default: 1.2)
 - **BM25_B**: Length normalization parameter (default: 0.75)
+
+## Development
+
+```bash
+# Backend
+npm run dev          # Development mode with hot reload
+npm test             # Run tests
+npm run test:coverage # Generate coverage report
+npm run lint         # Lint code
+npm run format       # Format code
+
+# Frontend
+cd frontend
+npm run dev          # Start Vite dev server
+npm run build        # Build for production
+npm run preview      # Preview production build
+```
 
 ## Testing
 
@@ -95,6 +172,18 @@ npm test                 # Run all tests
 npm run test:watch       # Run tests in watch mode
 npm run test:coverage    # Generate coverage report
 ```
+
+## Monitoring
+
+Access monitoring dashboards:
+- **Grafana**: http://localhost:3001 (admin/admin)
+- **Prometheus**: http://localhost:9090
+
+Metrics include:
+- Query latency and throughput
+- Cache hit rate
+- Error rates
+- System resource usage
 
 ## License
 

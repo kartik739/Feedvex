@@ -7,6 +7,7 @@ import { RateLimiter } from '../services/rate-limiter';
 import { AnalyticsService } from '../services/analytics';
 import { DocumentStore } from '../services/document-store';
 import { Indexer } from '../services/indexer';
+import { AuthService } from '../services/auth';
 import { register } from '../utils/metrics';
 import { logger } from '../utils/logger';
 import { correlationContext } from '../utils/correlation';
@@ -43,6 +44,7 @@ export function createApp(
   analyticsService: AnalyticsService,
   documentStore: DocumentStore,
   indexer: Indexer,
+  authService: AuthService,
   config: ApiConfig = {}
 ): Express {
   const app = express();
@@ -125,6 +127,156 @@ export function createApp(
         error: {
           code: 'INTERNAL_ERROR',
           message: 'An internal error occurred while retrieving metrics',
+          requestId: (req as any).requestId,
+        },
+      } as ErrorResponse);
+    }
+  });
+
+  // POST /api/v1/auth/register endpoint
+  app.post('/api/v1/auth/register', async (req: Request, res: Response) => {
+    try {
+      const { email, username, password } = req.body;
+
+      // Validate input
+      if (!email || typeof email !== 'string' || !email.includes('@')) {
+        return res.status(400).json({
+          error: {
+            code: 'INVALID_EMAIL',
+            message: 'Valid email is required',
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+
+      if (!username || typeof username !== 'string' || username.length < 3) {
+        return res.status(400).json({
+          error: {
+            code: 'INVALID_USERNAME',
+            message: 'Username must be at least 3 characters',
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+
+      if (!password || typeof password !== 'string' || password.length < 6) {
+        return res.status(400).json({
+          error: {
+            code: 'INVALID_PASSWORD',
+            message: 'Password must be at least 6 characters',
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+
+      const result = await authService.register(email, username, password);
+      res.status(201).json(result);
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('already exists')) {
+        return res.status(409).json({
+          error: {
+            code: 'USER_EXISTS',
+            message: error.message,
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+
+      logger.error('Registration error', { error, requestId: (req as any).requestId });
+      res.status(500).json({
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'An internal error occurred during registration',
+          requestId: (req as any).requestId,
+        },
+      } as ErrorResponse);
+    }
+  });
+
+  // POST /api/v1/auth/login endpoint
+  app.post('/api/v1/auth/login', async (req: Request, res: Response) => {
+    try {
+      const { email, password } = req.body;
+
+      // Validate input
+      if (!email || typeof email !== 'string') {
+        return res.status(400).json({
+          error: {
+            code: 'INVALID_EMAIL',
+            message: 'Email is required',
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+
+      if (!password || typeof password !== 'string') {
+        return res.status(400).json({
+          error: {
+            code: 'INVALID_PASSWORD',
+            message: 'Password is required',
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+
+      const result = await authService.login(email, password);
+      res.json(result);
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('Invalid email or password')) {
+        return res.status(401).json({
+          error: {
+            code: 'INVALID_CREDENTIALS',
+            message: 'Invalid email or password',
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+
+      logger.error('Login error', { error, requestId: (req as any).requestId });
+      res.status(500).json({
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'An internal error occurred during login',
+          requestId: (req as any).requestId,
+        },
+      } as ErrorResponse);
+    }
+  });
+
+  // GET /api/v1/auth/me endpoint (get current user)
+  app.get('/api/v1/auth/me', async (req: Request, res: Response) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({
+          error: {
+            code: 'UNAUTHORIZED',
+            message: 'Authorization token required',
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+
+      const token = authHeader.substring(7);
+      const user = await authService.verifyToken(token);
+
+      if (!user) {
+        return res.status(401).json({
+          error: {
+            code: 'INVALID_TOKEN',
+            message: 'Invalid or expired token',
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+
+      res.json({ user });
+    } catch (error) {
+      logger.error('Auth verification error', { error, requestId: (req as any).requestId });
+      res.status(500).json({
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'An internal error occurred',
           requestId: (req as any).requestId,
         },
       } as ErrorResponse);

@@ -76,6 +76,10 @@ services:
       # Cache
       CACHE_TTL_SECONDS: ${CACHE_TTL_SECONDS:-300}
       CACHE_MAX_SIZE: ${CACHE_MAX_SIZE:-1000}
+      
+      # Security
+      JWT_SECRET: ${JWT_SECRET:-change_this_secret_in_production}
+      SESSION_SECRET: ${SESSION_SECRET:-change_this_secret_in_production}
     ports:
       - "${PORT:-3000}:3000"
     depends_on:
@@ -165,6 +169,22 @@ services:
       - ./config/grafana/datasources:/etc/grafana/provisioning/datasources
     depends_on:
       - prometheus
+    networks:
+      - feedvex-network
+    restart: unless-stopped
+
+  # Frontend web application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: feedvex-frontend
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    environment:
+      VITE_API_URL: http://localhost:${PORT:-3000}/api/v1
+    depends_on:
+      - api
     networks:
       - feedvex-network
     restart: unless-stopped
