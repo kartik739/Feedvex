@@ -51,43 +51,52 @@ export function loadConfig(): SystemConfig {
       clientId: getEnvVar('REDDIT_CLIENT_ID', ''),
       clientSecret: getEnvVar('REDDIT_CLIENT_SECRET', ''),
       userAgent: getEnvVar('REDDIT_USER_AGENT', 'reddit-search-engine/1.0'),
-      subreddits: getEnvVar('SUBREDDITS', 'programming')
+      subreddits: getEnvVar('REDDIT_SUBREDDITS', 'programming')
         .split(',')
         .map((s) => s.trim()),
     },
     collector: {
-      interval: getEnvNumber('COLLECTION_INTERVAL', 3600000),
+      interval: getEnvNumber('COLLECTION_INTERVAL_MS', 3600000),
       concurrentRequests: getEnvNumber('CONCURRENT_REQUESTS', 5),
       maxPostsPerSubreddit: getEnvNumber('MAX_POSTS_PER_SUBREDDIT', 100),
     },
     ranking: {
       algorithm: getEnvVar('RANKING_ALGORITHM', 'bm25'),
-      bm25K1: getEnvNumber('BM25_K1', 1.5),
+      bm25K1: getEnvNumber('BM25_K1', 1.2),
       bm25B: getEnvNumber('BM25_B', 0.75),
       textWeight: getEnvNumber('TEXT_WEIGHT', 0.7),
-      recencyWeight: getEnvNumber('RECENCY_WEIGHT', 0.15),
-      popularityWeight: getEnvNumber('POPULARITY_WEIGHT', 0.1),
-      engagementWeight: getEnvNumber('ENGAGEMENT_WEIGHT', 0.05),
+      recencyWeight: getEnvNumber('RECENCY_WEIGHT', 0.2),
+      popularityWeight: getEnvNumber('POPULARITY_WEIGHT', 0.3),
+      engagementWeight: getEnvNumber('ENGAGEMENT_WEIGHT', 0.1),
+      relevanceWeight: getEnvNumber('RELEVANCE_WEIGHT', 0.4),
       recencyDecayDays: getEnvNumber('RECENCY_DECAY_DAYS', 7),
     },
     cache: {
-      ttl: getEnvNumber('CACHE_TTL', 300),
+      ttlSeconds: getEnvNumber('CACHE_TTL_SECONDS', 300),
       maxSize: getEnvNumber('CACHE_MAX_SIZE', 1000),
     },
-    rateLimiter: {
-      windowMs: getEnvNumber('RATE_LIMIT_WINDOW', 60000),
+    rateLimit: {
+      windowMs: getEnvNumber('RATE_LIMIT_WINDOW_MS', 60000),
       maxRequests: getEnvNumber('RATE_LIMIT_MAX_REQUESTS', 100),
     },
-    database: {
-      host: getEnvVar('DB_HOST', 'localhost'),
-      port: getEnvNumber('DB_PORT', 5432),
-      database: getEnvVar('DB_NAME', 'reddit_search'),
-      user: getEnvVar('DB_USER', 'postgres'),
-      password: getEnvVar('DB_PASSWORD', 'postgres'),
+    postgres: {
+      host: getEnvVar('POSTGRES_HOST', 'localhost'),
+      port: getEnvNumber('POSTGRES_PORT', 5432),
+      database: getEnvVar('POSTGRES_DB', 'feedvex'),
+      user: getEnvVar('POSTGRES_USER', 'feedvex'),
+      password: getEnvVar('POSTGRES_PASSWORD', 'feedvex_password'),
     },
     redis: {
       host: getEnvVar('REDIS_HOST', 'localhost'),
       port: getEnvNumber('REDIS_PORT', 6379),
+      password: getEnvVar('REDIS_PASSWORD', ''),
+    },
+    security: {
+      jwtSecret: getEnvVar('JWT_SECRET', 'change-this-secret-in-production'),
+      sessionSecret: getEnvVar('SESSION_SECRET', 'change-this-secret-in-production'),
+    },
+    cors: {
+      origins: getEnvVar('CORS_ORIGINS', '*'),
     },
     port: getEnvNumber('PORT', 3000),
     nodeEnv: getEnvVar('NODE_ENV', 'development'),
