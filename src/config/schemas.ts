@@ -62,20 +62,15 @@ export const RankingConfigSchema = z
     }
   );
 
-// Cache configuration schema
-export const CacheConfigSchema = z.object({
-  ttl: z.number().positive('Cache TTL must be positive'),
-  maxSize: z.number().int().positive('Cache max size must be a positive integer'),
+// Redis configuration schema
+export const RedisConfigSchema = z.object({
+  host: z.string().min(1, 'Redis host is required'),
+  port: z.number().int().positive('Redis port must be a positive integer').max(65535),
+  password: z.string().optional(),
 });
 
-// Rate limiter configuration schema
-export const RateLimiterConfigSchema = z.object({
-  windowMs: z.number().positive('Rate limit window must be positive'),
-  maxRequests: z.number().int().positive('Max requests must be a positive integer'),
-});
-
-// Database configuration schema
-export const DatabaseConfigSchema = z.object({
+// PostgreSQL configuration schema
+export const PostgresConfigSchema = z.object({
   host: z.string().min(1, 'Database host is required'),
   port: z.number().int().positive('Database port must be a positive integer').max(65535),
   database: z.string().min(1, 'Database name is required'),
@@ -83,10 +78,40 @@ export const DatabaseConfigSchema = z.object({
   password: z.string().min(1, 'Database password is required'),
 });
 
-// Redis configuration schema
-export const RedisConfigSchema = z.object({
-  host: z.string().min(1, 'Redis host is required'),
-  port: z.number().int().positive('Redis port must be a positive integer').max(65535),
+// Security configuration schema
+export const SecurityConfigSchema = z.object({
+  jwtSecret: z.string().min(1, 'JWT secret is required'),
+  sessionSecret: z.string().min(1, 'Session secret is required'),
+});
+
+// CORS configuration schema
+export const CorsConfigSchema = z.object({
+  origins: z.string(),
+});
+
+// Cache configuration schema (updated)
+export const CacheConfigSchema = z.object({
+  ttlSeconds: z.number().positive('Cache TTL must be positive'),
+  maxSize: z.number().int().positive('Cache max size must be a positive integer'),
+});
+
+// Rate limiter configuration schema (updated)
+export const RateLimitConfigSchema = z.object({
+  windowMs: z.number().positive('Rate limit window must be positive'),
+  maxRequests: z.number().int().positive('Max requests must be a positive integer'),
+});
+
+// Ranking algorithm configuration schema (updated)
+export const RankingConfigSchema = z.object({
+  algorithm: z.enum(['tfidf', 'bm25']),
+  bm25K1: z.number().nonnegative('BM25 k1 parameter must be non-negative'),
+  bm25B: z.number().min(0).max(1, 'BM25 b parameter must be between 0 and 1'),
+  textWeight: z.number().nonnegative('Text weight must be non-negative'),
+  recencyWeight: z.number().nonnegative('Recency weight must be non-negative'),
+  popularityWeight: z.number().nonnegative('Popularity weight must be non-negative'),
+  engagementWeight: z.number().nonnegative('Engagement weight must be non-negative'),
+  relevanceWeight: z.number().nonnegative('Relevance weight must be non-negative'),
+  recencyDecayDays: z.number().positive('Recency decay days must be positive'),
 });
 
 // System configuration schema (combines all sub-schemas)
@@ -95,9 +120,11 @@ export const SystemConfigSchema = z.object({
   collector: CollectorConfigSchema,
   ranking: RankingConfigSchema,
   cache: CacheConfigSchema,
-  rateLimiter: RateLimiterConfigSchema,
-  database: DatabaseConfigSchema,
+  rateLimit: RateLimitConfigSchema,
+  postgres: PostgresConfigSchema,
   redis: RedisConfigSchema,
+  security: SecurityConfigSchema,
+  cors: CorsConfigSchema,
   port: z.number().int().positive('Server port must be a positive integer').max(65535),
   nodeEnv: z.enum(['development', 'production', 'test']),
 });
@@ -107,7 +134,9 @@ export type RedditConfig = z.infer<typeof RedditConfigSchema>;
 export type CollectorConfig = z.infer<typeof CollectorConfigSchema>;
 export type RankingConfig = z.infer<typeof RankingConfigSchema>;
 export type CacheConfig = z.infer<typeof CacheConfigSchema>;
-export type RateLimiterConfig = z.infer<typeof RateLimiterConfigSchema>;
-export type DatabaseConfig = z.infer<typeof DatabaseConfigSchema>;
+export type RateLimitConfig = z.infer<typeof RateLimitConfigSchema>;
+export type PostgresConfig = z.infer<typeof PostgresConfigSchema>;
 export type RedisConfig = z.infer<typeof RedisConfigSchema>;
+export type SecurityConfig = z.infer<typeof SecurityConfigSchema>;
+export type CorsConfig = z.infer<typeof CorsConfigSchema>;
 export type SystemConfig = z.infer<typeof SystemConfigSchema>;

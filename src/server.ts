@@ -57,19 +57,29 @@ async function startServer() {
 
     // Initialize services
     const textProcessor = new TextProcessor();
-    const indexer = new Indexer(textProcessor);
-    const ranker = new Ranker(indexer, {
-      algorithm: config.ranking.algorithm as 'tfidf' | 'bm25',
-      bm25K1: config.ranking.bm25K1,
-      bm25B: config.ranking.bm25B,
-      recencyWeight: config.ranking.recencyWeight,
-      popularityWeight: config.ranking.popularityWeight,
-      engagementWeight: config.ranking.engagementWeight,
-      relevanceWeight: config.ranking.relevanceWeight,
+    const indexer = new Indexer({
+      indexPath: './data/index.json',
+      autoPersist: false,
     });
+    
+    const documentStore = new DocumentStore(pgPool);
+    
+    const ranker = new Ranker(
+      {
+        algorithm: config.ranking.algorithm as 'tfidf' | 'bm25',
+        bm25K1: config.ranking.bm25K1,
+        bm25B: config.ranking.bm25B,
+        textWeight: config.ranking.textWeight,
+        recencyWeight: config.ranking.recencyWeight,
+        popularityWeight: config.ranking.popularityWeight,
+        engagementWeight: config.ranking.engagementWeight,
+        recencyDecayDays: config.ranking.recencyDecayDays,
+      },
+      indexer,
+      documentStore
+    );
 
     const queryCache = new QueryCache(redisClient, config.cache.ttlSeconds);
-    const documentStore = new DocumentStore(pgPool);
     const analyticsService = new AnalyticsService(pgPool);
     const autocompleteService = new AutocompleteService();
     const rateLimiter = new RateLimiter(
@@ -79,18 +89,22 @@ async function startServer() {
     );
     const authService = new AuthService(
       pgPool,
-      config.security?.jwtSecret || 'default-secret-change-in-production',
+      config.security.jwtSecret,
       '7d'
     );
 
     const queryProcessor = new QueryProcessor(
+      {
+        defaultPageSize: 10,
+        maxPageSize: 100,
+        snippetContextLength: 50,
+        enableCache: true,
+      },
       textProcessor,
       indexer,
       ranker,
       documentStore,
-      queryCache,
-      analyticsService,
-      autocompleteService
+      queryCache
     );
 
     // Create Express app
