@@ -1,5 +1,3 @@
-import { Pool } from 'pg';
-import { createClient } from 'redis';
 import { loadConfig } from './config';
 import { createApp } from './api/app';
 import { QueryProcessor } from './services/query-processor';
@@ -20,49 +18,20 @@ async function startServer() {
     const config = loadConfig();
     logger.info('Configuration loaded', { env: config.nodeEnv, port: config.port });
 
-    // Initialize PostgreSQL connection pool
-    const pgPool = new Pool({
-      host: config.postgres.host,
-      port: config.postgres.port,
-      database: config.postgres.database,
-      user: config.postgres.user,
-      password: config.postgres.password,
-      max: 20,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 2000,
-    });
+    // Note: Using in-memory storage for now
+    // PostgreSQL and Redis connections are optional for development
+    logger.info('Starting with in-memory storage (no database required)');
 
-    // Test database connection
-    try {
-      await pgPool.query('SELECT NOW()');
-      logger.info('Database connected successfully');
-    } catch (error) {
-      logger.error('Database connection failed', { error });
-      throw error;
-    }
-
-    // Initialize Redis client
-    const redisClient = createClient({
-      socket: {
-        host: config.redis.host,
-        port: config.redis.port,
-      },
-      password: config.redis.password,
-    });
-
-    redisClient.on('error', (err) => logger.error('Redis Client Error', { error: err }));
-    redisClient.on('connect', () => logger.info('Redis connected'));
-
-    await redisClient.connect();
-
-    // Initialize services
+    // Initialize services with in-memory implementations
     const textProcessor = new TextProcessor();
     const indexer = new Indexer({
       indexPath: './data/index.json',
       autoPersist: false,
     });
     
-    const documentStore = new DocumentStore(pgPool);
+    const documentStore = new DocumentStore({
+      maxDocuments: 100000,
+    });
     
     const ranker = new Ranker(
       {
@@ -79,16 +48,15 @@ async function startServer() {
       documentStore
     );
 
-    const queryCache = new QueryCache(redisClient, config.cache.ttlSeconds);
-    const analyticsService = new AnalyticsService(pgPool);
+    const queryCache = new QueryCache();
+    const analyticsService = new AnalyticsService();
     const autocompleteService = new AutocompleteService();
-    const rateLimiter = new RateLimiter(
-      redisClient,
-      config.rateLimit.windowMs,
-      config.rateLimit.maxRequests
-    );
+    const rateLimiter = new RateLimiter();
+    
+    // For auth, we'll use a mock pool for now
+    const mockPool = null as any; // Auth won't work without real database
     const authService = new AuthService(
-      pgPool,
+      mockPool,
       config.security.jwtSecret,
       '7d'
     );
@@ -98,7 +66,7 @@ async function startServer() {
         defaultPageSize: 10,
         maxPageSize: 100,
         snippetContextLength: 50,
-        enableCache: true,
+        enableCache: false, // Disable cache since no Redis
       },
       textProcessor,
       indexer,
@@ -129,30 +97,19 @@ async function startServer() {
         port: config.port,
         env: config.nodeEnv,
         url: `http://localhost:${config.port}`,
+        note: 'Using in-memory storage - data will not persist',
       });
+      console.log(`\n🚀 Server running at http://localhost:${config.port}`);
+      console.log(`📝 API docs: http://localhost:${config.port}/api/v1/health`);
+      console.log(`⚠️  Note: Using in-memory storage (no database required)\n`);
     });
 
     // Graceful shutdown
     const shutdown = async () => {
       logger.info('Shutting down gracefully...');
       
-      server.close(async () => {
+      server.close(() => {
         logger.info('HTTP server closed');
-        
-        try {
-          await redisClient.quit();
-          logger.info('Redis connection closed');
-        } catch (error) {
-          logger.error('Error closing Redis', { error });
-        }
-
-        try {
-          await pgPool.end();
-          logger.info('Database connection closed');
-        } catch (error) {
-          logger.error('Error closing database', { error });
-        }
-
         process.exit(0);
       });
 
