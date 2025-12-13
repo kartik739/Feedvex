@@ -32,35 +32,17 @@ export const CollectorConfigSchema = z.object({
 });
 
 // Ranking algorithm configuration schema
-export const RankingConfigSchema = z
-  .object({
-    algorithm: z.enum(['tfidf', 'bm25']),
-    bm25K1: z
-      .number()
-      .nonnegative('BM25 k1 parameter must be non-negative')
-      .max(3, 'BM25 k1 parameter typically ranges from 1.2 to 2.0'),
-    bm25B: z
-      .number()
-      .min(0, 'BM25 b parameter must be between 0 and 1')
-      .max(1, 'BM25 b parameter must be between 0 and 1'),
-    textWeight: z.number().nonnegative('Text weight must be non-negative'),
-    recencyWeight: z.number().nonnegative('Recency weight must be non-negative'),
-    popularityWeight: z.number().nonnegative('Popularity weight must be non-negative'),
-    engagementWeight: z.number().nonnegative('Engagement weight must be non-negative'),
-    recencyDecayDays: z.number().positive('Recency decay days must be positive'),
-  })
-  .refine(
-    (data) => {
-      const total =
-        data.textWeight + data.recencyWeight + data.popularityWeight + data.engagementWeight;
-      return Math.abs(total - 1.0) < 0.01;
-    },
-    {
-      message:
-        'Ranking weights (text, recency, popularity, engagement) must sum to 1.0. ' +
-        'Adjust TEXT_WEIGHT, RECENCY_WEIGHT, POPULARITY_WEIGHT, and ENGAGEMENT_WEIGHT.',
-    }
-  );
+export const RankingConfigSchema = z.object({
+  algorithm: z.enum(['tfidf', 'bm25']),
+  bm25K1: z.number().nonnegative('BM25 k1 parameter must be non-negative'),
+  bm25B: z.number().min(0).max(1, 'BM25 b parameter must be between 0 and 1'),
+  textWeight: z.number().nonnegative('Text weight must be non-negative'),
+  recencyWeight: z.number().nonnegative('Recency weight must be non-negative'),
+  popularityWeight: z.number().nonnegative('Popularity weight must be non-negative'),
+  engagementWeight: z.number().nonnegative('Engagement weight must be non-negative'),
+  relevanceWeight: z.number().nonnegative('Relevance weight must be non-negative'),
+  recencyDecayDays: z.number().positive('Recency decay days must be positive'),
+});
 
 // Redis configuration schema
 export const RedisConfigSchema = z.object({
@@ -99,19 +81,6 @@ export const CacheConfigSchema = z.object({
 export const RateLimitConfigSchema = z.object({
   windowMs: z.number().positive('Rate limit window must be positive'),
   maxRequests: z.number().int().positive('Max requests must be a positive integer'),
-});
-
-// Ranking algorithm configuration schema (updated)
-export const RankingConfigSchema = z.object({
-  algorithm: z.enum(['tfidf', 'bm25']),
-  bm25K1: z.number().nonnegative('BM25 k1 parameter must be non-negative'),
-  bm25B: z.number().min(0).max(1, 'BM25 b parameter must be between 0 and 1'),
-  textWeight: z.number().nonnegative('Text weight must be non-negative'),
-  recencyWeight: z.number().nonnegative('Recency weight must be non-negative'),
-  popularityWeight: z.number().nonnegative('Popularity weight must be non-negative'),
-  engagementWeight: z.number().nonnegative('Engagement weight must be non-negative'),
-  relevanceWeight: z.number().nonnegative('Relevance weight must be non-negative'),
-  recencyDecayDays: z.number().positive('Recency decay days must be positive'),
 });
 
 // System configuration schema (combines all sub-schemas)
