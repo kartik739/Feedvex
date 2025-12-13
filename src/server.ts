@@ -53,13 +53,9 @@ async function startServer() {
     const autocompleteService = new AutocompleteService();
     const rateLimiter = new RateLimiter();
     
-    // For auth, we'll use a mock pool for now
-    const mockPool = null as any; // Auth won't work without real database
-    const authService = new AuthService(
-      mockPool,
-      config.security.jwtSecret,
-      '7d'
-    );
+    // Auth service disabled - requires database
+    // const authService = new AuthService(mockPool, config.security.jwtSecret, '7d');
+    const authService = null as any; // Disabled for in-memory mode
 
     const queryProcessor = new QueryProcessor(
       {
