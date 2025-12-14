@@ -1,0 +1,134 @@
+groups:
+  - name: feedvex_alerts
+    interval: 30s
+    rules:
+      # High Error Rate Alert
+      - alert: HighErrorRate
+        expr: |
+          (
+            rate(feedvex_api_requests_total{status=~"5.."}[5m])
+            /
+            rate(feedvex_api_requests_total[5m])
+          ) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          component: api
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} (threshold: 5%)"
+
+      # High Query Latency Alert
+      - alert: HighQueryLatency
+        expr: |
+          histogram_quantile(0.95, 
+            rate(feedvex_query_duration_seconds_bucket[5m])
+          ) > 2.0
+        for: 5m
+        labels:
+          severity: warning
+          component: search
+        annotations:
+          summary: "High query latency detected"
+          description: "P95 query latency is {{ $value }}s (threshold: 2s)"
+
+      # Very High Query Latency Alert
+      - alert: VeryHighQueryLatency
+        expr: |
+          histogram_quantile(0.95, 
+            rate(feedvex_query_duration_seconds_bucket[5m])
+          ) > 5.0
+        for: 2m
+        labels:
+          severity: critical
+          component: search
+        annotations:
+          summary: "Very high query latency detected"
+          description: "P95 query latency is {{ $value }}s (threshold: 5s)"
+
+      # Service Unavailable Alert
+      - alert: ServiceDown
+        expr: up{job="feedvex-api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: api
+        annotations:
+          summary: "Feedvex API service is down"
+          description: "The Feedvex API service has been unavailable for more than 1 minute"
+
+      # Low Cache Hit Rate Alert
+      - alert: LowCacheHitRate
+        expr: |
+          (
+            rate(feedvex_cache_hits_total[10m])
+            /
+            (rate(feedvex_cache_hits_total[10m]) + rate(feedvex_cache_misses_total[10m]))
+          ) < 0.3
+        for: 10m
+        labels:
+          severity: warning
+          component: cache
+        annotations:
+          summary: "Low cache hit rate"
+          description: "Cache hit rate is {{ $value | humanizePercentage }} (threshold: 30%)"
+
+      # High Rate Limit Rejections Alert
+      - alert: HighRateLimitRejections
+        expr: |
+          rate(feedvex_rate_limit_rejections_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          component: rate_limiter
+        annotations:
+          summary: "High rate of rate limit rejections"
+          description: "Rate limit rejections: {{ $value }} per second"
+
+      # Database Connection Issues Alert
+      - alert: DatabaseConnectionIssues
+        expr: |
+          rate(feedvex_database_errors_total[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: critical
+          component: database
+        annotations:
+          summary: "Database connection issues detected"
+          description: "Database errors: {{ $value }} per second"
+
+      # High Memory Usage Alert
+      - alert: HighMemoryUsage
+        expr: |
+          process_resident_memory_bytes{job="feedvex-api"} > 1073741824
+        for: 5m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value | humanize1024 }}B (threshold: 1GB)"
+
+      # Reddit Collector Circuit Breaker Open Alert
+      - alert: RedditCollectorCircuitBreakerOpen
+        expr: |
+          feedvex_circuit_breaker_open{service="reddit_collector"} == 1
+        for: 5m
+        labels:
+          severity: warning
+          component: collector
+        annotations:
+          summary: "Reddit collector circuit breaker is open"
+          description: "The Reddit API circuit breaker has been open for more than 5 minutes"
+
+      # No Documents Indexed Alert
+      - alert: NoDocumentsIndexed
+        expr: |
+          rate(feedvex_documents_indexed_total[1h]) == 0
+        for: 1h
+        labels:
+          severity: warning
+          component: indexer
+        annotations:
+          summary: "No documents indexed in the last hour"
+          description: "The indexer has not processed any documents in the last hour"
