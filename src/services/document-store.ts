@@ -6,7 +6,7 @@ import { Document } from '../models/document';
 export interface DocumentStoreConfig {
   // For in-memory implementation
   maxDocuments?: number;
-  
+
   // For PostgreSQL implementation (future)
   databaseUrl?: string;
   poolSize?: number;
@@ -25,7 +25,7 @@ export interface DocumentFilter {
 /**
  * DocumentStore manages persistent storage of Reddit documents
  * Implements requirements 1.3, 12.1, 12.3
- * 
+ *
  * This is an in-memory implementation that can be replaced with PostgreSQL
  */
 export class DocumentStore {
@@ -56,9 +56,7 @@ export class DocumentStore {
 
     // Check if we've reached max capacity
     if (this.documents.size >= this.config.maxDocuments!) {
-      throw new Error(
-        `Document store has reached maximum capacity (${this.config.maxDocuments})`
-      );
+      throw new Error(`Document store has reached maximum capacity (${this.config.maxDocuments})`);
     }
 
     // Store document (atomic operation in memory)
@@ -74,7 +72,7 @@ export class DocumentStore {
    */
   async storeMany(documents: Document[]): Promise<number> {
     let stored = 0;
-    
+
     // In a real database implementation, this would be a transaction
     for (const doc of documents) {
       const wasStored = await this.store(doc);
@@ -82,7 +80,7 @@ export class DocumentStore {
         stored++;
       }
     }
-    
+
     return stored;
   }
 
@@ -104,14 +102,14 @@ export class DocumentStore {
    */
   getByIds(docIds: string[]): Map<string, Document> {
     const result = new Map<string, Document>();
-    
+
     for (const docId of docIds) {
       const doc = this.documents.get(docId);
       if (doc) {
         result.set(docId, doc);
       }
     }
-    
+
     return result;
   }
 
@@ -130,19 +128,19 @@ export class DocumentStore {
 
     // Apply filters
     if (filter.subreddit) {
-      results = results.filter(doc => doc.subreddit === filter.subreddit);
+      results = results.filter((doc) => doc.subreddit === filter.subreddit);
     }
 
     if (filter.type) {
-      results = results.filter(doc => doc.type === filter.type);
+      results = results.filter((doc) => doc.type === filter.type);
     }
 
     if (filter.startDate) {
-      results = results.filter(doc => doc.createdUtc >= filter.startDate!);
+      results = results.filter((doc) => doc.createdUtc >= filter.startDate!);
     }
 
     if (filter.endDate) {
-      results = results.filter(doc => doc.createdUtc <= filter.endDate!);
+      results = results.filter((doc) => doc.createdUtc <= filter.endDate!);
     }
 
     return results;
@@ -157,7 +155,7 @@ export class DocumentStore {
    */
   async update(docId: string, updates: Partial<Document>): Promise<boolean> {
     const existing = this.documents.get(docId);
-    
+
     if (!existing) {
       return false;
     }
@@ -219,12 +217,12 @@ export class DocumentStore {
     subreddits: string[];
   } {
     const docs = Array.from(this.documents.values());
-    const subreddits = new Set(docs.map(d => d.subreddit));
+    const subreddits = new Set(docs.map((d) => d.subreddit));
 
     return {
       totalDocuments: docs.length,
-      postCount: docs.filter(d => d.type === 'post').length,
-      commentCount: docs.filter(d => d.type === 'comment').length,
+      postCount: docs.filter((d) => d.type === 'post').length,
+      commentCount: docs.filter((d) => d.type === 'comment').length,
       subreddits: Array.from(subreddits),
     };
   }

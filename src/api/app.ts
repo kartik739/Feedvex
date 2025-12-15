@@ -51,11 +51,13 @@ export function createApp(
 
   // Requirement 13.7: Set up middleware
   app.use(helmet()); // Security headers
-  app.use(cors({
-    origin: config.corsOrigins || '*',
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  }));
+  app.use(
+    cors({
+      origin: config.corsOrigins || '*',
+      methods: ['GET', 'POST', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+    })
+  );
   app.use(express.json({ limit: '1mb' })); // Body parser with size limit
 
   // Request logging middleware (Requirement 16.4, 16.6)
@@ -63,7 +65,7 @@ export function createApp(
     app.use((req: Request, res: Response, next: NextFunction) => {
       const startTime = Date.now();
       const requestId = correlationContext.generateId();
-      
+
       // Store request ID for error handling and correlation
       (req as any).requestId = requestId;
       correlationContext.setId(requestId);
@@ -332,7 +334,7 @@ export function createApp(
         analyticsService.logQuery(query, results.totalCount, latency);
       } catch (error) {
         // Analytics unavailable - log and continue
-        logger.warn('Failed to log analytics', { 
+        logger.warn('Failed to log analytics', {
           error: error instanceof Error ? error.message : String(error),
           correlationId: (req as any).requestId,
         });
@@ -400,7 +402,7 @@ export function createApp(
   app.get('/api/v1/health', async (req: Request, res: Response) => {
     try {
       let overallStatus: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
-      
+
       const health: {
         status: 'healthy' | 'degraded' | 'unhealthy';
         timestamp: string;
@@ -528,7 +530,7 @@ export function createApp(
         analyticsService.logClick(query, docId, position);
       } catch (error) {
         // Analytics unavailable - log but return success to client
-        logger.warn('Failed to log click', { 
+        logger.warn('Failed to log click', {
           error: error instanceof Error ? error.message : String(error),
           correlationId: (req as any).requestId,
         });
@@ -559,11 +561,11 @@ export function createApp(
   });
 
   // Global error handler (Requirement 13.5, 16.11)
-  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    logger.error('Unhandled error', { 
-      error: err.message, 
+  app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
+    logger.error('Unhandled error', {
+      error: err.message,
       stack: err.stack,
-      requestId: (req as any).requestId 
+      requestId: (req as any).requestId,
     });
     res.status(500).json({
       error: {

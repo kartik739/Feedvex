@@ -68,12 +68,12 @@ describe('Indexer', () => {
       // Check machine term appears in both documents
       const machinePostings = indexer.getPostings('machin');
       expect(machinePostings).toHaveLength(2);
-      
-      const doc1Posting = machinePostings.find(p => p.docId === 'doc1');
+
+      const doc1Posting = machinePostings.find((p) => p.docId === 'doc1');
       expect(doc1Posting?.termFrequency).toBe(1);
       expect(doc1Posting?.positions).toEqual([0]);
 
-      const doc2Posting = machinePostings.find(p => p.docId === 'doc2');
+      const doc2Posting = machinePostings.find((p) => p.docId === 'doc2');
       expect(doc2Posting?.termFrequency).toBe(2);
       expect(doc2Posting?.positions).toEqual([0, 20]);
 
@@ -122,14 +122,14 @@ describe('Indexer', () => {
 
       // Old term should be gone
       expect(indexer.getPostings('old')).toHaveLength(0);
-      
+
       // Content term should still exist
       expect(indexer.getPostings('content')).toHaveLength(1);
-      
+
       // New terms should be added
       expect(indexer.getPostings('new')).toHaveLength(1);
       expect(indexer.getPostings('add')).toHaveLength(1);
-      
+
       // Document length should be updated
       expect(indexer.getDocumentLength('doc1')).toBe(3);
       expect(indexer.getTotalDocuments()).toBe(1);
@@ -199,7 +199,7 @@ describe('Indexer', () => {
     it('should return correct postings for existing terms', () => {
       const postings = indexer.getPostings('machin');
       expect(postings).toHaveLength(2);
-      expect(postings.map(p => p.docId)).toEqual(expect.arrayContaining(['doc1', 'doc2']));
+      expect(postings.map((p) => p.docId)).toEqual(expect.arrayContaining(['doc1', 'doc2']));
     });
 
     it('should return empty array for non-existent terms', () => {

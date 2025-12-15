@@ -58,11 +58,11 @@ export class Indexer {
     // Process each token
     tokens.forEach((token) => {
       const term = token.stem; // Use stemmed form for indexing
-      
+
       if (!termData.has(term)) {
         termData.set(term, { frequency: 0, positions: [] });
       }
-      
+
       const data = termData.get(term)!;
       data.frequency++;
       data.positions.push(token.position);
@@ -83,7 +83,7 @@ export class Indexer {
       if (!this.index.termToPostings.has(term)) {
         this.index.termToPostings.set(term, []);
       }
-      
+
       this.index.termToPostings.get(term)!.push(posting);
     }
 
@@ -117,8 +117,8 @@ export class Indexer {
 
     // Remove postings for this document from all terms
     for (const [term, postings] of this.index.termToPostings.entries()) {
-      const filteredPostings = postings.filter(posting => posting.docId !== docId);
-      
+      const filteredPostings = postings.filter((posting) => posting.docId !== docId);
+
       if (filteredPostings.length === 0) {
         // No documents left for this term, remove it entirely
         this.index.termToPostings.delete(term);
@@ -203,10 +203,10 @@ export class Indexer {
 
     const serialized = serializeIndex(this.index);
     const indexDir = path.dirname(this.config.indexPath);
-    
+
     // Ensure directory exists
     await fs.mkdir(indexDir, { recursive: true });
-    
+
     // Write to temporary file first, then rename for atomic operation
     const tempPath = `${this.config.indexPath}.tmp`;
     await fs.writeFile(tempPath, JSON.stringify(serialized, null, 2), 'utf-8');
@@ -241,7 +241,7 @@ export class Indexer {
    */
   clear(): void {
     this.index = createEmptyIndex();
-    
+
     // Auto-persist if enabled
     if (this.config.autoPersist) {
       this.persist().catch(console.error);

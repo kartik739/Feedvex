@@ -21,7 +21,11 @@ export class AuthService {
   /**
    * Register a new user
    */
-  async register(email: string, username: string, password: string): Promise<{ user: UserPublic; token: string }> {
+  async register(
+    email: string,
+    username: string,
+    password: string
+  ): Promise<{ user: UserPublic; token: string }> {
     try {
       // Check if user already exists
       const existingUser = await this.pool.query(
@@ -119,7 +123,7 @@ export class AuthService {
   async verifyToken(token: string): Promise<UserPublic | null> {
     try {
       const decoded = jwt.verify(token, this.jwtSecret) as { userId: string };
-      
+
       const result = await this.pool.query(
         'SELECT id, email, username, created_at FROM users WHERE id = $1',
         [decoded.userId]
@@ -145,6 +149,8 @@ export class AuthService {
    * Generate JWT token
    */
   private generateToken(userId: string): string {
-    return jwt.sign({ userId }, this.jwtSecret, { expiresIn: this.jwtExpiresIn } as jwt.SignOptions);
+    return jwt.sign({ userId }, this.jwtSecret, {
+      expiresIn: this.jwtExpiresIn,
+    } as jwt.SignOptions);
   }
 }

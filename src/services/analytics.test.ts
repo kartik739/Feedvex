@@ -10,7 +10,7 @@ describe('AnalyticsService', () => {
   describe('logQuery', () => {
     it('should log a query event', () => {
       analytics.logQuery('test query', 10, 50);
-      
+
       const stats = analytics.getQueryStats('test query');
       expect(stats.totalSearches).toBe(1);
       expect(stats.averageLatencyMs).toBe(50);
@@ -154,7 +154,7 @@ describe('AnalyticsService', () => {
     it('should calculate response time statistics', () => {
       // Add queries with known latencies
       const latencies = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-      latencies.forEach(latency => {
+      latencies.forEach((latency) => {
         analytics.logQuery('test', 10, latency);
       });
 

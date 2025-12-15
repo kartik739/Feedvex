@@ -1,4 +1,4 @@
-import { QueryProcessor, QueryConfig } from './query-processor';
+import { QueryProcessor } from './query-processor';
 import { TextProcessor } from './text-processor';
 import { Indexer } from './indexer';
 import { Ranker, DocumentStore } from './ranker';
@@ -40,13 +40,7 @@ describe('QueryProcessor', () => {
     indexer = new Indexer();
     documentStore = new MockDocumentStore();
     ranker = new Ranker({}, indexer, documentStore);
-    queryProcessor = new QueryProcessor(
-      {},
-      textProcessor,
-      indexer,
-      ranker,
-      documentStore
-    );
+    queryProcessor = new QueryProcessor({}, textProcessor, indexer, ranker, documentStore);
   });
 
   describe('getMatchingDocuments', () => {
@@ -60,9 +54,7 @@ describe('QueryProcessor', () => {
         { text: 'hello', position: 0, stem: 'hello' },
         { text: 'test', position: 1, stem: 'test' },
       ]);
-      const doc3 = createProcessedDocument('doc3', [
-        { text: 'other', position: 0, stem: 'other' },
-      ]);
+      const doc3 = createProcessedDocument('doc3', [{ text: 'other', position: 0, stem: 'other' }]);
 
       indexer.indexDocument(doc1);
       indexer.indexDocument(doc2);
@@ -78,12 +70,8 @@ describe('QueryProcessor', () => {
     });
 
     it('should return documents matching any query term', () => {
-      const doc1 = createProcessedDocument('doc1', [
-        { text: 'hello', position: 0, stem: 'hello' },
-      ]);
-      const doc2 = createProcessedDocument('doc2', [
-        { text: 'world', position: 0, stem: 'world' },
-      ]);
+      const doc1 = createProcessedDocument('doc1', [{ text: 'hello', position: 0, stem: 'hello' }]);
+      const doc2 = createProcessedDocument('doc2', [{ text: 'world', position: 0, stem: 'world' }]);
 
       indexer.indexDocument(doc1);
       indexer.indexDocument(doc2);
@@ -97,9 +85,7 @@ describe('QueryProcessor', () => {
     });
 
     it('should return empty array when no documents match', () => {
-      const doc1 = createProcessedDocument('doc1', [
-        { text: 'hello', position: 0, stem: 'hello' },
-      ]);
+      const doc1 = createProcessedDocument('doc1', [{ text: 'hello', position: 0, stem: 'hello' }]);
 
       indexer.indexDocument(doc1);
 
@@ -298,12 +284,10 @@ describe('QueryProcessor', () => {
       const results = queryProcessor.processQuery('test');
 
       expect(results.results.length).toBeGreaterThan(0);
-      
+
       // Verify scores are in descending order
       for (let i = 0; i < results.results.length - 1; i++) {
-        expect(results.results[i].score).toBeGreaterThanOrEqual(
-          results.results[i + 1].score
-        );
+        expect(results.results[i].score).toBeGreaterThanOrEqual(results.results[i + 1].score);
       }
     });
 
@@ -311,7 +295,7 @@ describe('QueryProcessor', () => {
       const results = queryProcessor.processQuery('test');
 
       expect(results.results.length).toBeGreaterThan(0);
-      
+
       const result = results.results[0];
       expect(result.docId).toBeDefined();
       expect(result.title).toBeDefined();
@@ -418,12 +402,12 @@ describe('QueryProcessor', () => {
 
       // First query - cache miss
       const results1 = cachedProcessor.processQuery('test');
-      
+
       // Second query - should hit cache
       const results2 = cachedProcessor.processQuery('test');
 
       expect(results1).toEqual(results2);
-      
+
       const stats = cache.getStats();
       expect(stats.hits).toBe(1);
       expect(stats.misses).toBe(1);

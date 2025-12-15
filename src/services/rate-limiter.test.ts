@@ -115,10 +115,10 @@ describe('RateLimiter', () => {
       // Fill up the limit
       rateLimiter.recordRequest('client1');
       await new Promise((resolve) => setTimeout(resolve, 100));
-      
+
       rateLimiter.recordRequest('client1');
       await new Promise((resolve) => setTimeout(resolve, 100));
-      
+
       rateLimiter.recordRequest('client1');
 
       // At limit

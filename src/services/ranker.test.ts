@@ -1,4 +1,4 @@
-import { Ranker, RankingConfig, DocumentStore } from './ranker';
+import { Ranker, DocumentStore } from './ranker';
 import { Indexer } from './indexer';
 import { Document } from '../models/document';
 import { createProcessedDocument } from '../models/document';
@@ -61,15 +61,9 @@ describe('Ranker', () => {
   describe('calculateIDF', () => {
     it('should calculate IDF correctly', () => {
       // Index multiple documents
-      const doc1 = createProcessedDocument('doc1', [
-        { text: 'hello', position: 0, stem: 'hello' },
-      ]);
-      const doc2 = createProcessedDocument('doc2', [
-        { text: 'world', position: 0, stem: 'world' },
-      ]);
-      const doc3 = createProcessedDocument('doc3', [
-        { text: 'hello', position: 0, stem: 'hello' },
-      ]);
+      const doc1 = createProcessedDocument('doc1', [{ text: 'hello', position: 0, stem: 'hello' }]);
+      const doc2 = createProcessedDocument('doc2', [{ text: 'world', position: 0, stem: 'world' }]);
+      const doc3 = createProcessedDocument('doc3', [{ text: 'hello', position: 0, stem: 'hello' }]);
 
       indexer.indexDocument(doc1);
       indexer.indexDocument(doc2);
@@ -77,10 +71,10 @@ describe('Ranker', () => {
 
       // 'hello' appears in 2 out of 3 documents: log(3/2)
       expect(ranker.calculateIDF('hello')).toBeCloseTo(Math.log(3 / 2));
-      
+
       // 'world' appears in 1 out of 3 documents: log(3/1)
       expect(ranker.calculateIDF('world')).toBeCloseTo(Math.log(3));
-      
+
       // 'missing' appears in 0 documents
       expect(ranker.calculateIDF('missing')).toBe(0);
     });
@@ -96,9 +90,7 @@ describe('Ranker', () => {
         { text: 'hello', position: 0, stem: 'hello' },
         { text: 'hello', position: 1, stem: 'hello' },
       ]);
-      const doc2 = createProcessedDocument('doc2', [
-        { text: 'world', position: 0, stem: 'world' },
-      ]);
+      const doc2 = createProcessedDocument('doc2', [{ text: 'world', position: 0, stem: 'world' }]);
 
       indexer.indexDocument(doc1);
       indexer.indexDocument(doc2);
@@ -117,9 +109,7 @@ describe('Ranker', () => {
         { text: 'hello', position: 0, stem: 'hello' },
         { text: 'world', position: 1, stem: 'world' },
       ]);
-      const doc2 = createProcessedDocument('doc2', [
-        { text: 'hello', position: 0, stem: 'hello' },
-      ]);
+      const doc2 = createProcessedDocument('doc2', [{ text: 'hello', position: 0, stem: 'hello' }]);
 
       indexer.indexDocument(doc1);
       indexer.indexDocument(doc2);
@@ -146,9 +136,7 @@ describe('Ranker', () => {
         { text: 'hello', position: 2, stem: 'hello' },
         { text: 'hello', position: 3, stem: 'hello' },
       ]);
-      const doc3 = createProcessedDocument('doc3', [
-        { text: 'world', position: 0, stem: 'world' },
-      ]);
+      const doc3 = createProcessedDocument('doc3', [{ text: 'world', position: 0, stem: 'world' }]);
 
       indexer.indexDocument(doc1);
       indexer.indexDocument(doc2);
@@ -161,7 +149,7 @@ describe('Ranker', () => {
       // Both scores should be positive
       expect(score1).toBeGreaterThan(0);
       expect(score2).toBeGreaterThan(0);
-      
+
       // doc2 has higher term frequency but is longer
       // The exact relationship depends on BM25 parameters
       expect(score2).toBeGreaterThan(score1);
@@ -186,7 +174,7 @@ describe('Ranker', () => {
       // More recent documents should have higher scores
       expect(scoreNow).toBeGreaterThan(scoreOneDayAgo);
       expect(scoreOneDayAgo).toBeGreaterThan(scoreSevenDaysAgo);
-      
+
       // Score should be between 0 and 1
       expect(scoreNow).toBeLessThanOrEqual(1);
       expect(scoreSevenDaysAgo).toBeGreaterThanOrEqual(0);
@@ -195,7 +183,7 @@ describe('Ranker', () => {
     it('should handle future dates gracefully', () => {
       const future = new Date(Date.now() + 24 * 60 * 60 * 1000);
       const score = ranker.calculateRecencyScore(future);
-      
+
       // Future dates should have score >= 1
       expect(score).toBeGreaterThanOrEqual(1);
     });
@@ -210,7 +198,7 @@ describe('Ranker', () => {
       // Higher Reddit scores should have higher popularity scores
       expect(score10).toBeGreaterThan(score1);
       expect(score100).toBeGreaterThan(score10);
-      
+
       // Log scaling means differences decrease as scores increase
       const diff1 = score10 - score1;
       const diff2 = score100 - score10;
@@ -240,7 +228,7 @@ describe('Ranker', () => {
     beforeEach(() => {
       // Create test documents with different characteristics
       const now = new Date();
-      
+
       const doc1: Document = {
         id: 'doc1',
         type: 'post',
@@ -292,7 +280,7 @@ describe('Ranker', () => {
     it('should return documents sorted by score in descending order', () => {
       const queryTerms = ['hello'];
       const docIds = ['doc1', 'doc2'];
-      
+
       const results = ranker.rankDocuments(queryTerms, docIds);
 
       expect(results).toHaveLength(2);
@@ -316,16 +304,16 @@ describe('Ranker', () => {
         processed: true,
       };
       documentStore.addDocument(doc3);
-      
+
       const processedDoc3 = createProcessedDocument('doc3', [
         { text: 'other', position: 0, stem: 'other' },
         { text: 'content', position: 1, stem: 'content' },
       ]);
       indexer.indexDocument(processedDoc3);
-      
+
       const queryTerms = ['hello'];
       const docIds = ['doc1'];
-      
+
       const results = ranker.rankDocuments(queryTerms, docIds);
 
       expect(results[0].componentScores).toBeDefined();
@@ -338,7 +326,7 @@ describe('Ranker', () => {
     it('should skip documents not found in document store', () => {
       const queryTerms = ['hello'];
       const docIds = ['doc1', 'nonexistent'];
-      
+
       const results = ranker.rankDocuments(queryTerms, docIds);
 
       expect(results).toHaveLength(1);
@@ -348,22 +336,18 @@ describe('Ranker', () => {
     it('should use BM25 algorithm by default', () => {
       const queryTerms = ['hello'];
       const docIds = ['doc1'];
-      
+
       const results = ranker.rankDocuments(queryTerms, docIds);
 
       expect(results[0].score).toBeGreaterThan(0);
     });
 
     it('should use TF-IDF algorithm when configured', () => {
-      const tfidfRanker = new Ranker(
-        { algorithm: 'tfidf' },
-        indexer,
-        documentStore
-      );
-      
+      const tfidfRanker = new Ranker({ algorithm: 'tfidf' }, indexer, documentStore);
+
       const queryTerms = ['hello'];
       const docIds = ['doc1'];
-      
+
       const results = tfidfRanker.rankDocuments(queryTerms, docIds);
 
       expect(results[0].score).toBeGreaterThan(0);
@@ -380,16 +364,14 @@ describe('Ranker', () => {
         indexer,
         documentStore
       );
-      
+
       const queryTerms = ['hello'];
       const docIds = ['doc1'];
-      
+
       const results = customRanker.rankDocuments(queryTerms, docIds);
 
       // Score should equal text relevance score when other weights are 0
-      expect(results[0].score).toBeCloseTo(
-        results[0].componentScores!.textRelevance
-      );
+      expect(results[0].score).toBeCloseTo(results[0].componentScores!.textRelevance);
     });
   });
 });

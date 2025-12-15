@@ -33,7 +33,7 @@ describe('API Application', () => {
     autocompleteService = new AutocompleteService();
     rateLimiter = new RateLimiter({ requestsPerWindow: 100, windowSeconds: 60 });
     analyticsService = new AnalyticsService();
-    
+
     // Create mock auth service
     const mockPool = {} as Pool;
     authService = new AuthService(mockPool, 'test-secret');
@@ -155,9 +155,7 @@ describe('API Application', () => {
     });
 
     it('should return 400 for missing prefix', async () => {
-      const response = await request(app)
-        .get('/api/v1/autocomplete')
-        .expect(400);
+      const response = await request(app).get('/api/v1/autocomplete').expect(400);
 
       expect(response.body.error.code).toBe('INVALID_PREFIX');
     });
@@ -183,9 +181,7 @@ describe('API Application', () => {
 
   describe('GET /api/v1/health', () => {
     it('should return health status', async () => {
-      const response = await request(app)
-        .get('/api/v1/health')
-        .expect(200);
+      const response = await request(app).get('/api/v1/health').expect(200);
 
       expect(response.body).toHaveProperty('status');
       expect(response.body).toHaveProperty('timestamp');
@@ -195,9 +191,7 @@ describe('API Application', () => {
     });
 
     it('should include component details', async () => {
-      const response = await request(app)
-        .get('/api/v1/health')
-        .expect(200);
+      const response = await request(app).get('/api/v1/health').expect(200);
 
       expect(response.body.components.documentStore.status).toBe('healthy');
       expect(response.body.components.index.status).toBe('healthy');
@@ -207,9 +201,7 @@ describe('API Application', () => {
 
   describe('GET /api/v1/stats', () => {
     it('should return system statistics', async () => {
-      const response = await request(app)
-        .get('/api/v1/stats')
-        .expect(200);
+      const response = await request(app).get('/api/v1/stats').expect(200);
 
       expect(response.body).toHaveProperty('totalDocuments');
       expect(response.body).toHaveProperty('totalQueries');
@@ -218,9 +210,7 @@ describe('API Application', () => {
     });
 
     it('should include analytics metrics', async () => {
-      const response = await request(app)
-        .get('/api/v1/stats')
-        .expect(200);
+      const response = await request(app).get('/api/v1/stats').expect(200);
 
       expect(response.body).toHaveProperty('overallCTR');
       expect(response.body).toHaveProperty('uniqueQueries');
@@ -240,10 +230,7 @@ describe('API Application', () => {
     });
 
     it('should return 400 for missing fields', async () => {
-      const response = await request(app)
-        .post('/api/v1/click')
-        .send({ query: 'test' })
-        .expect(400);
+      const response = await request(app).post('/api/v1/click').send({ query: 'test' }).expect(400);
 
       expect(response.body.error.code).toBe('INVALID_INPUT');
     });
@@ -275,18 +262,13 @@ describe('API Application', () => {
 
   describe('Error handling', () => {
     it('should return 404 for unknown endpoints', async () => {
-      const response = await request(app)
-        .get('/api/v1/unknown')
-        .expect(404);
+      const response = await request(app).get('/api/v1/unknown').expect(404);
 
       expect(response.body.error.code).toBe('NOT_FOUND');
     });
 
     it('should include request ID in error responses', async () => {
-      const response = await request(app)
-        .post('/api/v1/search')
-        .send({ query: '' })
-        .expect(400);
+      const response = await request(app).post('/api/v1/search').send({ query: '' }).expect(400);
 
       expect(response.body.error).toHaveProperty('requestId');
     });
@@ -294,9 +276,7 @@ describe('API Application', () => {
 
   describe('CORS', () => {
     it('should include CORS headers', async () => {
-      const response = await request(app)
-        .get('/api/v1/health')
-        .expect(200);
+      const response = await request(app).get('/api/v1/health').expect(200);
 
       expect(response.headers['access-control-allow-origin']).toBeDefined();
     });

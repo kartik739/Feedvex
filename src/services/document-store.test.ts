@@ -39,13 +39,13 @@ describe('DocumentStore', () => {
 
     it('should throw error when max capacity is reached', async () => {
       const smallStore = new DocumentStore({ maxDocuments: 2 });
-      
+
       await smallStore.store({ ...sampleDoc, id: 'doc-1' });
       await smallStore.store({ ...sampleDoc, id: 'doc-2' });
-      
-      await expect(
-        smallStore.store({ ...sampleDoc, id: 'doc-3' })
-      ).rejects.toThrow('maximum capacity');
+
+      await expect(smallStore.store({ ...sampleDoc, id: 'doc-3' })).rejects.toThrow(
+        'maximum capacity'
+      );
     });
   });
 
@@ -150,14 +150,14 @@ describe('DocumentStore', () => {
       const filter: DocumentFilter = { subreddit: 'programming' };
       const results = store.getAll(filter);
       expect(results.length).toBe(2);
-      expect(results.every(d => d.subreddit === 'programming')).toBe(true);
+      expect(results.every((d) => d.subreddit === 'programming')).toBe(true);
     });
 
     it('should filter by type', () => {
       const filter: DocumentFilter = { type: 'post' };
       const results = store.getAll(filter);
       expect(results.length).toBe(2);
-      expect(results.every(d => d.type === 'post')).toBe(true);
+      expect(results.every((d) => d.type === 'post')).toBe(true);
     });
 
     it('should filter by date range', () => {
@@ -184,7 +184,7 @@ describe('DocumentStore', () => {
   describe('update', () => {
     it('should update an existing document', async () => {
       await store.store(sampleDoc);
-      
+
       const updated = await store.update('doc-1', { processed: true, redditScore: 100 });
       expect(updated).toBe(true);
 
@@ -196,7 +196,7 @@ describe('DocumentStore', () => {
 
     it('should not allow ID to be changed', async () => {
       await store.store(sampleDoc);
-      
+
       await store.update('doc-1', { id: 'new-id' } as any);
 
       const retrieved = store.getById('doc-1');
@@ -212,7 +212,7 @@ describe('DocumentStore', () => {
   describe('delete', () => {
     it('should delete an existing document', async () => {
       await store.store(sampleDoc);
-      
+
       const deleted = await store.delete('doc-1');
       expect(deleted).toBe(true);
       expect(store.getTotalDocuments()).toBe(0);

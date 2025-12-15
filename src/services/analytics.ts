@@ -4,7 +4,7 @@
 export interface AnalyticsConfig {
   // For in-memory implementation
   maxEvents?: number;
-  
+
   // For database implementation (future)
   databaseUrl?: string;
 }
@@ -45,7 +45,7 @@ export interface QueryStats {
 /**
  * AnalyticsService tracks and analyzes search usage patterns
  * Implements requirements 11.1-11.5
- * 
+ *
  * This is an in-memory implementation that can be replaced with a time-series database
  */
 export class AnalyticsService {
@@ -115,8 +115,8 @@ export class AnalyticsService {
    * @returns CTR (clicks / searches)
    */
   calculateCTR(query: string): number {
-    const searches = this.queryEvents.filter(e => e.query === query).length;
-    const clicks = this.clickEvents.filter(e => e.query === query).length;
+    const searches = this.queryEvents.filter((e) => e.query === query).length;
+    const clicks = this.clickEvents.filter((e) => e.query === query).length;
 
     if (searches === 0) {
       return 0;
@@ -132,8 +132,8 @@ export class AnalyticsService {
    * @returns Query statistics
    */
   getQueryStats(query: string): QueryStats {
-    const queryEventsForQuery = this.queryEvents.filter(e => e.query === query);
-    const clickEventsForQuery = this.clickEvents.filter(e => e.query === query);
+    const queryEventsForQuery = this.queryEvents.filter((e) => e.query === query);
+    const clickEventsForQuery = this.clickEvents.filter((e) => e.query === query);
 
     const totalSearches = queryEventsForQuery.length;
     const totalClicks = clickEventsForQuery.length;
@@ -209,7 +209,7 @@ export class AnalyticsService {
       return { min: 0, max: 0, mean: 0, median: 0, p95: 0, p99: 0 };
     }
 
-    const latencies = this.queryEvents.map(e => e.latencyMs).sort((a, b) => a - b);
+    const latencies = this.queryEvents.map((e) => e.latencyMs).sort((a, b) => a - b);
 
     const min = latencies[0];
     const max = latencies[latencies.length - 1];
@@ -240,7 +240,7 @@ export class AnalyticsService {
     responseTimeStats: ReturnType<AnalyticsService['getResponseTimeStats']>;
     popularQueries: ReturnType<AnalyticsService['getPopularQueries']>;
   } {
-    const uniqueQueries = new Set(this.queryEvents.map(e => e.query)).size;
+    const uniqueQueries = new Set(this.queryEvents.map((e) => e.query)).size;
     const totalQueries = this.queryEvents.length;
     const totalClicks = this.clickEvents.length;
     const overallCTR = totalQueries > 0 ? totalClicks / totalQueries : 0;

@@ -1,4 +1,4 @@
-import { Document, createDocument } from '../models/document';
+import { Document } from '../models/document';
 import { DocumentStore } from './ranker';
 import CircuitBreaker from 'opossum';
 import { logger } from '../utils/logger';
@@ -55,7 +55,7 @@ export class RedditCollector {
     };
     this.documentStore = documentStore;
     this.processedIds = new Set();
-    
+
     // Requirement 1.2: Retry with exponential backoff
     this.retryConfig = {
       maxAttempts: 3,
@@ -106,12 +106,9 @@ export class RedditCollector {
    * @param context Description of the operation for logging
    * @returns Result of the function
    */
-  private async withRetry<T>(
-    fn: () => Promise<T>,
-    context: string
-  ): Promise<T> {
+  private async withRetry<T>(fn: () => Promise<T>, context: string): Promise<T> {
     let lastError: Error | undefined;
-    
+
     for (let attempt = 1; attempt <= this.retryConfig.maxAttempts; attempt++) {
       try {
         // Use circuit breaker for API calls
@@ -119,10 +116,10 @@ export class RedditCollector {
         return result as T;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
-        
+
         // Check if this is a rate limit error (Requirement 1.5)
         const isRateLimitError = this.isRateLimitError(lastError);
-        
+
         if (attempt === this.retryConfig.maxAttempts && !isRateLimitError) {
           // Last attempt failed and not a rate limit error, throw error
           logger.error(`${context} failed after ${this.retryConfig.maxAttempts} attempts`, {
@@ -132,13 +129,13 @@ export class RedditCollector {
             `${context} failed after ${this.retryConfig.maxAttempts} attempts: ${lastError.message}`
           );
         }
-        
+
         // Calculate delay with exponential backoff
         let delay = Math.min(
           this.retryConfig.initialDelayMs * Math.pow(this.retryConfig.multiplier, attempt - 1),
           this.retryConfig.maxDelayMs
         );
-        
+
         // If rate limit error, use a longer delay
         if (isRateLimitError) {
           delay = Math.max(delay, 60000); // Wait at least 60 seconds for rate limits
@@ -148,12 +145,12 @@ export class RedditCollector {
             `${context} failed (attempt ${attempt}/${this.retryConfig.maxAttempts}): ${lastError.message}. Retrying in ${delay}ms...`
           );
         }
-        
+
         // Wait before retrying
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
-    
+
     // This should never be reached, but TypeScript needs it
     throw lastError!;
   }
@@ -181,15 +178,12 @@ export class RedditCollector {
    * @param limit Maximum number of posts to fetch
    * @returns Array of documents
    */
-  async collectPosts(subreddit: string, limit: number): Promise<Document[]> {
-    return this.withRetry(
-      async () => {
-        // TODO: Implement actual Reddit API integration using snoowrap
-        // For now, return empty array as stub
-        return [];
-      },
-      `Collecting posts from r/${subreddit}`
-    );
+  async collectPosts(subreddit: string, _limit: number): Promise<Document[]> {
+    return this.withRetry(async () => {
+      // TODO: Implement actual Reddit API integration using snoowrap
+      // For now, return empty array as stub
+      return [];
+    }, `Collecting posts from r/${subreddit}`);
   }
 
   /**
@@ -200,14 +194,11 @@ export class RedditCollector {
    * @returns Array of comment documents
    */
   async collectComments(postId: string): Promise<Document[]> {
-    return this.withRetry(
-      async () => {
-        // TODO: Implement actual Reddit API integration using snoowrap
-        // For now, return empty array as stub
-        return [];
-      },
-      `Collecting comments for post ${postId}`
-    );
+    return this.withRetry(async () => {
+      // TODO: Implement actual Reddit API integration using snoowrap
+      // For now, return empty array as stub
+      return [];
+    }, `Collecting comments for post ${postId}`);
   }
 
   /**
@@ -242,10 +233,7 @@ export class RedditCollector {
     // Process each subreddit
     for (const subreddit of this.config.subreddits) {
       try {
-        const posts = await this.collectPosts(
-          subreddit,
-          this.config.maxPostsPerSubreddit!
-        );
+        const posts = await this.collectPosts(subreddit, this.config.maxPostsPerSubreddit!);
 
         for (const post of posts) {
           // Requirement 1.3: Check for duplicates

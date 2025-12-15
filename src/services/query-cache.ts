@@ -30,7 +30,7 @@ interface CacheEntry {
 /**
  * QueryCache caches search results to reduce latency and load
  * Implements requirements 8.1-8.5 for query result caching
- * 
+ *
  * Note: This is an in-memory implementation. For production, use Redis.
  */
 export class QueryCache {
@@ -157,7 +157,7 @@ export class QueryCache {
    * Requirement 8.5: Invalidate affected cache entries when index is updated
    * @param pattern Pattern to match (simple substring match for in-memory implementation)
    */
-  invalidate(pattern: string): void {
+  invalidate(_pattern: string): void {
     const keysToDelete: string[] = [];
 
     // For in-memory cache, we'll invalidate all entries

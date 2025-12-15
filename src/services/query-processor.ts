@@ -1,6 +1,6 @@
 import { TextProcessor } from './text-processor';
 import { Indexer } from './indexer';
-import { Ranker, ScoredDocument, DocumentStore } from './ranker';
+import { Ranker, DocumentStore } from './ranker';
 import { Document } from '../models/document';
 import { QueryCache } from './query-cache';
 import { logger } from '../utils/logger';
@@ -108,8 +108,8 @@ export class QueryProcessor {
         }
       } catch (error) {
         // Cache unavailable - log and continue without cache
-        logger.warn('Cache unavailable, continuing without cache', { 
-          error: error instanceof Error ? error.message : String(error) 
+        logger.warn('Cache unavailable, continuing without cache', {
+          error: error instanceof Error ? error.message : String(error),
         });
       }
     }
@@ -187,8 +187,8 @@ export class QueryProcessor {
         this.cache.set(query, normalizedPage, normalizedPageSize, searchResults);
       } catch (error) {
         // Cache unavailable - log and continue
-        logger.warn('Failed to store results in cache', { 
-          error: error instanceof Error ? error.message : String(error) 
+        logger.warn('Failed to store results in cache', {
+          error: error instanceof Error ? error.message : String(error),
         });
       }
     }
@@ -258,7 +258,7 @@ export class QueryProcessor {
     // Extract context around the term
     const start = Math.max(0, charPosition - contextLength);
     const end = Math.min(text.length, charPosition + bestTerm.length + contextLength);
-    
+
     let snippet = text.substring(start, end);
 
     // Add ellipsis if truncated

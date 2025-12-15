@@ -50,18 +50,14 @@ export class Ranker {
   private indexer: Indexer;
   private documentStore: DocumentStore;
 
-  constructor(
-    config: RankingConfig,
-    indexer: Indexer,
-    documentStore: DocumentStore
-  ) {
+  constructor(config: RankingConfig, indexer: Indexer, documentStore: DocumentStore) {
     this.config = {
       algorithm: 'bm25',
       bm25K1: 1.5,
       bm25B: 0.75,
       textWeight: 0.7,
       recencyWeight: 0.15,
-      popularityWeight: 0.10,
+      popularityWeight: 0.1,
       engagementWeight: 0.05,
       recencyDecayDays: 7,
       ...config,
@@ -79,7 +75,7 @@ export class Ranker {
    */
   calculateTF(term: string, docId: string): number {
     const postings = this.indexer.getPostings(term);
-    const posting = postings.find(p => p.docId === docId);
+    const posting = postings.find((p) => p.docId === docId);
     return posting ? posting.termFrequency : 0;
   }
 
@@ -92,11 +88,11 @@ export class Ranker {
   calculateIDF(term: string): number {
     const totalDocs = this.indexer.getTotalDocuments();
     const docFreq = this.indexer.getDocumentFrequency(term);
-    
+
     if (docFreq === 0 || totalDocs === 0) {
       return 0;
     }
-    
+
     return Math.log(totalDocs / docFreq);
   }
 
@@ -139,24 +135,24 @@ export class Ranker {
     const b = this.config.bm25B!;
     const docLength = this.indexer.getDocumentLength(docId);
     const avgDocLength = this.indexer.getAverageDocumentLength();
-    
+
     if (avgDocLength === 0) {
       return 0;
     }
-    
+
     let score = 0;
-    
+
     for (const term of queryTerms) {
       const tf = this.calculateTF(term, docId);
       const idf = this.calculateIDF(term);
-      
+
       // BM25 formula
       const numerator = tf * (k1 + 1);
       const denominator = tf + k1 * (1 - b + b * (docLength / avgDocLength));
-      
+
       score += idf * (numerator / denominator);
     }
-    
+
     return score;
   }
 
@@ -171,7 +167,7 @@ export class Ranker {
     const ageInMs = now.getTime() - timestamp.getTime();
     const ageInDays = ageInMs / (1000 * 60 * 60 * 24);
     const decayConstant = this.config.recencyDecayDays!;
-    
+
     // Exponential decay: exp(-age / decay_constant)
     return Math.exp(-ageInDays / decayConstant);
   }
@@ -208,16 +204,16 @@ export class Ranker {
    */
   rankDocuments(queryTerms: string[], docIds: string[]): ScoredDocument[] {
     const scoredDocs: ScoredDocument[] = [];
-    
+
     // Get document metadata for all documents
     const documents = this.documentStore.getByIds(docIds);
-    
+
     for (const docId of docIds) {
       const doc = documents.get(docId);
       if (!doc) {
         continue; // Skip if document not found
       }
-      
+
       // Calculate text relevance score
       let textRelevance: number;
       if (this.config.algorithm === 'bm25') {
@@ -225,19 +221,19 @@ export class Ranker {
       } else {
         textRelevance = this.calculateTotalTFIDF(queryTerms, docId);
       }
-      
+
       // Calculate other signals
       const recency = this.calculateRecencyScore(doc.createdUtc);
       const popularity = this.calculatePopularityScore(doc.redditScore);
       const engagement = this.calculateEngagementScore(doc.commentCount);
-      
+
       // Combine scores with weights (Requirement 6.5)
       const finalScore =
         this.config.textWeight! * textRelevance +
         this.config.recencyWeight! * recency +
         this.config.popularityWeight! * popularity +
         this.config.engagementWeight! * engagement;
-      
+
       scoredDocs.push({
         docId,
         score: finalScore,
@@ -249,10 +245,10 @@ export class Ranker {
         },
       });
     }
-    
+
     // Sort by score in descending order (Requirement 4.5, 5.4)
     scoredDocs.sort((a, b) => b.score - a.score);
-    
+
     return scoredDocs;
   }
 }

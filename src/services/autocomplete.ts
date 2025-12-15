@@ -155,11 +155,7 @@ export class AutocompleteService {
    * @param prefix Current prefix
    * @param suggestions Array to collect suggestions
    */
-  private collectSuggestions(
-    node: TrieNode,
-    prefix: string,
-    suggestions: Suggestion[]
-  ): void {
+  private collectSuggestions(node: TrieNode, prefix: string, suggestions: Suggestion[]): void {
     if (node.isEndOfWord) {
       suggestions.push({
         term: prefix,
@@ -232,11 +228,7 @@ export class AutocompleteService {
     }
 
     const serialized = this.serializeNode(this.root);
-    await fs.writeFile(
-      this.config.triePath,
-      JSON.stringify(serialized, null, 2),
-      'utf-8'
-    );
+    await fs.writeFile(this.config.triePath, JSON.stringify(serialized, null, 2), 'utf-8');
   }
 
   /**

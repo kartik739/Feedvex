@@ -25,7 +25,7 @@ interface RequestRecord {
 /**
  * RateLimiter controls request rate to prevent abuse
  * Implements requirements 9.1-9.5 for rate limiting
- * 
+ *
  * Note: This is an in-memory implementation using sliding window algorithm.
  * For production with multiple instances, use Redis.
  */
@@ -57,9 +57,7 @@ export class RateLimiter {
     }
 
     // Remove requests older than the window
-    const validRequests = clientRequests.filter(
-      (record) => record.timestamp > cutoffTime
-    );
+    const validRequests = clientRequests.filter((record) => record.timestamp > cutoffTime);
 
     if (validRequests.length === 0) {
       this.requests.delete(clientId);

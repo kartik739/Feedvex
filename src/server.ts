@@ -6,7 +6,6 @@ import { RateLimiter } from './services/rate-limiter';
 import { AnalyticsService } from './services/analytics';
 import { DocumentStore } from './services/document-store';
 import { Indexer } from './services/indexer';
-import { AuthService } from './services/auth';
 import { TextProcessor } from './services/text-processor';
 import { Ranker } from './services/ranker';
 import { QueryCache } from './services/query-cache';
@@ -28,11 +27,11 @@ async function startServer() {
       indexPath: './data/index.json',
       autoPersist: false,
     });
-    
+
     const documentStore = new DocumentStore({
       maxDocuments: 100000,
     });
-    
+
     const ranker = new Ranker(
       {
         algorithm: config.ranking.algorithm as 'tfidf' | 'bm25',
@@ -52,7 +51,7 @@ async function startServer() {
     const analyticsService = new AnalyticsService();
     const autocompleteService = new AutocompleteService();
     const rateLimiter = new RateLimiter();
-    
+
     // Auth service disabled - requires database
     // const authService = new AuthService(mockPool, config.security.jwtSecret, '7d');
     const authService = null as any; // Disabled for in-memory mode
@@ -103,7 +102,7 @@ async function startServer() {
     // Graceful shutdown
     const shutdown = async () => {
       logger.info('Shutting down gracefully...');
-      
+
       server.close(() => {
         logger.info('HTTP server closed');
         process.exit(0);
@@ -118,7 +117,6 @@ async function startServer() {
 
     process.on('SIGTERM', shutdown);
     process.on('SIGINT', shutdown);
-
   } catch (error) {
     logger.error('Failed to start server', { error });
     process.exit(1);

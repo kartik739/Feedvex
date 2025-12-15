@@ -66,7 +66,7 @@ export function loadConfig(): SystemConfig {
       bm25B: getEnvNumber('BM25_B', 0.75),
       textWeight: getEnvNumber('TEXT_WEIGHT', 0.7),
       recencyWeight: getEnvNumber('RECENCY_WEIGHT', 0.15),
-      popularityWeight: getEnvNumber('POPULARITY_WEIGHT', 0.10),
+      popularityWeight: getEnvNumber('POPULARITY_WEIGHT', 0.1),
       engagementWeight: getEnvNumber('ENGAGEMENT_WEIGHT', 0.05),
       relevanceWeight: getEnvNumber('RELEVANCE_WEIGHT', 0.0),
       recencyDecayDays: getEnvNumber('RECENCY_DECAY_DAYS', 7),

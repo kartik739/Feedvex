@@ -20,7 +20,7 @@ const SENSITIVE_KEYS = [
  */
 function isSensitiveKey(key: string): boolean {
   const lowerKey = key.toLowerCase();
-  return SENSITIVE_KEYS.some(sensitive => lowerKey.includes(sensitive));
+  return SENSITIVE_KEYS.some((sensitive) => lowerKey.includes(sensitive));
 }
 
 /**
@@ -36,7 +36,7 @@ export function sanitize(obj: any): any {
   }
 
   if (Array.isArray(obj)) {
-    return obj.map(item => sanitize(item));
+    return obj.map((item) => sanitize(item));
   }
 
   const sanitized: any = {};

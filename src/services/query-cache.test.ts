@@ -8,7 +8,7 @@ describe('QueryCache', () => {
     cache = new QueryCache({ ttlSeconds: 1, maxSize: 3 });
   });
 
-  const createMockResults = (query: string): SearchResults => ({
+  const createMockResults = (_query: string): SearchResults => ({
     results: [
       {
         docId: 'doc1',
@@ -181,7 +181,7 @@ describe('QueryCache', () => {
 
       // Hit
       cache.get('query', 1, 10);
-      
+
       // Miss
       cache.get('nonexistent', 1, 10);
 
@@ -200,7 +200,7 @@ describe('QueryCache', () => {
       cache.get('query', 1, 10);
       cache.get('query', 1, 10);
       cache.get('query', 1, 10);
-      
+
       // 1 miss
       cache.get('nonexistent', 1, 10);
 

@@ -170,9 +170,9 @@ describe('RedditCollector', () => {
         throw new Error('Persistent failure');
       };
 
-      await expect(
-        (freshCollector as any).withRetry(mockFn, 'Test operation')
-      ).rejects.toThrow('failed after 3 attempts');
+      await expect((freshCollector as any).withRetry(mockFn, 'Test operation')).rejects.toThrow(
+        'failed after 3 attempts'
+      );
     });
   });
 
