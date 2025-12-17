@@ -118,7 +118,12 @@ async function startServer() {
     process.on('SIGTERM', shutdown);
     process.on('SIGINT', shutdown);
   } catch (error) {
-    logger.error('Failed to start server', { error });
+    logger.error('Failed to start server', { 
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined 
+    });
+    console.error('\n❌ Server startup failed:');
+    console.error(error);
     process.exit(1);
   }
 }
