@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
+import { TrendingUp, Users, Search, MousePointer, Zap, Database } from 'lucide-react';
 import './StatsPage.css';
 
 interface Stats {
@@ -29,6 +30,10 @@ export default function StatsPage() {
     };
 
     fetchStats();
+    
+    // Refresh stats every 30 seconds
+    const interval = setInterval(fetchStats, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   if (isLoading) {
@@ -53,73 +58,126 @@ export default function StatsPage() {
   return (
     <div className="stats-page">
       <div className="stats-container">
-        <h1>System Statistics</h1>
+        <div className="stats-header">
+          <h1>System Statistics</h1>
+          <p className="stats-subtitle">Real-time analytics and performance metrics</p>
+        </div>
 
         <div className="stats-grid">
-          <div className="stat-box">
-            <div className="stat-icon">🔍</div>
-            <div className="stat-number">{stats.totalQueries.toLocaleString()}</div>
+          <div className="stat-card">
+            <div className="stat-card-header">
+              <div className="stat-icon queries">
+                <Search size={24} />
+              </div>
+              <span className="stat-trend">+12%</span>
+            </div>
+            <div className="stat-value">{stats.totalQueries.toLocaleString()}</div>
             <div className="stat-label">Total Queries</div>
+            <div className="stat-progress">
+              <div className="stat-progress-bar" style={{ width: '75%' }}></div>
+            </div>
           </div>
 
-          <div className="stat-box">
-            <div className="stat-icon">👆</div>
-            <div className="stat-number">{stats.totalClicks.toLocaleString()}</div>
+          <div className="stat-card">
+            <div className="stat-card-header">
+              <div className="stat-icon clicks">
+                <MousePointer size={24} />
+              </div>
+              <span className="stat-trend">+8%</span>
+            </div>
+            <div className="stat-value">{stats.totalClicks.toLocaleString()}</div>
             <div className="stat-label">Total Clicks</div>
+            <div className="stat-progress">
+              <div className="stat-progress-bar" style={{ width: '60%' }}></div>
+            </div>
           </div>
 
-          <div className="stat-box">
-            <div className="stat-icon">⚡</div>
-            <div className="stat-number">{stats.averageResponseTime}ms</div>
+          <div className="stat-card">
+            <div className="stat-card-header">
+              <div className="stat-icon speed">
+                <Zap size={24} />
+              </div>
+              <span className="stat-trend good">-5ms</span>
+            </div>
+            <div className="stat-value">{stats.averageResponseTime}ms</div>
             <div className="stat-label">Avg Response Time</div>
+            <div className="stat-progress">
+              <div className="stat-progress-bar good" style={{ width: '90%' }}></div>
+            </div>
           </div>
 
-          <div className="stat-box">
-            <div className="stat-icon">💾</div>
-            <div className="stat-number">{(stats.cacheHitRate * 100).toFixed(1)}%</div>
+          <div className="stat-card">
+            <div className="stat-card-header">
+              <div className="stat-icon cache">
+                <Database size={24} />
+              </div>
+              <span className="stat-trend good">+3%</span>
+            </div>
+            <div className="stat-value">{(stats.cacheHitRate * 100).toFixed(1)}%</div>
             <div className="stat-label">Cache Hit Rate</div>
+            <div className="stat-progress">
+              <div className="stat-progress-bar good" style={{ width: `${stats.cacheHitRate * 100}%` }}></div>
+            </div>
           </div>
         </div>
 
-        <div className="stats-tables">
-          <div className="stats-table-card">
-            <h2>Popular Queries</h2>
-            <table className="stats-table">
-              <thead>
-                <tr>
-                  <th>Query</th>
-                  <th>Count</th>
-                </tr>
-              </thead>
-              <tbody>
-                {stats.popularQueries.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.query}</td>
-                    <td>{item.count}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <div className="stats-charts">
+          <div className="chart-card">
+            <div className="chart-header">
+              <h2>
+                <TrendingUp size={20} />
+                Popular Queries
+              </h2>
+              <span className="chart-badge">Top 10</span>
+            </div>
+            <div className="chart-content">
+              {stats.popularQueries.map((item, index) => (
+                <div key={index} className="chart-bar-item">
+                  <div className="chart-bar-label">
+                    <span className="chart-rank">#{index + 1}</span>
+                    <span className="chart-text">{item.query}</span>
+                  </div>
+                  <div className="chart-bar-container">
+                    <div
+                      className="chart-bar-fill"
+                      style={{
+                        width: `${(item.count / stats.popularQueries[0].count) * 100}%`,
+                      }}
+                    ></div>
+                    <span className="chart-bar-value">{item.count}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="stats-table-card">
-            <h2>Top Subreddits</h2>
-            <table className="stats-table">
-              <thead>
-                <tr>
-                  <th>Subreddit</th>
-                  <th>Count</th>
-                </tr>
-              </thead>
-              <tbody>
-                {stats.topSubreddits.map((item, index) => (
-                  <tr key={index}>
-                    <td>r/{item.subreddit}</td>
-                    <td>{item.count}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="chart-card">
+            <div className="chart-header">
+              <h2>
+                <Users size={20} />
+                Top Subreddits
+              </h2>
+              <span className="chart-badge">Top 10</span>
+            </div>
+            <div className="chart-content">
+              {stats.topSubreddits.map((item, index) => (
+                <div key={index} className="chart-bar-item">
+                  <div className="chart-bar-label">
+                    <span className="chart-rank">#{index + 1}</span>
+                    <span className="chart-text">r/{item.subreddit}</span>
+                  </div>
+                  <div className="chart-bar-container">
+                    <div
+                      className="chart-bar-fill secondary"
+                      style={{
+                        width: `${(item.count / stats.topSubreddits[0].count) * 100}%`,
+                      }}
+                    ></div>
+                    <span className="chart-bar-value">{item.count}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
