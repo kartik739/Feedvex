@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
+import { toast } from '../store/toastStore';
 import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import './AuthPages.css';
 

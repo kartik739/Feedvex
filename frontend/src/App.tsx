@@ -1,8 +1,10 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/authStore';
+import { useToastStore } from './store/toastStore';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
+import ToastContainer from './components/ToastContainer';
 import './App.css';
 
 // Lazy load pages for code splitting
@@ -36,6 +38,8 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
+  const { toasts, removeToast } = useToastStore();
+
   return (
     <div className="app">
       <ErrorBoundary>
@@ -75,6 +79,7 @@ function App() {
             </Routes>
           </Suspense>
         </BrowserRouter>
+        <ToastContainer toasts={toasts} onClose={removeToast} />
       </ErrorBoundary>
     </div>
   );
