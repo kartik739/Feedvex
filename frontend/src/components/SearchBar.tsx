@@ -316,7 +316,7 @@ export default function SearchBar({ onSearch, initialQuery = '' }: SearchBarProp
             </div>
           )}
         </div>
-        <button type="submit" className="search-button" disabled={!query.trim()}>
+        <button type="submit" className="search-button btn btn-primary" disabled={!query.trim()}>
           Search
         </button>
       </form>
