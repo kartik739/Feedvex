@@ -120,16 +120,24 @@ export default function SearchBar({ onSearch, initialQuery = '' }: SearchBarProp
       };
       
       recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-        console.error('Speech recognition error:', event.error);
+        console.warn('Speech recognition error:', event.error);
         setIsListening(false);
         
-        // Show user-friendly error messages
-        if (event.error === 'not-allowed') {
-          alert('Microphone access denied. Please allow microphone access to use voice search.');
+        // Show user-friendly error messages only for critical errors
+        if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+          alert('Microphone access denied. Please allow microphone access in your browser settings to use voice search.');
+        } else if (event.error === 'network') {
+          // Network errors are common and temporary - fail silently
+          console.warn('Voice search network error - this is usually temporary');
         } else if (event.error === 'no-speech') {
-          // This is normal, just means no speech was detected
+          // No speech detected - this is normal, don't show error
+          console.log('No speech detected');
+        } else if (event.error === 'aborted') {
+          // User stopped - don't show error
+          console.log('Voice search stopped');
         } else {
-          console.warn('Voice search error:', event.error);
+          // Other errors - log but don't alert
+          console.warn('Voice search error:', event.error, event.message);
         }
       };
       

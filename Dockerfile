@@ -13,7 +13,7 @@ RUN npm ci --only=production && \
     npm ci --only=development
 
 # Copy source code
-COPY src ./src
+COPY backend/src ./backend/src
 
 # Build TypeScript
 RUN npm run build
@@ -38,7 +38,7 @@ RUN npm ci --only=production && \
     npm cache clean --force
 
 # Copy built application from builder
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/backend/dist ./backend/dist
 
 # Change ownership to non-root user
 RUN chown -R nodejs:nodejs /app
@@ -57,4 +57,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 ENTRYPOINT ["dumb-init", "--"]
 
 # Start application
-CMD ["node", "dist/index.js"]
+CMD ["node", "backend/dist/index.js"]

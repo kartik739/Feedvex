@@ -268,6 +268,14 @@
 }
 
 @media (max-width: 768px) {
+  .search-page {
+    padding: 1.5rem 1rem;
+  }
+
+  .search-header h1 {
+    font-size: 1.75rem;
+  }
+
   .search-controls {
     flex-direction: column;
     align-items: stretch;
@@ -277,9 +285,34 @@
   .search-stats {
     width: 100%;
     justify-content: center;
+    min-height: 52px;
+    font-size: var(--font-size-base);
+    touch-action: manipulation;
+  }
+
+  .filters-panel {
+    padding: 1.25rem;
   }
 
   .filters-grid {
     grid-template-columns: 1fr;
+  }
+
+  .filter-input,
+  .filter-select {
+    min-height: 48px;
+    font-size: 16px; /* Prevents zoom on iOS */
+    touch-action: manipulation;
+  }
+
+  .clear-filters {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  .filter-chip button {
+    min-width: 32px;
+    min-height: 32px;
+    touch-action: manipulation;
   }
 }

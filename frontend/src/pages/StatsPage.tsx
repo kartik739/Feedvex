@@ -4,12 +4,25 @@ import { TrendingUp, Users, Search, MousePointer, Zap, Database } from 'lucide-r
 import './StatsPage.css';
 
 interface Stats {
+  totalDocuments: number;
   totalQueries: number;
   totalClicks: number;
-  averageResponseTime: number;
-  cacheHitRate: number;
+  overallCTR: number;
+  uniqueQueries: number;
+  responseTimeStats: {
+    min: number;
+    max: number;
+    mean: number;
+    median: number;
+    p95: number;
+    p99: number;
+  };
   popularQueries: Array<{ query: string; count: number }>;
-  topSubreddits: Array<{ subreddit: string; count: number }>;
+  documentsByType: {
+    posts: number;
+    comments: number;
+  };
+  subreddits: string[];
 }
 
 export default function StatsPage() {
@@ -99,7 +112,7 @@ export default function StatsPage() {
               </div>
               <span className="stat-trend good">-5ms</span>
             </div>
-            <div className="stat-value">{stats.averageResponseTime}ms</div>
+            <div className="stat-value">{Math.round(stats.responseTimeStats.mean)}ms</div>
             <div className="stat-label">Avg Response Time</div>
             <div className="stat-progress">
               <div className="stat-progress-bar good" style={{ width: '90%' }}></div>
@@ -113,10 +126,10 @@ export default function StatsPage() {
               </div>
               <span className="stat-trend good">+3%</span>
             </div>
-            <div className="stat-value">{(stats.cacheHitRate * 100).toFixed(1)}%</div>
-            <div className="stat-label">Cache Hit Rate</div>
+            <div className="stat-value">{stats.totalDocuments.toLocaleString()}</div>
+            <div className="stat-label">Total Documents</div>
             <div className="stat-progress">
-              <div className="stat-progress-bar good" style={{ width: `${stats.cacheHitRate * 100}%` }}></div>
+              <div className="stat-progress-bar good" style={{ width: '85%' }}></div>
             </div>
           </div>
         </div>
@@ -131,23 +144,27 @@ export default function StatsPage() {
               <span className="chart-badge">Top 10</span>
             </div>
             <div className="chart-content">
-              {stats.popularQueries.map((item, index) => (
-                <div key={index} className="chart-bar-item">
-                  <div className="chart-bar-label">
-                    <span className="chart-rank">#{index + 1}</span>
-                    <span className="chart-text">{item.query}</span>
+              {stats.popularQueries.length > 0 ? (
+                stats.popularQueries.map((item, index) => (
+                  <div key={index} className="chart-bar-item">
+                    <div className="chart-bar-label">
+                      <span className="chart-rank">#{index + 1}</span>
+                      <span className="chart-text">{item.query}</span>
+                    </div>
+                    <div className="chart-bar-container">
+                      <div
+                        className="chart-bar-fill"
+                        style={{
+                          width: `${(item.count / stats.popularQueries[0].count) * 100}%`,
+                        }}
+                      ></div>
+                      <span className="chart-bar-value">{item.count}</span>
+                    </div>
                   </div>
-                  <div className="chart-bar-container">
-                    <div
-                      className="chart-bar-fill"
-                      style={{
-                        width: `${(item.count / stats.popularQueries[0].count) * 100}%`,
-                      }}
-                    ></div>
-                    <span className="chart-bar-value">{item.count}</span>
-                  </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <div className="empty-chart">No queries yet</div>
+              )}
             </div>
           </div>
 
@@ -160,23 +177,27 @@ export default function StatsPage() {
               <span className="chart-badge">Top 10</span>
             </div>
             <div className="chart-content">
-              {stats.topSubreddits.map((item, index) => (
-                <div key={index} className="chart-bar-item">
-                  <div className="chart-bar-label">
-                    <span className="chart-rank">#{index + 1}</span>
-                    <span className="chart-text">r/{item.subreddit}</span>
+              {stats.subreddits.length > 0 ? (
+                stats.subreddits.slice(0, 10).map((subreddit, index) => (
+                  <div key={index} className="chart-bar-item">
+                    <div className="chart-bar-label">
+                      <span className="chart-rank">#{index + 1}</span>
+                      <span className="chart-text">r/{subreddit}</span>
+                    </div>
+                    <div className="chart-bar-container">
+                      <div
+                        className="chart-bar-fill secondary"
+                        style={{
+                          width: `${((stats.subreddits.length - index) / stats.subreddits.length) * 100}%`,
+                        }}
+                      ></div>
+                      <span className="chart-bar-value">{stats.subreddits.length - index}</span>
+                    </div>
                   </div>
-                  <div className="chart-bar-container">
-                    <div
-                      className="chart-bar-fill secondary"
-                      style={{
-                        width: `${(item.count / stats.topSubreddits[0].count) * 100}%`,
-                      }}
-                    ></div>
-                    <span className="chart-bar-value">{item.count}</span>
-                  </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <div className="empty-chart">No subreddits yet</div>
+              )}
             </div>
           </div>
         </div>

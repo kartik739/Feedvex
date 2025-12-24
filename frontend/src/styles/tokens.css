@@ -32,10 +32,15 @@
   --color-text-dark-tertiary: #94a3b8;
   
   /* Glassmorphism */
-  --glass-bg-light: rgba(255, 255, 255, 0.1);
-  --glass-bg-dark: rgba(15, 23, 42, 0.3);
+  --glass-bg-light: rgba(255, 255, 255, 0.7);
+  --glass-bg-dark: rgba(15, 23, 42, 0.5);
+  --glass-bg-strong: rgba(255, 255, 255, 0.9);
   --glass-border-light: rgba(255, 255, 255, 0.2);
   --glass-border-dark: rgba(255, 255, 255, 0.1);
+  
+  /* Accent Light */
+  --accent-light: rgba(99, 102, 241, 0.1);
+  --accent-primary: var(--color-primary);
   
   /* ===== Spacing Scale ===== */
   --space-1: 4px;
@@ -148,6 +153,7 @@
   --color-text-tertiary: var(--color-text-light-tertiary);
   
   --glass-bg: var(--glass-bg-light);
+  --glass-bg-strong: var(--glass-bg-strong);
   --glass-border: var(--glass-border-light);
   
   --shadow-color: rgb(0 0 0 / 0.1);
@@ -185,6 +191,7 @@
   --color-text-tertiary: var(--color-text-dark-tertiary);
   
   --glass-bg: var(--glass-bg-dark);
+  --glass-bg-strong: rgba(15, 23, 42, 0.9);
   --glass-border: var(--glass-border-dark);
   
   --shadow-color: rgb(0 0 0 / 0.3);

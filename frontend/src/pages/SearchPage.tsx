@@ -23,9 +23,44 @@ export default function SearchPage() {
 
   useEffect(() => {
     if (query) {
-      search(query, currentPage, pageSize);
+      // Build filters object for API
+      const apiFilters: any = {};
+      
+      if (filters.subreddit) {
+        apiFilters.subreddit = filters.subreddit;
+      }
+      
+      if (filters.sortBy && filters.sortBy !== 'relevance') {
+        apiFilters.sortBy = filters.sortBy;
+      }
+      
+      if (filters.dateRange && filters.dateRange !== 'all') {
+        const now = new Date();
+        let dateFrom: Date | undefined;
+        
+        switch (filters.dateRange) {
+          case 'day':
+            dateFrom = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+            break;
+          case 'week':
+            dateFrom = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            break;
+          case 'month':
+            dateFrom = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+            break;
+          case 'year':
+            dateFrom = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+            break;
+        }
+        
+        if (dateFrom) {
+          apiFilters.dateFrom = dateFrom.toISOString();
+        }
+      }
+      
+      search(query, currentPage, pageSize, Object.keys(apiFilters).length > 0 ? apiFilters : undefined);
     }
-  }, [query, currentPage, search]);
+  }, [query, currentPage, filters, search]);
 
   const handleSearch = (newQuery: string) => {
     setSearchParams({ q: newQuery });

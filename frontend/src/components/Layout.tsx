@@ -9,9 +9,9 @@ export default function Layout() {
     <>
       <SkipToContent />
       <OfflineNotification />
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div className="app-main">
         <Header />
-        <main id="main-content" role="main" style={{ flex: 1 }}>
+        <main id="main-content" role="main">
           <Outlet />
         </main>
         <Footer />

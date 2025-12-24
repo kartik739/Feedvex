@@ -398,7 +398,7 @@
 @media (max-width: 640px) {
   .search-form {
     flex-direction: column;
-    gap: var(--space-2);
+    gap: var(--space-3);
   }
 
   .search-input-wrapper {
@@ -406,22 +406,45 @@
   }
 
   .search-input {
-    font-size: var(--font-size-base);
+    font-size: 16px; /* Prevents zoom on iOS */
   }
 
   .voice-search-button {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     margin-left: var(--space-2);
+    min-width: 40px;
+    min-height: 40px;
+    touch-action: manipulation;
   }
 
   .search-button {
     width: 100%;
-    padding: var(--space-3) var(--space-6);
+    padding: var(--space-4) var(--space-6);
+    min-height: 52px;
+    font-size: var(--font-size-base);
+    touch-action: manipulation;
   }
 
-  .suggestions-list {
-    max-height: 300px;
+  .suggestions-dropdown {
+    max-height: 60vh;
+    border-radius: var(--radius-md);
+  }
+
+  .suggestion-item {
+    padding: var(--space-4);
+    min-height: 52px;
+    touch-action: manipulation;
+  }
+
+  .suggestion-text {
+    font-size: var(--font-size-base);
+  }
+
+  .clear-recent-btn {
+    padding: var(--space-2) var(--space-3);
+    min-height: 36px;
+    touch-action: manipulation;
   }
 }
 

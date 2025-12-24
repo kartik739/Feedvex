@@ -212,40 +212,59 @@
 
 @media (max-width: 768px) {
   .hero {
-    padding: 60px 0 40px;
+    padding: 80px 0 60px;
   }
 
   .hero-title {
-    font-size: 36px;
+    font-size: 40px;
   }
 
   .hero-description {
-    font-size: 16px;
+    font-size: 18px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .hero-actions .btn,
+  .hero-actions a {
+    width: 100%;
+    min-height: 52px;
+    font-size: var(--font-size-base);
+    touch-action: manipulation;
   }
 
   .stats-section {
-    padding: 40px 0;
+    padding: 60px 0;
   }
 
   .stats-grid {
-    gap: 32px;
+    gap: 40px;
   }
 
   .stat-number {
-    font-size: 28px;
+    font-size: 32px;
   }
 
   .features {
-    padding: 40px 0;
+    padding: 60px 0;
   }
 
   .section-title {
-    font-size: 28px;
-    margin-bottom: 40px;
+    font-size: 32px;
+    margin-bottom: 48px;
   }
 
   .features-grid {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 32px;
+  }
+
+  .feature-card {
+    padding: 32px 24px;
   }
 }

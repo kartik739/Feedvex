@@ -27,8 +27,14 @@ export default function ResultCard({ result, query }: ResultCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const SNIPPET_LIMIT = 200;
   
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    api.logClick(query, result.id);
+  const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Log click but don't block navigation if it fails
+    try {
+      await api.logClick(query, result.id);
+    } catch (error) {
+      // Fail silently - don't show error to user
+      console.warn('Click tracking failed:', error);
+    }
     
     // Create ripple effect
     const card = e.currentTarget.closest('.result-card') as HTMLElement;

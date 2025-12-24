@@ -249,11 +249,38 @@
 }
 
 @media (max-width: 640px) {
+  .auth-page {
+    padding: 1.5rem 1rem;
+  }
+
   .auth-card {
     padding: 2rem 1.5rem;
+    border-radius: 16px;
   }
 
   .auth-card h1 {
     font-size: 1.75rem;
+  }
+
+  .input {
+    padding: 1rem;
+    font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 52px;
+  }
+
+  .btn-submit {
+    min-height: 52px;
+    font-size: var(--font-size-base);
+    touch-action: manipulation;
+  }
+
+  .password-toggle {
+    min-width: 44px;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  .auth-form {
+    gap: 1.25rem;
   }
 }

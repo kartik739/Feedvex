@@ -11,6 +11,7 @@ export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
@@ -41,7 +42,23 @@ export default function Header() {
   // Close mobile menu when route changes
   useEffect(() => {
     setIsMenuOpen(false);
+    setIsUserMenuOpen(false);
   }, [location]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.user-menu')) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    if (isUserMenuOpen) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [isUserMenuOpen]);
 
   const handleLogout = () => {
     logout();
@@ -96,22 +113,29 @@ export default function Header() {
 
             {isAuthenticated ? (
               <div className="user-menu">
-                <button className="user-button" aria-label="User menu">
+                <button 
+                  className="user-button" 
+                  aria-label="User menu"
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  aria-expanded={isUserMenuOpen}
+                >
                   <div className="user-avatar">
                     <User size={18} />
                   </div>
                   <span className="user-name">{user?.username}</span>
                 </button>
-                <div className="user-dropdown">
-                  <Link to="/profile" className="dropdown-item">
-                    <User size={16} />
-                    <span>Profile</span>
-                  </Link>
-                  <button onClick={handleLogout} className="dropdown-item">
-                    <LogOut size={16} />
-                    <span>Logout</span>
-                  </button>
-                </div>
+                {isUserMenuOpen && (
+                  <div className="user-dropdown">
+                    <Link to="/profile" className="dropdown-item">
+                      <User size={16} />
+                      <span>Profile</span>
+                    </Link>
+                    <button onClick={handleLogout} className="dropdown-item">
+                      <LogOut size={16} />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="auth-buttons">

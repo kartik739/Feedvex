@@ -54,12 +54,17 @@ export const authAPI = {
     const response = await apiClient.get('/auth/me');
     return response.data;
   },
+
+  updateProfile: async (username: string, email: string) => {
+    const response = await apiClient.patch('/auth/profile', { username, email });
+    return response.data;
+  },
 };
 
 // Search API
 export const api = {
-  search: async (query: string, page: number = 1, pageSize: number = 10) => {
-    const response = await apiClient.post('/search', { query, page, pageSize });
+  search: async (query: string, page: number = 1, pageSize: number = 10, filters?: any) => {
+    const response = await apiClient.post('/search', { query, page, pageSize, filters });
     return response.data;
   },
 
@@ -81,6 +86,23 @@ export const api = {
 
   getHealth: async () => {
     const response = await apiClient.get('/health');
+    return response.data;
+  },
+
+  getHistory: async (limit: number = 50) => {
+    const response = await apiClient.get('/history', {
+      params: { limit },
+    });
+    return response.data;
+  },
+
+  deleteHistoryEntry: async (entryId: string) => {
+    const response = await apiClient.delete(`/history/${entryId}`);
+    return response.data;
+  },
+
+  clearHistory: async () => {
+    const response = await apiClient.delete('/history');
     return response.data;
   },
 };

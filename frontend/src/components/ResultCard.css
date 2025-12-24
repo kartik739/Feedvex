@@ -103,14 +103,15 @@
   display: block;
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
-  background: var(--gradient-text);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-text-primary);
   text-decoration: none;
   margin-bottom: var(--space-3);
   line-height: var(--line-height-tight);
   transition: transform var(--transition-fast) var(--ease-out);
+}
+
+.result-title:hover {
+  color: var(--color-primary);
 }
 
 .result-card:hover .result-title {
@@ -203,21 +204,43 @@
 /* Responsive Design */
 @media (max-width: 640px) {
   .result-card {
-    padding: var(--space-4);
+    padding: var(--space-5);
   }
 
   .result-title {
     font-size: var(--font-size-lg);
+    line-height: 1.4;
+  }
+
+  .result-snippet {
+    font-size: var(--font-size-sm);
   }
 
   .result-footer {
     gap: var(--space-3);
+    font-size: var(--font-size-xs);
   }
 
   .result-relevance {
     margin-left: 0;
     width: 100%;
     text-align: center;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .expand-button {
+    min-height: 44px;
+    padding: var(--space-2) var(--space-3);
+    touch-action: manipulation;
+  }
+
+  /* Improve touch targets */
+  .result-subreddit,
+  .result-author {
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    touch-action: manipulation;
   }
 }
 

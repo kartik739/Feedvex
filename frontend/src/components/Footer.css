@@ -211,6 +211,12 @@
     justify-content: center;
   }
 
+  .social-link {
+    width: 48px;
+    height: 48px;
+    touch-action: manipulation;
+  }
+
   .footer-section {
     text-align: center;
   }
@@ -219,12 +225,21 @@
     align-items: center;
   }
 
+  .footer-link {
+    padding: var(--space-2) var(--space-3);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
+  }
+
   .footer-link::before {
     display: none;
   }
 
   .footer-link:hover {
-    padding-left: 0;
+    padding-left: var(--space-3);
   }
 
   .footer-bottom {

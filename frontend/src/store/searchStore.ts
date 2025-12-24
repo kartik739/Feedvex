@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { api } from '../services/api';
 
 export interface SearchResult {
   docId: string;
@@ -17,10 +18,10 @@ export interface SearchResult {
 
 export interface SearchResults {
   results: SearchResult[];
-  totalCount: number;
+  total: number;
   page: number;
   pageSize: number;
-  queryTimeMs: number;
+  processingTime: number;
 }
 
 interface SearchState {
@@ -29,6 +30,7 @@ interface SearchState {
   isLoading: boolean;
   error: string | null;
   currentPage: number;
+  search: (query: string, page?: number, pageSize?: number, filters?: any) => Promise<void>;
   setQuery: (query: string) => void;
   setResults: (results: SearchResults | null) => void;
   setLoading: (loading: boolean) => void;
@@ -37,12 +39,35 @@ interface SearchState {
   reset: () => void;
 }
 
-export const useSearchStore = create<SearchState>((set) => ({
+export const useSearchStore = create<SearchState>((set, get) => ({
   query: '',
   results: null,
   isLoading: false,
   error: null,
   currentPage: 1,
+
+  search: async (query: string, page = 1, pageSize = 10, filters?: any) => {
+    set({ isLoading: true, error: null, query });
+    try {
+      const response = await api.search(query, page, pageSize, filters);
+      set({
+        results: {
+          results: response.results || [],
+          total: response.totalCount || 0,
+          page: response.page || page,
+          pageSize: response.pageSize || pageSize,
+          processingTime: response.queryTimeMs || 0,
+        },
+        isLoading: false,
+      });
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : 'Search failed',
+        isLoading: false,
+        results: null,
+      });
+    }
+  },
 
   setQuery: (query) => set({ query }),
   setResults: (results) => set({ results }),

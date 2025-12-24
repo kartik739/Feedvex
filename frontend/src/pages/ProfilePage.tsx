@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
-import { User, Mail, Save, Camera, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { api, authAPI } from '../services/api';
+import { User, Mail, Save, Camera, Clock, CheckCircle, XCircle, Trash2 } from 'lucide-react';
 import './ProfilePage.css';
 
 interface Notification {
@@ -8,15 +9,81 @@ interface Notification {
   message: string;
 }
 
+interface HistoryEntry {
+  id: string;
+  query: string;
+  timestamp: string;
+  resultCount: number;
+}
+
 export default function ProfilePage() {
   const { user, logout } = useAuthStore();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [notification, setNotification] = useState<Notification | null>(null);
+  const [searchHistory, setSearchHistory] = useState<HistoryEntry[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [formData, setFormData] = useState({
     username: user?.username || '',
     email: user?.email || '',
   });
+
+  useEffect(() => {
+    loadSearchHistory();
+  }, []);
+
+  const loadSearchHistory = async () => {
+    try {
+      setIsLoadingHistory(true);
+      const response = await api.getHistory(10);
+      setSearchHistory(response.history || []);
+    } catch (error) {
+      console.error('Failed to load search history:', error);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
+
+  const handleClearHistory = async () => {
+    if (!window.confirm('Are you sure you want to clear all search history?')) {
+      return;
+    }
+
+    try {
+      await api.clearHistory();
+      setSearchHistory([]);
+      showNotification('success', 'Search history cleared successfully!');
+    } catch (error) {
+      showNotification('error', 'Failed to clear search history');
+    }
+  };
+
+  const handleDeleteEntry = async (entryId: string) => {
+    try {
+      await api.deleteHistoryEntry(entryId);
+      setSearchHistory(searchHistory.filter(entry => entry.id !== entryId));
+      showNotification('success', 'Entry deleted');
+    } catch (error) {
+      showNotification('error', 'Failed to delete entry');
+    }
+  };
+
+  const formatTimeAgo = (timestamp: string) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 60) {
+      return `${diffMins} ${diffMins === 1 ? 'minute' : 'minutes'} ago`;
+    } else if (diffHours < 24) {
+      return `${diffHours} ${diffHours === 1 ? 'hour' : 'hours'} ago`;
+    } else {
+      return `${diffDays} ${diffDays === 1 ? 'day' : 'days'} ago`;
+    }
+  };
 
   if (!user) {
     return null;
@@ -33,12 +100,15 @@ export default function ProfilePage() {
     e.preventDefault();
     setIsSaving(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await authAPI.updateProfile(formData.username, formData.email);
       setIsSaving(false);
       setIsEditing(false);
       showNotification('success', 'Profile updated successfully!');
-    }, 1000);
+    } catch (error) {
+      setIsSaving(false);
+      showNotification('error', 'Failed to update profile');
+    }
   };
 
   const showNotification = (type: 'success' | 'error', message: string) => {
@@ -173,23 +243,35 @@ export default function ProfilePage() {
 
           <div className="profile-history-section">
             <h2>Recent Searches</h2>
-            <div className="search-history">
-              <div className="history-item">
-                <span className="history-query">machine learning python</span>
-                <span className="history-time">2 hours ago</span>
+            {isLoadingHistory ? (
+              <div className="loading-state">Loading history...</div>
+            ) : searchHistory.length > 0 ? (
+              <div className="search-history">
+                {searchHistory.map((entry) => (
+                  <div key={entry.id} className="history-item">
+                    <div>
+                      <span className="history-query">{entry.query}</span>
+                      <span className="history-time">{formatTimeAgo(entry.timestamp)}</span>
+                      <span className="history-results">{entry.resultCount} results</span>
+                    </div>
+                    <button
+                      className="btn-icon"
+                      onClick={() => handleDeleteEntry(entry.id)}
+                      title="Delete entry"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
               </div>
-              <div className="history-item">
-                <span className="history-query">react hooks tutorial</span>
-                <span className="history-time">5 hours ago</span>
-              </div>
-              <div className="history-item">
-                <span className="history-query">typescript best practices</span>
-                <span className="history-time">1 day ago</span>
-              </div>
-            </div>
-            <button className="btn btn-secondary btn-sm clear-history-btn">
-              Clear History
-            </button>
+            ) : (
+              <div className="empty-state">No search history yet</div>
+            )}
+            {searchHistory.length > 0 && (
+              <button className="btn btn-secondary btn-sm clear-history-btn" onClick={handleClearHistory}>
+                Clear History
+              </button>
+            )}
           </div>
 
           <div className="profile-actions">

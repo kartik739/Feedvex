@@ -33,13 +33,16 @@ A production-quality Reddit search engine with a modern React frontend. Features
 This is a monorepo containing both backend and frontend:
 
 ```
-├── src/                    # Backend (Node.js + TypeScript)
-│   ├── models/            # Data models and types
-│   ├── services/          # Business logic components
-│   ├── utils/             # Utility functions
-│   ├── api/               # REST API endpoints
-│   └── config/            # Configuration management
-├── frontend/              # Frontend (React + TypeScript)
+├── backend/               # Backend workspace (Node.js + TypeScript)
+│   ├── src/              # Backend source code
+│   │   ├── models/       # Data models and types
+│   │   ├── services/     # Business logic components
+│   │   ├── utils/        # Utility functions
+│   │   ├── api/          # REST API endpoints
+│   │   └── config/       # Configuration management
+│   ├── scripts/          # Database initialization and utilities
+│   └── dist/             # Backend build output
+├── frontend/              # Frontend workspace (React + TypeScript)
 │   ├── src/
 │   │   ├── components/   # Reusable UI components
 │   │   ├── pages/        # Page components
@@ -49,11 +52,14 @@ This is a monorepo containing both backend and frontend:
 │   │   ├── utils/        # Utility functions
 │   │   ├── styles/       # Global styles and design tokens
 │   │   └── test/         # Test setup and utilities
+│   ├── dist/             # Frontend build output
 │   ├── vitest.config.ts  # Test configuration
 │   └── Dockerfile        # Frontend container
-├── scripts/              # Database initialization and utilities
-├── config/               # Prometheus & Grafana config
+├── config/               # Shared infrastructure configs
 ├── .kiro/                # Kiro specs and configuration
+├── package.json          # Single package.json for all dependencies
+├── tsconfig.json         # Shared TypeScript config
+├── Dockerfile            # Backend container
 └── docker-compose.yml    # Multi-container orchestration
 ```
 
@@ -101,7 +107,7 @@ cp .env.example .env
 # Edit .env with your settings
 
 # Initialize database
-psql -U postgres -f scripts/init-db.sql
+psql -U postgres -f backend/scripts/init-db.sql
 
 # Build and start
 npm run build
