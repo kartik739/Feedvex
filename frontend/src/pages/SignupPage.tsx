@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
+import { toast } from '../store/toastStore';
 import { Mail, User, Lock, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react';
 import './AuthPages.css';
 
@@ -88,9 +89,11 @@ export default function SignupPage() {
 
     try {
       await signup(email, username, password);
+      toast.success('Account created successfully! Welcome to Feedvex.');
       navigate('/search');
     } catch (err) {
       setError('Failed to create account. Please try again.');
+      toast.error('Signup failed. Please try again.');
     } finally {
       setIsLoading(false);
     }

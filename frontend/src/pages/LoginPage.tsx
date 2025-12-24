@@ -44,9 +44,11 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
+      toast.success('Login successful! Welcome back.');
       navigate('/search');
     } catch (err) {
       setError('Invalid email or password');
+      toast.error('Login failed. Please check your credentials.');
     } finally {
       setIsLoading(false);
     }

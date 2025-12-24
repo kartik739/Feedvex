@@ -1,13 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
+import { toast } from '../store/toastStore';
 import { api, authAPI } from '../services/api';
 import { User, Mail, Save, Camera, Clock, CheckCircle, XCircle, Trash2 } from 'lucide-react';
+import ConfirmDialog from '../components/ConfirmDialog';
 import './ProfilePage.css';
-
-interface Notification {
-  type: 'success' | 'error';
-  message: string;
-}
 
 interface HistoryEntry {
   id: string;
@@ -20,9 +17,9 @@ export default function ProfilePage() {
   const { user, logout } = useAuthStore();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [notification, setNotification] = useState<Notification | null>(null);
   const [searchHistory, setSearchHistory] = useState<HistoryEntry[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+  const [showClearDialog, setShowClearDialog] = useState(false);
   const [formData, setFormData] = useState({
     username: user?.username || '',
     email: user?.email || '',
@@ -45,16 +42,12 @@ export default function ProfilePage() {
   };
 
   const handleClearHistory = async () => {
-    if (!window.confirm('Are you sure you want to clear all search history?')) {
-      return;
-    }
-
     try {
       await api.clearHistory();
       setSearchHistory([]);
-      showNotification('success', 'Search history cleared successfully!');
+      toast.success('Search history cleared successfully!');
     } catch (error) {
-      showNotification('error', 'Failed to clear search history');
+      toast.error('Failed to clear search history');
     }
   };
 
@@ -62,9 +55,9 @@ export default function ProfilePage() {
     try {
       await api.deleteHistoryEntry(entryId);
       setSearchHistory(searchHistory.filter(entry => entry.id !== entryId));
-      showNotification('success', 'Entry deleted');
+      toast.success('Entry deleted');
     } catch (error) {
-      showNotification('error', 'Failed to delete entry');
+      toast.error('Failed to delete entry');
     }
   };
 
@@ -104,20 +97,15 @@ export default function ProfilePage() {
       await authAPI.updateProfile(formData.username, formData.email);
       setIsSaving(false);
       setIsEditing(false);
-      showNotification('success', 'Profile updated successfully!');
+      toast.success('Profile updated successfully!');
     } catch (error) {
       setIsSaving(false);
-      showNotification('error', 'Failed to update profile');
+      toast.error('Failed to update profile');
     }
   };
 
-  const showNotification = (type: 'success' | 'error', message: string) => {
-    setNotification({ type, message });
-    setTimeout(() => setNotification(null), 3000);
-  };
-
   const handleAvatarClick = () => {
-    showNotification('success', 'Avatar upload feature coming soon!');
+    toast.info('Avatar upload feature coming soon!');
   };
 
   return (
@@ -268,7 +256,7 @@ export default function ProfilePage() {
               <div className="empty-state">No search history yet</div>
             )}
             {searchHistory.length > 0 && (
-              <button className="btn btn-secondary btn-sm clear-history-btn" onClick={handleClearHistory}>
+              <button className="btn btn-secondary btn-sm clear-history-btn" onClick={() => setShowClearDialog(true)}>
                 Clear History
               </button>
             )}
@@ -280,6 +268,17 @@ export default function ProfilePage() {
             </button>
           </div>
         </div>
+
+        <ConfirmDialog
+          isOpen={showClearDialog}
+          title="Clear Search History?"
+          message="This will permanently delete all your search history. This action cannot be undone."
+          confirmText="Clear History"
+          cancelText="Cancel"
+          variant="danger"
+          onConfirm={handleClearHistory}
+          onCancel={() => setShowClearDialog(false)}
+        />
       </div>
     </div>
   );
