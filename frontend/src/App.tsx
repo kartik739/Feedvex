@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/authStore';
 import { useToastStore } from './store/toastStore';
+import { useGlobalKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 import ToastContainer from './components/ToastContainer';
@@ -39,6 +40,9 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 function App() {
   const { toasts, removeToast } = useToastStore();
+  
+  // Enable global keyboard shortcuts
+  useGlobalKeyboardShortcuts();
 
   return (
     <div className="app">
