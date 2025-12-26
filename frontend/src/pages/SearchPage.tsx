@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useSearchStore } from '../store/searchStore';
+import { useScreenReaderAnnouncement } from '../components/ScreenReaderAnnouncement';
 import SearchBar from '../components/SearchBar';
 import SearchResults from '../components/SearchResults';
 import Pagination from '../components/Pagination';
@@ -12,6 +13,7 @@ export default function SearchPage() {
   const { results, isLoading, error, search } = useSearchStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
+  const { announce } = useScreenReaderAnnouncement();
   const [filters, setFilters] = useState({
     subreddit: '',
     sortBy: 'relevance',
@@ -20,6 +22,17 @@ export default function SearchPage() {
   const pageSize = 10;
 
   const query = searchParams.get('q') || '';
+
+  // Announce search results to screen readers
+  useEffect(() => {
+    if (results && !isLoading) {
+      const count = results.total;
+      const message = count === 0
+        ? `No results found for ${query}`
+        : `Found ${count} result${count === 1 ? '' : 's'} for ${query}`;
+      announce(message, 'polite');
+    }
+  }, [results, isLoading, query, announce]);
 
   useEffect(() => {
     if (query) {
