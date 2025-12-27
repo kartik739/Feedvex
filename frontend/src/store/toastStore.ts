@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { ToastType } from '../components/Toast';
+
+export type ToastType = 'success' | 'error' | 'warning' | 'info';
 
 export interface Toast {
   id: string;

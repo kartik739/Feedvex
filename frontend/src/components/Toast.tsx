@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { CheckCircle, XCircle, AlertCircle, Info, X } from 'lucide-react';
+import { ToastType } from '../store/toastStore';
 import './Toast.css';
-
-export type ToastType = 'success' | 'error' | 'warning' | 'info';
 
 export interface ToastProps {
   id: string;
