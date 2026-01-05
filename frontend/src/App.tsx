@@ -1,99 +1,58 @@
-import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuthStore } from './store/authStore';
-import { useToastStore } from './store/toastStore';
-import { useGlobalKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Suspense, lazy } from 'react';
+import { ClerkProvider } from '@clerk/clerk-react';
+import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout';
+import LoadingSpinner from './components/LoadingSpinner';
 import ErrorBoundary from './components/ErrorBoundary';
-import ToastContainer from './components/ToastContainer';
-import './App.css';
 
-// Lazy load pages for code splitting
+// Lazy load pages for better performance
 const HomePage = lazy(() => import('./pages/HomePage'));
-const LoginPage = lazy(() => import('./pages/LoginPage'));
-const SignupPage = lazy(() => import('./pages/SignupPage'));
 const SearchPage = lazy(() => import('./pages/SearchPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const StatsPage = lazy(() => import('./pages/StatsPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const SignupPage = lazy(() => import('./pages/SignupPage'));
 
-// Loading fallback component
-function PageLoader() {
-  return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      minHeight: '60vh',
-      fontSize: '1.125rem',
-      color: 'var(--color-text-secondary)'
-    }}>
-      <div className="pulse">Loading...</div>
-    </div>
-  );
-}
+const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuthStore();
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
-}
-
-// Wrapper component that uses keyboard shortcuts inside Router context
 function AppRoutes() {
-  // Enable global keyboard shortcuts (must be inside Router)
-  useGlobalKeyboardShortcuts();
-
   return (
-    <Suspense fallback={<PageLoader />}>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="signup" element={<SignupPage />} />
-          <Route
-            path="search"
-            element={
-              <ProtectedRoute>
-                <SearchPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="profile"
-            element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="stats"
-            element={
-              <ProtectedRoute>
-                <StatsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
-      </Routes>
-    </Suspense>
+    <Router>
+      <ThemeProvider>
+        <Layout>
+          <ErrorBoundary>
+            <Suspense fallback={<LoadingSpinner />}>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/stats" element={<StatsPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/signup" element={<SignupPage />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
+        </Layout>
+      </ThemeProvider>
+    </Router>
   );
 }
 
 function App() {
-  const { toasts, removeToast } = useToastStore();
+  // If Clerk key is configured, wrap with ClerkProvider
+  if (clerkPubKey) {
+    return (
+      <ClerkProvider publishableKey={clerkPubKey}>
+        <AppRoutes />
+      </ClerkProvider>
+    );
+  }
 
-  return (
-    <div className="app">
-      <ErrorBoundary>
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
-        <ToastContainer toasts={toasts} onClose={removeToast} />
-      </ErrorBoundary>
-    </div>
-  );
+  // Dev fallback without Clerk
+  return <AppRoutes />;
 }
 
 export default App;
