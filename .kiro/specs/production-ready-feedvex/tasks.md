@@ -22,7 +22,7 @@ This implementation plan transforms FeedVex into a production-ready, resume-wort
     - Frontend: npm install @clerk/clerk-react
     - _Requirements: 1.1, 1.2_
   
-  - [ ] 1.2 Create Clerk authentication middleware
+  - [x] 1.2 Create Clerk authentication middleware
     - Implement verifyToken() to verify Clerk JWT
     - Implement getUserFromToken() to extract user info
     - Implement requireAuth() middleware for protected routes
@@ -36,7 +36,7 @@ This implementation plan transforms FeedVex into a production-ready, resume-wort
     - **Property 2: Clerk Authentication Failure Handling**
     - **Validates: Requirements 1.6**
   
-  - [ ] 1.5 Integrate Clerk components in frontend
+  - [x] 1.5 Integrate Clerk components in frontend
     - Wrap app with ClerkProvider
     - Add SignIn and SignUp components
     - Create ProtectedRoute component
@@ -56,7 +56,7 @@ This implementation plan transforms FeedVex into a production-ready, resume-wort
     - Remove users table from schema (Clerk manages users)
     - _Requirements: 1.1_
 
-- [ ] 2. Set up Reddit OAuth data collection
+- [-] 2. Set up Reddit OAuth data collection
   - [ ] 2.1 Install Reddit OAuth dependencies
     - npm install snoowrap
     - npm install @types/snoowrap --save-dev
