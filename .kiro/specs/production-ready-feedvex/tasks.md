@@ -62,7 +62,7 @@ This implementation plan transforms FeedVex into a production-ready, resume-wort
     - npm install @types/snoowrap --save-dev
     - _Requirements: 2.1_
   
-  - [ ] 2.2 Create RedditOAuthClient service
+  - [x] 2.2 Create RedditOAuthClient service
     - Implement authenticate() with client credentials flow
     - Implement refreshToken() for automatic token refresh
     - Implement fetchHot(), fetchNew(), fetchTop() for /r/all
@@ -78,7 +78,7 @@ This implementation plan transforms FeedVex into a production-ready, resume-wort
     - **Property 4: Reddit Rate Limit Compliance**
     - **Validates: Requirements 2.6, 2.8**
   
-  - [ ] 2.5 Create OnDemandCollector service
+  - [x] 2.5 Create OnDemandCollector service
     - Implement shouldCollect() to check data freshness (1 hour threshold)
     - Implement collectForQuery() to trigger collection
     - Implement deduplicateRequest() using Upstash
@@ -108,7 +108,7 @@ This implementation plan transforms FeedVex into a production-ready, resume-wort
     - _Requirements: 2.1_
 
 - [ ] 3. Set up Railway PostgreSQL integration
-  - [ ] 3.1 Create PostgresDocumentStore service
+  - [x] 3.1 Create PostgresDocumentStore service
     - Implement initialize() with DATABASE_URL support
     - Implement connection pool with pg library (min: 2, max: 10 connections)
     - Implement store(), storeMany(), getById(), getByIds(), getAll() methods
