@@ -16,7 +16,7 @@ This implementation plan transforms FeedVex into a production-ready, resume-wort
 
 ## Tasks
 
-- [-] 1. Set up Clerk authentication integration
+- [~] 1. Set up Clerk authentication integration
   - [ ] 1.1 Install Clerk dependencies
     - Backend: npm install @clerk/clerk-sdk-node
     - Frontend: npm install @clerk/clerk-react

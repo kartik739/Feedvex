@@ -1,33 +1,63 @@
 import winston from 'winston';
+import { v4 as uuidv4 } from 'uuid';
 
-const logLevel = process.env.LOG_LEVEL || 'info';
-
-export const logger = winston.createLogger({
-  level: logLevel,
+/**
+ * Structured JSON logger using Winston.
+ *
+ * Why Winston? It supports multiple transports (console, file, external),
+ * structured JSON output, and log levels. JSON logs are easy to parse
+ * with log aggregation tools like Datadog or CloudWatch.
+ *
+ * Every log entry includes a requestId for tracing a request through the system.
+ */
+const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.errors({ stack: true }),
     winston.format.json()
   ),
+  defaultMeta: { service: 'feedvex' },
   transports: [
     new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.printf(({ timestamp, level, message, ...meta }) => {
-          const metaStr = Object.keys(meta).length ? JSON.stringify(meta) : '';
-          return `${timestamp} [${level}]: ${message} ${metaStr}`;
-        })
-      ),
+      format:
+        process.env.NODE_ENV === 'development'
+          ? winston.format.combine(winston.format.colorize(), winston.format.simple())
+          : winston.format.json(),
     }),
   ],
 });
 
-// For production, use JSON format
+// Add file transport in production
 if (process.env.NODE_ENV === 'production') {
-  logger.clear();
   logger.add(
-    new winston.transports.Console({
-      format: winston.format.json(),
+    new winston.transports.File({
+      filename: 'logs/error.log',
+      level: 'error',
+    })
+  );
+  logger.add(
+    new winston.transports.File({
+      filename: 'logs/combined.log',
     })
   );
 }
+
+/**
+ * Generates a unique request ID (UUID v4).
+ * Include this in all log entries for a request to trace it end-to-end.
+ */
+export function generateRequestId(): string {
+  return uuidv4();
+}
+
+/**
+ * Masks sensitive values in log output.
+ * Shows only first 4 characters to confirm the value is set without exposing it.
+ */
+export function maskSensitive(value?: string): string {
+  if (!value) return 'not set';
+  return `${value.slice(0, 4)}****`;
+}
+
+export { logger };
