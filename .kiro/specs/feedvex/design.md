@@ -1,8 +1,8 @@
-# Design Document: Reddit Search Engine
+# Design Document: Feedvex
 
 ## Overview
 
-The Reddit Search Engine is a production-quality search system that collects Reddit content, processes and indexes it, and provides fast, relevant search results. The system follows a microservices-inspired architecture with clear separation between data collection, processing, indexing, and query handling.
+The Feedvex is a production-quality search system that collects Reddit content, processes and indexes it, and provides fast, relevant search results. The system follows a microservices-inspired architecture with clear separation between data collection, processing, indexing, and query handling.
 
 The design emphasizes:
 - **Scalability**: Horizontal scaling for query processing, efficient indexing

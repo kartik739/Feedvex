@@ -1,5 +1,5 @@
 {
-  "name": "project-2",
+  "name": "feedvex",
   "version": "1.0.0",
   "description": "Production-quality search engine for Reddit content",
   "main": "dist/index.js",

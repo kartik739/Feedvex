@@ -1,4 +1,4 @@
-# Reddit Search Engine
+# Feedvex
 
 A production-quality search engine that collects, processes, indexes, and searches Reddit content using advanced ranking algorithms (TF-IDF and BM25).
 

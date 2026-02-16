@@ -1,4 +1,4 @@
-# Requirements Document: Reddit Search Engine
+# Requirements Document: Feedvex
 
 ## Introduction
 
