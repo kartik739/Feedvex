@@ -8,9 +8,8 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Install dependencies
-RUN npm ci --only=production && \
-    npm ci --only=development
+# Install all dependencies (including dev for build)
+RUN npm ci
 
 # Copy source code
 COPY backend/src ./backend/src
@@ -56,5 +55,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
 
-# Start application
+# Start application - FIXED: was index.js, now server.js
 CMD ["node", "backend/dist/server.js"]

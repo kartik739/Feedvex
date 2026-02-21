@@ -1,44 +1,32 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   build: {
-    // Enable code splitting
+    target: 'es2020',
+    minify: 'terser',
+    sourcemap: true,
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
         manualChunks: {
-          // Vendor chunks
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'zustand-vendor': ['zustand'],
-          // Component chunks
-          'pages': [
-            './src/pages/HomePage.tsx',
-            './src/pages/SearchPage.tsx',
-            './src/pages/ProfilePage.tsx',
-            './src/pages/StatsPage.tsx',
-          ],
-          'auth-pages': [
-            './src/pages/LoginPage.tsx',
-            './src/pages/SignupPage.tsx',
-          ],
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          clerk: ['@clerk/clerk-react'],
+          ui: ['lucide-react'],
+          state: ['zustand'],
         },
       },
     },
-    // Optimize chunk size
-    chunkSizeWarningLimit: 1000,
-    // Enable minification
-    minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: true, // Remove console.log in production
+        drop_console: true,
         drop_debugger: true,
       },
     },
   },
-  // Optimize dependencies
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom', 'zustand'],
   },
-})
+});

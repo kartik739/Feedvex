@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import { loadConfig } from './config';
 import { createApp } from './api/app';
 import { QueryProcessor } from './services/query-processor';
@@ -11,29 +14,43 @@ import { Ranker } from './services/ranker';
 import { QueryCache } from './services/query-cache';
 import { WebSocketStatsService } from './services/websocket-stats';
 import { SearchHistoryService } from './services/search-history';
+import { ClerkAuthMiddleware } from './services/clerk-auth';
+import { UpstashCache } from './services/upstash-cache';
+import { HealthChecker } from './services/health-checker';
+import { GracefulShutdown } from './services/graceful-shutdown';
+import { ResendEmailService } from './services/resend-email';
+import { ClerkWebhookHandler } from './services/clerk-webhook-handler';
+import { RedditOAuthClient } from './services/reddit-oauth-client';
+import { initSentry } from './services/sentry';
 import { logger } from './utils/logger';
 
 async function startServer() {
   try {
-    // Load configuration
     const config = loadConfig();
-    logger.info('Configuration loaded', { env: config.nodeEnv, port: config.port });
 
-    // Note: Using in-memory storage for now
-    // PostgreSQL and Redis connections are optional for development
-    logger.info('Starting with in-memory storage (no database required)');
+    // Initialize Sentry early for error tracking
+    initSentry(config.sentry.dsn, config.nodeEnv);
 
-    // Initialize services with in-memory implementations
+    logger.info('Starting FeedVex server', { env: config.nodeEnv, port: config.port });
+
+    // Initialize cloud services
+    const upstashCache = new UpstashCache(config.redis.url);
+    const clerkAuth = new ClerkAuthMiddleware(config.clerk.secretKey);
+    const emailService = new ResendEmailService(config.resend.apiKey);
+    const webhookHandler = new ClerkWebhookHandler(emailService, config.clerk.webhookSecret);
+    const redditClient = new RedditOAuthClient(
+      config.reddit.clientId,
+      config.reddit.clientSecret,
+      config.reddit.userAgent
+    );
+
+    // Authenticate Reddit OAuth client
+    await redditClient.authenticate();
+
+    // Initialize in-memory services (fallback when DB not configured)
     const textProcessor = new TextProcessor();
-    const indexer = new Indexer({
-      indexPath: './data/index.json',
-      autoPersist: false,
-    });
-
-    const documentStore = new DocumentStore({
-      maxDocuments: 100000,
-    });
-
+    const indexer = new Indexer({ indexPath: './data/index.json', autoPersist: false });
+    const documentStore = new DocumentStore({ maxDocuments: 100000 });
     const ranker = new Ranker(
       {
         algorithm: config.ranking.algorithm as 'tfidf' | 'bm25',
@@ -53,27 +70,22 @@ async function startServer() {
     const analyticsService = new AnalyticsService();
     const autocompleteService = new AutocompleteService();
     const rateLimiter = new RateLimiter();
-    const searchHistoryService = new SearchHistoryService({
-      maxEntriesPerUser: 100,
-    });
+    const searchHistoryService = new SearchHistoryService({ maxEntriesPerUser: 100 });
 
-    // Auth service - using in-memory implementation
     const { AuthServiceMemory } = await import('./services/auth-memory');
     const authService = new AuthServiceMemory(config.security.jwtSecret, '7d');
 
     const queryProcessor = new QueryProcessor(
-      {
-        defaultPageSize: 10,
-        maxPageSize: 100,
-        snippetContextLength: 50,
-        enableCache: false, // Disable cache since no Redis
-      },
+      { defaultPageSize: 10, maxPageSize: 100, snippetContextLength: 50, enableCache: false },
       textProcessor,
       indexer,
       ranker,
       documentStore,
       queryCache
     );
+
+    // Health checker wires up all dependencies
+    const healthChecker = new HealthChecker(undefined, upstashCache, redditClient);
 
     // Create Express app
     const app = createApp(
@@ -87,113 +99,59 @@ async function startServer() {
       searchHistoryService,
       {
         port: config.port,
-        corsOrigins: config.cors?.origins?.split(',') || ['*'],
+        corsOrigins: config.cors.origins.split(','),
         enableLogging: true,
+        clerkAuth,
+        upstashCache,
+        healthChecker,
+        webhookHandler,
       }
     );
 
-    // Start server
     const server = app.listen(config.port, () => {
-      logger.info(`Server started`, {
+      logger.info('Server started', {
         port: config.port,
         env: config.nodeEnv,
-        url: `http://localhost:${config.port}`,
-        note: 'Using in-memory storage - data will not persist',
+        clerk: clerkAuth ? 'enabled' : 'disabled',
+        cache: upstashCache.isConfigured() ? 'Upstash' : 'disabled',
+        email: emailService.isConfigured() ? 'Resend' : 'disabled',
       });
-      console.log(`\n🚀 Server running at http://localhost:${config.port}`);
-      console.log(`📝 API docs: http://localhost:${config.port}/api/v1/health`);
-      console.log(`🔌 WebSocket stats: ws://localhost:${config.port}/ws/stats`);
-      console.log(`⚠️  Note: Using in-memory storage (no database required)\n`);
+      console.log(`\n🚀 FeedVex running at http://localhost:${config.port}`);
+      console.log(`📊 Health: http://localhost:${config.port}/api/v1/health`);
+      console.log(`📈 Metrics: http://localhost:${config.port}/api/v1/metrics\n`);
     });
 
-    // Initialize WebSocket stats service
-    const wsStatsService = new WebSocketStatsService(
-      analyticsService,
-      documentStore,
-      indexer,
-      {
-        updateInterval: 5000, // Update every 5 seconds
-        enableHeartbeat: true,
-        heartbeatInterval: 30000, // Heartbeat every 30 seconds
-      }
-    );
+    // WebSocket stats
+    const wsStatsService = new WebSocketStatsService(analyticsService, documentStore, indexer, {
+      updateInterval: 5000,
+      enableHeartbeat: true,
+      heartbeatInterval: 30000,
+    });
     wsStatsService.initialize(server, '/ws/stats');
 
-    // Initialize Reddit collector and schedule data collection
-    const { RedditCollector } = await import('./services/reddit-collector');
-    
-    const redditCollector = new RedditCollector(
-      {
-        userAgent: 'FeedVex/1.0.0 (Reddit Search Engine)',
-        subreddits: config.reddit.subreddits,
-        maxPostsPerSubreddit: config.reddit.maxPostsPerSubreddit,
-      },
-      documentStore
-    );
+    // Graceful shutdown
+    const gracefulShutdown = new GracefulShutdown(server, undefined, upstashCache);
+    gracefulShutdown.register();
 
-    // Schedule collection every 6 hours (configurable)
-    const collectionInterval = config.reddit.collectionIntervalHours * 60 * 60 * 1000;
-    const collectionTimer = redditCollector.scheduleCollection(collectionInterval);
-
-    // Run initial collection after 30 seconds
+    // Initial Reddit collection after 30s
     setTimeout(async () => {
       try {
-        logger.info('Running initial Reddit collection...');
-        const result = await redditCollector.runCollectionCycle();
-        
-        // Index collected documents
-        const docs = documentStore.getAll();
-        for (const doc of docs) {
-          if (!doc.processed) {
-            const processed = textProcessor.processDocument(doc);
-            indexer.indexDocument(processed);
-            await documentStore.update(doc.id, { processed: true });
-          }
-        }
-        
-        logger.info('Initial collection complete', {
-          documentsCollected: result.documentsCollected,
-          subreddits: result.subredditsProcessed.length,
-        });
+        const { RedditCollector } = await import('./services/reddit-collector');
+        const collector = new RedditCollector(
+          { userAgent: config.reddit.userAgent, subreddits: config.reddit.subreddits, maxPostsPerSubreddit: config.reddit.maxPostsPerSubreddit },
+          documentStore
+        );
+        const result = await collector.runCollectionCycle();
+        logger.info('Initial collection complete', { documentsCollected: result.documentsCollected });
       } catch (error) {
         logger.error('Initial collection failed', { error });
       }
     }, 30000);
 
-    // Graceful shutdown
-    const shutdown = async () => {
-      logger.info('Shutting down gracefully...');
-
-      // Stop scheduled collection
-      clearInterval(collectionTimer);
-
-      // Shutdown WebSocket service first
-      wsStatsService.shutdown();
-
-      server.close(() => {
-        logger.info('HTTP server closed');
-        process.exit(0);
-      });
-
-      // Force shutdown after 10 seconds
-      setTimeout(() => {
-        logger.error('Forced shutdown after timeout');
-        process.exit(1);
-      }, 10000);
-    };
-
-    process.on('SIGTERM', shutdown);
-    process.on('SIGINT', shutdown);
   } catch (error) {
-    logger.error('Failed to start server', { 
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined 
-    });
-    console.error('\n❌ Server startup failed:');
-    console.error(error);
+    logger.error('Failed to start server', { error });
     process.exit(1);
   }
 }
 
-// Start the server
 startServer();
