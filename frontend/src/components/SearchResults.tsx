@@ -101,25 +101,25 @@ export default function SearchResults({ results, query, isLoading = false }: Sea
         <div className="no-results-suggestions">
           <p className="suggestions-title">Suggestions to improve your search:</p>
           <ul className="suggestions-list">
-            <li>
+            <li key="suggestion-1">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M10 2L12 8L18 10L12 12L10 18L8 12L2 10L8 8L10 2Z" fill="var(--color-primary)" opacity="0.6" />
               </svg>
               <span>Try different or more general keywords</span>
             </li>
-            <li>
+            <li key="suggestion-2">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M10 2L12 8L18 10L12 12L10 18L8 12L2 10L8 8L10 2Z" fill="var(--color-primary)" opacity="0.6" />
               </svg>
               <span>Check your spelling</span>
             </li>
-            <li>
+            <li key="suggestion-3">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M10 2L12 8L18 10L12 12L10 18L8 12L2 10L8 8L10 2Z" fill="var(--color-primary)" opacity="0.6" />
               </svg>
               <span>Use fewer filters or broader date ranges</span>
             </li>
-            <li>
+            <li key="suggestion-4">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M10 2L12 8L18 10L12 12L10 18L8 12L2 10L8 8L10 2Z" fill="var(--color-primary)" opacity="0.6" />
               </svg>
@@ -130,11 +130,11 @@ export default function SearchResults({ results, query, isLoading = false }: Sea
         <div className="popular-searches">
           <p className="popular-title">Popular searches:</p>
           <div className="popular-tags">
-            <button className="tag-button">JavaScript</button>
-            <button className="tag-button">React</button>
-            <button className="tag-button">Python</button>
-            <button className="tag-button">Machine Learning</button>
-            <button className="tag-button">Web Development</button>
+            <button key="tag-js" className="tag-button">JavaScript</button>
+            <button key="tag-react" className="tag-button">React</button>
+            <button key="tag-python" className="tag-button">Python</button>
+            <button key="tag-ml" className="tag-button">Machine Learning</button>
+            <button key="tag-webdev" className="tag-button">Web Development</button>
           </div>
         </div>
       </div>

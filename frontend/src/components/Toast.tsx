@@ -1,16 +1,7 @@
 import { useEffect } from 'react';
 import { CheckCircle, XCircle, AlertCircle, Info, X } from 'lucide-react';
+import type { ToastProps } from '../types/toast';
 import './Toast.css';
-
-export type ToastType = 'success' | 'error' | 'warning' | 'info';
-
-export interface ToastProps {
-  id: string;
-  type: ToastType;
-  message: string;
-  duration?: number;
-  onClose: (id: string) => void;
-}
 
 export default function Toast({ id, type, message, duration = 5000, onClose }: ToastProps) {
   useEffect(() => {

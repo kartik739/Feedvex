@@ -38,50 +38,57 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
 }
 
+// Wrapper component that uses keyboard shortcuts inside Router context
+function AppRoutes() {
+  // Enable global keyboard shortcuts (must be inside Router)
+  useGlobalKeyboardShortcuts();
+
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="signup" element={<SignupPage />} />
+          <Route
+            path="search"
+            element={
+              <ProtectedRoute>
+                <SearchPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="stats"
+            element={
+              <ProtectedRoute>
+                <StatsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
+    </Suspense>
+  );
+}
+
 function App() {
   const { toasts, removeToast } = useToastStore();
-  
-  // Enable global keyboard shortcuts
-  useGlobalKeyboardShortcuts();
 
   return (
     <div className="app">
       <ErrorBoundary>
         <BrowserRouter>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<HomePage />} />
-                <Route path="login" element={<LoginPage />} />
-                <Route path="signup" element={<SignupPage />} />
-                <Route
-                  path="search"
-                  element={
-                    <ProtectedRoute>
-                      <SearchPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="profile"
-                  element={
-                    <ProtectedRoute>
-                      <ProfilePage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="stats"
-                  element={
-                    <ProtectedRoute>
-                      <StatsPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="*" element={<NotFoundPage />} />
-              </Route>
-            </Routes>
-          </Suspense>
+          <AppRoutes />
         </BrowserRouter>
         <ToastContainer toasts={toasts} onClose={removeToast} />
       </ErrorBoundary>

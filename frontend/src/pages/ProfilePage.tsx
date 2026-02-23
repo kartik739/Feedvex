@@ -110,17 +110,6 @@ export default function ProfilePage() {
 
   return (
     <div className="profile-page">
-      {notification && (
-        <div className={`notification ${notification.type}`}>
-          {notification.type === 'success' ? (
-            <CheckCircle size={20} />
-          ) : (
-            <XCircle size={20} />
-          )}
-          <span>{notification.message}</span>
-        </div>
-      )}
-
       <div className="profile-container">
         <div className="profile-card">
           <div className="profile-header">
