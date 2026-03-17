@@ -382,7 +382,7 @@ This implementation plan transforms FeedVex into a production-ready, resume-wort
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 14. Optimize frontend build and performance
-  - [ ] 14.1 Configure Vite for production optimization
+  - [x] 14.1 Configure Vite for production optimization
     - Set up code splitting with manualChunks (vendor, clerk, ui, state)
     - Enable minification with terser
     - Configure compression (gzip)
@@ -419,7 +419,7 @@ This implementation plan transforms FeedVex into a production-ready, resume-wort
     - **Validates: Requirements 10.6**
 
 - [-] 15. Set up Docker containerization
-  - [ ] 15.1 Create multi-stage Dockerfile for backend
+  - [x] 15.1 Create multi-stage Dockerfile for backend
     - Builder stage: Install dependencies and build
     - Production stage: Copy built files and node_modules
     - Set NODE_ENV=production
@@ -453,7 +453,7 @@ This implementation plan transforms FeedVex into a production-ready, resume-wort
     - _Requirements: 6.1, 6.3, 6.4_
 
 - [ ] 16. Implement CI/CD pipeline
-  - [ ] 16.1 Create GitHub Actions workflow
+  - [x] 16.1 Create GitHub Actions workflow
     - Add lint-and-typecheck job
     - Add build job with artifact upload
     - Add deploy job (main branch only) to Railway
@@ -492,7 +492,7 @@ This implementation plan transforms FeedVex into a production-ready, resume-wort
     - Explain component interactions
     - _Requirements: 12.1, 12.6_
   
-  - [ ] 18.2 Create TECHNICAL_DECISIONS.md
+  - [x] 18.2 Create TECHNICAL_DECISIONS.md
     - Document why Clerk over custom auth (OAuth, security, time-to-market)
     - Document why Upstash over self-hosted Redis (serverless, no ops, free tier)
     - Document why Railway over AWS RDS (simplicity, cost, developer experience)
@@ -512,14 +512,14 @@ This implementation plan transforms FeedVex into a production-ready, resume-wort
     - Document Reddit collection endpoints
     - _Requirements: 12.3_
   
-  - [ ] 18.4 Update README with setup instructions
+  - [x] 18.4 Update README with setup instructions
     - Prerequisites (Node.js, Clerk account, Upstash account, Railway account, Reddit app)
     - Local development setup (< 15 minutes)
     - Docker setup
     - Environment configuration for all services
     - _Requirements: 12.4_
   
-  - [ ] 18.5 Create INTERVIEW_GUIDE.md
+  - [x] 18.5 Create INTERVIEW_GUIDE.md
     - Common interview questions with answers
     - "Walk me through your project architecture"
     - "Why did you choose Clerk over custom auth?"
