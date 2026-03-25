@@ -1,6 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
-import { v4 as uuidv4 } from 'uuid';
 import { logger } from '../utils/logger';
+
+function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
 
 /**
  * Request logging middleware.
@@ -13,7 +20,7 @@ import { logger } from '../utils/logger';
  * making it easy to trace a request through the entire system.
  */
 export function requestLogger(req: Request, res: Response, next: NextFunction): void {
-  const requestId = uuidv4();
+  const requestId = generateUUID();
   const startTime = Date.now();
 
   // Attach to request for use in route handlers

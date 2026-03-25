@@ -1,4 +1,3 @@
-import Snoowrap from 'snoowrap';
 import { logger } from '../utils/logger';
 
 export interface RedditPost {
@@ -35,7 +34,7 @@ export interface CollectionOptions {
  * We use client credentials flow (no user login needed).
  */
 export class RedditOAuthClient {
-  private client: Snoowrap | null = null;
+  private client: any | null = null;
   private rateLimitStatus: RateLimitStatus = {
     remaining: 600,
     reset: new Date(),
@@ -60,6 +59,7 @@ export class RedditOAuthClient {
     }
 
     try {
+      const Snoowrap = (await import('snoowrap')).default;
       this.client = new Snoowrap({
         userAgent: this.userAgent,
         clientId: this.clientId,

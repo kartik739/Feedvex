@@ -101,10 +101,6 @@ async function startServer() {
         port: config.port,
         corsOrigins: config.cors.origins.split(','),
         enableLogging: true,
-        clerkAuth,
-        upstashCache,
-        healthChecker,
-        webhookHandler,
       }
     );
 

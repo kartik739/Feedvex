@@ -1,5 +1,4 @@
 import winston from 'winston';
-import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Structured JSON logger using Winston.
@@ -43,12 +42,20 @@ if (process.env.NODE_ENV === 'production') {
   );
 }
 
+function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 /**
  * Generates a unique request ID (UUID v4).
  * Include this in all log entries for a request to trace it end-to-end.
  */
 export function generateRequestId(): string {
-  return uuidv4();
+  return generateUUID();
 }
 
 /**
