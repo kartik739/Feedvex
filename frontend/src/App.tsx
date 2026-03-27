@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import { ClerkProvider } from '@clerk/clerk-react';
+import './App.css';
 import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -21,10 +22,10 @@ function AppRoutes() {
   return (
     <Router>
       <ThemeProvider>
-        <Layout>
-          <ErrorBoundary>
-            <Suspense fallback={<LoadingSpinner />}>
-              <Routes>
+        <ErrorBoundary>
+          <Suspense fallback={<LoadingSpinner />}>
+            <Routes>
+              <Route element={<Layout />}>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
@@ -32,17 +33,16 @@ function AppRoutes() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            </Suspense>
-          </ErrorBoundary>
-        </Layout>
+              </Route>
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
       </ThemeProvider>
     </Router>
   );
 }
 
 function App() {
-  // If Clerk key is configured, wrap with ClerkProvider
   if (clerkPubKey) {
     return (
       <ClerkProvider publishableKey={clerkPubKey}>
@@ -50,8 +50,6 @@ function App() {
       </ClerkProvider>
     );
   }
-
-  // Dev fallback without Clerk
   return <AppRoutes />;
 }
 

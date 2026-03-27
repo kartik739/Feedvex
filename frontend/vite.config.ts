@@ -1,9 +1,14 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    // Look for modules in root node_modules since frontend has no package.json
+    modules: [path.resolve(__dirname, '../node_modules'), 'node_modules'],
+  },
   build: {
     target: 'es2020',
     minify: 'terser',
@@ -27,6 +32,6 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom', 'zustand'],
+    include: ['react', 'react-dom', 'react-router-dom', 'zustand', '@clerk/clerk-react'],
   },
 });

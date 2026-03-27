@@ -79,15 +79,13 @@ export default function Header() {
           </Link>
 
           <nav className={`nav ${isMenuOpen ? 'open' : ''}`}>
-            {isAuthenticated && (
-              <Link 
-                to="/search" 
-                className={`nav-link ${isActiveLink('/search') ? 'active' : ''}`}
-              >
-                <Search size={18} />
-                <span>Search</span>
-              </Link>
-            )}
+            <Link 
+              to="/search" 
+              className={`nav-link ${isActiveLink('/search') ? 'active' : ''}`}
+            >
+              <Search size={18} />
+              <span>Search</span>
+            </Link>
             <Link 
               to="/stats" 
               className={`nav-link ${isActiveLink('/stats') ? 'active' : ''}`}
@@ -165,15 +163,13 @@ export default function Header() {
         <div className="mobile-menu-overlay" onClick={() => setIsMenuOpen(false)}>
           <div className="mobile-menu" onClick={(e) => e.stopPropagation()}>
             <nav className="mobile-nav">
-              {isAuthenticated && (
-                <Link 
-                  to="/search" 
-                  className={`mobile-nav-link ${isActiveLink('/search') ? 'active' : ''}`}
-                >
-                  <Search size={20} />
-                  <span>Search</span>
-                </Link>
-              )}
+              <Link 
+                to="/search" 
+                className={`mobile-nav-link ${isActiveLink('/search') ? 'active' : ''}`}
+              >
+                <Search size={20} />
+                <span>Search</span>
+              </Link>
               <Link 
                 to="/stats" 
                 className={`mobile-nav-link ${isActiveLink('/stats') ? 'active' : ''}`}

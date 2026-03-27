@@ -1,11 +1,10 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Search, Zap, Shield, BarChart3, TrendingUp, Users, Database } from 'lucide-react';
-import { useAuthStore } from '../store/authStore';
 import { useState, useEffect } from 'react';
 import './HomePage.css';
 
 export default function HomePage() {
-  const { isAuthenticated } = useAuthStore();
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     documents: 0,
     queries: 0,
@@ -60,21 +59,27 @@ export default function HomePage() {
               real-time results, and intelligent BM25 ranking algorithm.
             </p>
             <div className="hero-actions animate-fade-in-delay-2">
-              {isAuthenticated ? (
-                <Link to="/search" className="btn btn-primary btn-lg btn-glow">
+              <form 
+                className="hero-search-form"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const input = (e.target as HTMLFormElement).querySelector('input') as HTMLInputElement;
+                  if (input?.value.trim()) {
+                    navigate(`/search?q=${encodeURIComponent(input.value.trim())}`);
+                  }
+                }}
+              >
+                <input 
+                  type="text" 
+                  placeholder="Search Reddit posts..." 
+                  className="hero-search-input"
+                  autoFocus
+                />
+                <button type="submit" className="btn btn-primary btn-lg btn-glow">
                   <Search size={20} />
-                  Start Searching
-                </Link>
-              ) : (
-                <>
-                  <Link to="/signup" className="btn btn-primary btn-lg btn-glow">
-                    Get Started Free
-                  </Link>
-                  <Link to="/login" className="btn btn-secondary btn-lg">
-                    Login
-                  </Link>
-                </>
-              )}
+                  Search
+                </button>
+              </form>
             </div>
           </div>
         </div>

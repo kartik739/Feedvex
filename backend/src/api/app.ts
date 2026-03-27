@@ -887,6 +887,52 @@ export function createApp(
     }
   });
 
+  // POST /api/v1/seed/bulk - Bulk seed documents from external sources
+  app.post('/api/v1/seed/bulk', async (req: Request, res: Response) => {
+    try {
+      const { documents } = req.body;
+
+      if (!Array.isArray(documents) || documents.length === 0) {
+        return res.status(400).json({
+          error: { code: 'INVALID_INPUT', message: 'documents array required' },
+        });
+      }
+
+      const { TextProcessor } = await import('../services/text-processor');
+      const textProcessor = new TextProcessor();
+      let seeded = 0;
+
+      for (const doc of documents) {
+        if (!doc.id || !doc.title) continue;
+
+        const document: Document = {
+          id: doc.id,
+          title: doc.title,
+          content: doc.content || doc.title,
+          url: doc.url || '',
+          subreddit: doc.subreddit || '',
+          author: doc.author || '',
+          redditScore: doc.redditScore || 0,
+          commentCount: doc.commentCount || 0,
+          createdUtc: doc.createdAt ? new Date(doc.createdAt) : new Date(),
+          collectedAt: new Date(),
+          processed: false,
+          type: 'post',
+        };
+
+        await documentStore.store(document);
+        const processed = textProcessor.processDocument(document);
+        indexer.indexDocument(processed);
+        seeded++;
+      }
+
+      res.json({ success: true, seeded, total: documents.length });
+    } catch (error) {
+      logger.error('Bulk seed error', { error });
+      res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: 'Bulk seed failed' } });
+    }
+  });
+
   // Global error handler (Requirement 13.5, 16.11)
   app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
     logger.error('Unhandled error', {
