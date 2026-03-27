@@ -52,15 +52,20 @@ export function createApp(
 ): Express {
   const app = express();
 
-  // Requirement 13.7: Set up middleware
-  app.use(helmet()); // Security headers
+  // CORS must come BEFORE helmet to handle preflight OPTIONS requests
   app.use(
     cors({
       origin: config.corsOrigins || '*',
-      methods: ['GET', 'POST', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
+      methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID'],
+      credentials: true,
+      optionsSuccessStatus: 200,
     })
   );
+  app.use(helmet({
+    contentSecurityPolicy: false, // Disable CSP in dev - it blocks cross-origin requests
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  }));
   app.use(express.json({ limit: '1mb' })); // Body parser with size limit
 
   // Request logging middleware (Requirement 16.4, 16.6)
