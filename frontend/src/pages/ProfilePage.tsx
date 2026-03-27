@@ -83,7 +83,19 @@ export default function ProfilePage() {
   };
 
   if (!user) {
-    return null;
+    return (
+      <div className="profile-page">
+        <div className="profile-container">
+          <div className="profile-card" style={{ textAlign: 'center', padding: '3rem' }}>
+            <h2>Please log in to view your profile</h2>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+              You need to be logged in to access this page.
+            </p>
+            <a href="/login" className="btn btn-primary">Go to Login</a>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
