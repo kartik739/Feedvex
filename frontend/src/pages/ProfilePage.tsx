@@ -26,16 +26,20 @@ export default function ProfilePage() {
   });
 
   useEffect(() => {
-    loadSearchHistory();
-  }, []);
+    if (user) {
+      loadSearchHistory();
+    } else {
+      setIsLoadingHistory(false);
+    }
+  }, [user]);
 
   const loadSearchHistory = async () => {
     try {
       setIsLoadingHistory(true);
       const response = await api.getHistory(10);
       setSearchHistory(response.history || []);
-    } catch (error) {
-      console.error('Failed to load search history:', error);
+    } catch {
+      setSearchHistory([]);
     } finally {
       setIsLoadingHistory(false);
     }

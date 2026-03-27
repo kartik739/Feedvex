@@ -30,9 +30,19 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Clear auth and redirect to login
-      localStorage.removeItem('auth-storage');
-      window.location.href = '/login';
+      // Only redirect if user had a token (was previously authenticated)
+      const authStorage = localStorage.getItem('auth-storage');
+      if (authStorage) {
+        try {
+          const { state } = JSON.parse(authStorage);
+          if (state?.token) {
+            localStorage.removeItem('auth-storage');
+            window.location.href = '/login';
+          }
+        } catch {
+          // Invalid storage, ignore
+        }
+      }
     }
     return Promise.reject(error);
   }
