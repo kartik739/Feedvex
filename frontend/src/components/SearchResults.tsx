@@ -2,23 +2,24 @@ import ResultCard from './ResultCard';
 import SkeletonLoader from './SkeletonLoader';
 import './SearchResults.css';
 
-interface SearchResult {
-  id: string;
+// Shape coming from the search store
+interface StoreSearchResult {
+  docId: string;
   title: string;
-  content: string;
   url: string;
-  author: string;
-  subreddit: string;
+  snippet: string;
   score: number;
-  commentCount: number;
-  createdAt: string;
-  type: 'post' | 'comment';
-  snippet?: string;
-  relevanceScore: number;
+  metadata: {
+    author: string;
+    subreddit: string;
+    redditScore: number;
+    commentCount: number;
+    createdUtc: string;
+  };
 }
 
 interface SearchResultsProps {
-  results: SearchResult[];
+  results: StoreSearchResult[];
   query: string;
   isLoading?: boolean;
 }
@@ -27,6 +28,22 @@ export default function SearchResults({ results, query, isLoading = false }: Sea
   if (isLoading) {
     return <SkeletonLoader count={5} />;
   }
+
+  // Map store shape to ResultCard shape
+  const mappedResults = results.map((r) => ({
+    id: r.docId,
+    title: r.title,
+    content: r.snippet,
+    url: r.url,
+    author: r.metadata.author,
+    subreddit: r.metadata.subreddit,
+    score: r.metadata.redditScore,
+    commentCount: r.metadata.commentCount,
+    createdAt: r.metadata.createdUtc,
+    type: 'post' as const,
+    snippet: r.snippet,
+    relevanceScore: r.score,
+  }));
 
   if (results.length === 0) {
     return (
@@ -143,7 +160,7 @@ export default function SearchResults({ results, query, isLoading = false }: Sea
 
   return (
     <div className="search-results">
-      {results.map((result) => (
+      {mappedResults.map((result) => (
         <ResultCard key={result.id} result={result} query={query} />
       ))}
     </div>

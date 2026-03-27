@@ -82,8 +82,7 @@ export function useGlobalKeyboardShortcuts() {
       shift: true,
       description: 'Show keyboard shortcuts',
       action: () => {
-        // This will be implemented later
-        console.log('Keyboard shortcuts help');
+        window.dispatchEvent(new CustomEvent('showShortcuts'));
       },
     },
     {

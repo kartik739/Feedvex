@@ -190,37 +190,7 @@ export function useListNavigation<T extends HTMLElement>(
   return currentIndexRef;
 }
 
-/**
- * Hook for keyboard shortcuts
- */
-export function useKeyboardShortcuts(shortcuts: Record<string, () => void>, enabled: boolean = true) {
-  useEffect(() => {
-    if (!enabled) return;
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // Build shortcut key (e.g., "ctrl+k", "cmd+shift+p")
-      const parts: string[] = [];
-      if (event.ctrlKey || event.metaKey) parts.push(event.ctrlKey ? 'ctrl' : 'cmd');
-      if (event.shiftKey) parts.push('shift');
-      if (event.altKey) parts.push('alt');
-      parts.push(event.key.toLowerCase());
-
-      const shortcutKey = parts.join('+');
-
-      if (shortcuts[shortcutKey]) {
-        event.preventDefault();
-        shortcuts[shortcutKey]();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [shortcuts, enabled]);
-}
-
-/**
- * Hook for roving tabindex (for toolbars, menus)
- */
 export function useRovingTabIndex(
   itemsRef: React.RefObject<HTMLElement[]>,
   orientation: 'horizontal' | 'vertical' = 'horizontal'

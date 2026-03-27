@@ -1,11 +1,15 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Search, Sun, Moon, BarChart3, User, LogOut, Menu, X } from 'lucide-react';
+import { Search, Sun, Moon, BarChart3, User, LogOut, Menu, X, Keyboard } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { useThemeStore } from '../store/themeStore';
 import './Header.css';
 
-export default function Header() {
+interface HeaderProps {
+  onShowShortcuts?: () => void;
+}
+
+export default function Header({ onShowShortcuts }: HeaderProps) {
   const { isAuthenticated, user, logout } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
   const navigate = useNavigate();
@@ -108,6 +112,17 @@ export default function Header() {
                 <Sun size={20} className="theme-icon" />
               )}
             </button>
+
+            {onShowShortcuts && (
+              <button
+                onClick={onShowShortcuts}
+                className="icon-button"
+                aria-label="Keyboard shortcuts"
+                title="Keyboard shortcuts (?)"
+              >
+                <Keyboard size={20} />
+              </button>
+            )}
 
             {isAuthenticated ? (
               <div className="user-menu">
