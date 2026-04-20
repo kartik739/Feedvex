@@ -15,10 +15,12 @@ import * as path from 'path';
  * Configuration for the Indexer
  */
 export interface IndexerConfig {
-  // Path where the index should be persisted
+  // Path where the index should be persisted fallback
   indexPath?: string;
   // Whether to automatically persist changes
   autoPersist?: boolean;
+  // Postgres Client for Serverless environments
+  pgClient?: any;
 }
 
 /**
@@ -192,19 +194,32 @@ export class Indexer {
     return Array.from(this.index.termToPostings.keys());
   }
 
-  /**
-   * Persists the index to disk
-   * Requirements 3.5, 12.2: Serialize index to JSON file
-   */
   async persist(): Promise<void> {
-    if (!this.config.indexPath) {
-      throw new Error('No index path configured for persistence');
+    const serialized = serializeIndex(this.index);
+
+    if (this.config.pgClient) {
+      // Use Postgres for State
+      const jsonString = JSON.stringify(serialized);
+      await this.config.pgClient.query(`
+        CREATE TABLE IF NOT EXISTS search_index_state (
+          id INTEGER PRIMARY KEY,
+          data JSONB NOT NULL,
+          updated_at TIMESTAMP NOT NULL
+        )
+      `);
+      await this.config.pgClient.query(
+        `INSERT INTO search_index_state (id, data, updated_at) VALUES (1, $1, NOW())
+         ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()`,
+        [jsonString]
+      );
+      return;
     }
 
-    const serialized = serializeIndex(this.index);
-    const indexDir = path.dirname(this.config.indexPath);
+    if (!this.config.indexPath) {
+      throw new Error('No index path or pgClient configured for persistence');
+    }
 
-    // Ensure directory exists
+    const indexDir = path.dirname(this.config.indexPath);
     await fs.mkdir(indexDir, { recursive: true });
 
     // Write to temporary file first, then rename for atomic operation
@@ -213,13 +228,32 @@ export class Indexer {
     await fs.rename(tempPath, this.config.indexPath);
   }
 
-  /**
-   * Loads the index from disk
-   * Requirements 3.5, 12.2: Restore index from file
-   */
   async load(): Promise<void> {
+    if (this.config.pgClient) {
+      try {
+        await this.config.pgClient.query(`
+          CREATE TABLE IF NOT EXISTS search_index_state (
+            id INTEGER PRIMARY KEY,
+            data JSONB NOT NULL,
+            updated_at TIMESTAMP NOT NULL
+          )
+        `);
+        const res = await this.config.pgClient.query('SELECT data FROM search_index_state WHERE id = 1');
+        if (res.rows.length > 0) {
+          const rawData = res.rows[0].data;
+          const serialized: SerializableInvertedIndex = typeof rawData === 'string' ? JSON.parse(rawData) : rawData;
+          this.index = deserializeIndex(serialized);
+          return;
+        }
+      } catch (error) {
+        console.warn('Failed to load from PostgreSQL, falling back to empty index:', error);
+      }
+      this.index = createEmptyIndex();
+      return;
+    }
+
     if (!this.config.indexPath) {
-      throw new Error('No index path configured for loading');
+      throw new Error('No index path or pgClient configured for loading');
     }
 
     try {

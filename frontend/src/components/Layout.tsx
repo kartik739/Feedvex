@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import Header from './Header';
-import Footer from './Footer';
 import SkipToContent from './SkipToContent';
 import OfflineNotification from './OfflineNotification';
 import KeyboardShortcutsHelp from './KeyboardShortcutsHelp';
 import { useGlobalKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
+import SiteNav from './SiteNav';
 
 export default function Layout() {
   const [showShortcuts, setShowShortcuts] = useState(false);
@@ -24,12 +23,11 @@ export default function Layout() {
     <>
       <SkipToContent />
       <OfflineNotification />
-      <div className="app-main">
-        <Header onShowShortcuts={() => setShowShortcuts(true)} />
+      <SiteNav />
+      <div className="flex-1 flex flex-col min-h-[calc(100vh-73px)]">
         <main id="main-content" role="main">
           <Outlet />
         </main>
-        <Footer />
       </div>
       <KeyboardShortcutsHelp
         isOpen={showShortcuts}

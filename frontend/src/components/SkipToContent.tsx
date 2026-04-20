@@ -5,7 +5,6 @@ export default function SkipToContent() {
     if (mainContent) {
       mainContent.setAttribute('tabindex', '-1');
       mainContent.focus();
-      // Remove tabindex after focus to restore normal tab order
       mainContent.addEventListener('blur', () => {
         mainContent.removeAttribute('tabindex');
       }, { once: true });
@@ -15,8 +14,22 @@ export default function SkipToContent() {
   return (
     <a
       href="#main-content"
-      className="skip-to-content"
       onClick={handleSkip}
+      style={{
+        position: 'fixed',
+        top: '-100px',
+        left: 0,
+        zIndex: 9999,
+        padding: '8px 16px',
+        background: '#10b981',
+        color: '#003824',
+        fontWeight: 700,
+        fontSize: '14px',
+        textDecoration: 'none',
+        transition: 'top 0.2s',
+      }}
+      onFocus={(e) => { (e.target as HTMLElement).style.top = '8px'; }}
+      onBlur={(e) => { (e.target as HTMLElement).style.top = '-100px'; }}
     >
       Skip to main content
     </a>

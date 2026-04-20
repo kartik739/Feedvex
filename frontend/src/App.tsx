@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import { ClerkProvider } from '@clerk/clerk-react';
-import './App.css';
 import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -15,6 +14,7 @@ const StatsPage = lazy(() => import('./pages/StatsPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const SignupPage = lazy(() => import('./pages/SignupPage'));
+const PostPage = lazy(() => import('./pages/PostPage'));
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -32,6 +32,7 @@ function AppRoutes() {
                 <Route path="/stats" element={<StatsPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
+                <Route path="/post/:id" element={<PostPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Routes>
@@ -43,14 +44,15 @@ function AppRoutes() {
 }
 
 function App() {
-  if (clerkPubKey) {
-    return (
-      <ClerkProvider publishableKey={clerkPubKey}>
-        <AppRoutes />
-      </ClerkProvider>
-    );
+  if (!clerkPubKey) {
+    throw new Error('Missing Publishable Key: Add VITE_CLERK_PUBLISHABLE_KEY to your .env file');
   }
-  return <AppRoutes />;
+
+  return (
+    <ClerkProvider publishableKey={clerkPubKey}>
+      <AppRoutes />
+    </ClerkProvider>
+  );
 }
 
 export default App;

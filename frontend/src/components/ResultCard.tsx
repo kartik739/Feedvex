@@ -1,8 +1,6 @@
 import { MessageCircle, TrendingUp, Calendar, User } from 'lucide-react';
 import { useState } from 'react';
 import { api } from '../services/api';
-import './ResultCard.css';
-
 interface SearchResult {
   id: string;
   title: string;
@@ -96,11 +94,11 @@ export default function ResultCard({ result, query }: ResultCardProps) {
     : result.snippet;
 
   return (
-    <div className="result-card">
-      <div className="result-header">
-        <span className="result-type">{result.type}</span>
-        <span className="result-subreddit">r/{result.subreddit}</span>
-        <span className="result-date">
+    <div className="premium-card p-8 flex flex-col group h-full">
+      <div className="flex items-center gap-4 text-[#A3A3A3] text-[10px] uppercase tracking-[0.2em] font-bold mb-4">
+        <span className="text-[#864535]">{result.type}</span>
+        <span>r/{result.subreddit}</span>
+        <span className="flex items-center gap-1">
           <Calendar size={14} />
           {formatDate(result.createdAt)}
         </span>
@@ -110,20 +108,20 @@ export default function ResultCard({ result, query }: ResultCardProps) {
         href={result.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="result-title"
+        className="font-serif text-2xl md:text-3xl font-medium text-white hover:text-[#864535] transition-colors leading-tight mb-4"
         onClick={handleClick}
         dangerouslySetInnerHTML={{ __html: highlightText(result.title, query) }}
       />
 
       {result.snippet && (
-        <div className="result-snippet-container">
+        <div className="font-sans text-white/70 leading-relaxed mb-6 flex-grow">
           <p 
-            className={`result-snippet ${isExpanded ? 'expanded' : ''}`}
+            className={`transition-all duration-300 ${isExpanded ? '' : 'line-clamp-3'}`}
             dangerouslySetInnerHTML={{ __html: highlightText(displaySnippet || '', query) }} 
           />
           {shouldShowExpand && (
             <button
-              className="expand-button"
+              className="mt-2 text-[#864535] text-xs font-bold uppercase tracking-widest hover:text-[#A35D4B] transition-colors"
               onClick={() => setIsExpanded(!isExpanded)}
               aria-label={isExpanded ? 'Show less' : 'Read more'}
             >
@@ -133,21 +131,21 @@ export default function ResultCard({ result, query }: ResultCardProps) {
         </div>
       )}
 
-      <div className="result-footer">
-        <span className="result-author">
+      <div className="flex items-center gap-6 pt-6 border-t border-white/5 text-[#A3A3A3] font-sans text-xs flex-wrap mt-auto">
+        <span className="flex items-center gap-1.5">
           <User size={14} />
           u/{result.author}
         </span>
-        <span className="result-score">
+        <span className="flex items-center gap-1.5">
           <TrendingUp size={14} />
           {result.score}
         </span>
-        <span className="result-comments">
+        <span className="flex items-center gap-1.5">
           <MessageCircle size={14} />
           {result.commentCount}
         </span>
-        <span className="result-relevance">
-          Relevance: {(result.relevanceScore * 100).toFixed(1)}%
+        <span className="ml-auto text-[#864535]">
+          {(result.relevanceScore * 100).toFixed(1)}% match
         </span>
       </div>
     </div>

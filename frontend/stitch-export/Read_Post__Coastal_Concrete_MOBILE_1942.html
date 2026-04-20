@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f9f9f9",
+                        "surface-container-low": "#f3f3f3",
+                        "on-primary-fixed": "#390b02",
+                        "surface-container-highest": "#e2e2e2",
+                        "inverse-primary": "#ffb4a2",
+                        "tertiary-fixed": "#a3f1e0",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#e8e8e8",
+                        "on-tertiary-fixed": "#00201b",
+                        "primary-container": "#a35d4b",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#eeeeee",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#fff2ef",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#1a1c1c",
+                        "outline": "#86736e",
+                        "secondary-fixed": "#e4e2e1",
+                        "inverse-on-surface": "#f0f1f1",
+                        "on-secondary-fixed-variant": "#474747",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "on-tertiary-container": "#ccfff2",
+                        "on-primary-fixed-variant": "#713526",
+                        "surface-dim": "#dadada",
+                        "surface-bright": "#f9f9f9",
+                        "tertiary-container": "#2b7c6e",
+                        "secondary-container": "#e4e2e1",
+                        "background": "#f9f9f9",
+                        "surface-tint": "#8e4c3b",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e2e2e2",
+                        "outline-variant": "#d8c2bc",
+                        "primary-fixed": "#ffdbd2",
+                        "on-secondary-container": "#656464",
+                        "primary-fixed-dim": "#ffb4a2",
+                        "on-tertiary-fixed-variant": "#005046",
+                        "tertiary": "#006356",
+                        "secondary": "#5f5e5e",
+                        "on-background": "#1a1c1c",
+                        "on-secondary-fixed": "#1b1c1c",
+                        "tertiary-fixed-dim": "#87d5c4",
+                        "primary": "#864535",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#53433f",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#2f3131"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Newsreader"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            background-color: #f9f9f9;
+            color: #1a1c1c;
+            -webkit-font-smoothing: antialiased;
+        }
+        .editorial-rag {
+            padding-left: clamp(1rem, 5vw, 4rem);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar -->
+<nav class="flex justify-between items-center w-full px-6 py-4 max-w-none sticky top-0 z-50 bg-[#f9f9f9] dark:bg-stone-950 backdrop-blur-md bg-opacity-90">
+<div class="flex items-center gap-4">
+<button class="text-[#864535] dark:text-[#a35d4b] hover:opacity-70 transition-opacity duration-200 scale-95 active:duration-150">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<span class="text-2xl font-bold tracking-tighter text-[#1a1c1c] dark:text-stone-100 uppercase font-headline">ARCHIVE</span>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-[#1a1c1c] dark:text-stone-400 hover:opacity-70 transition-opacity duration-200">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+</button>
+</div>
+</nav>
+<main class="max-w-4xl mx-auto px-6 py-12 lg:py-24">
+<!-- Article Header -->
+<header class="mb-16">
+<div class="mb-8 editorial-rag">
+<p class="font-label text-[0.75rem] uppercase tracking-[0.15em] text-secondary mb-4">
+                    r/architectureporn • u/spatial_theory • 4h ago
+                </p>
+<h1 class="font-headline text-4xl md:text-6xl lg:text-7xl leading-[1.1] tracking-tighter font-bold text-on-surface italic">
+                    The resurgence of warm-toned concrete in coastal residential projects: A 2024 overview
+                </h1>
+</div>
+<!-- Hero Image Component -->
+<div class="w-full aspect-[16/10] bg-surface-container overflow-hidden group">
+<img alt="Minimalist architectural concrete structure" class="w-full h-full object-cover grayscale contrast-125 transition-transform duration-700 group-hover:scale-105" data-alt="monochromatic minimalist concrete architecture with clean lines and dramatic shadows against a clear sky, brutalist coastal influence" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmPmpkhro6R56FY4B7IUxwf7UbZVQPWMDE8rrTrcj7UbfD2osBiuCi1d5srGJfKcakbXdzQmhcsB_1yvZNNGGhXnnxBZ48_q5_E4W7xsFBAp-jrrS04C4MxmhP7UgdVsbNF_EjNjdM7Cqk-KKSCoBrCFCqyMtdx2Faq6oAN7OoHb8ByoBIStUCEQhUtg5_4KG-5z74U5EKPhfZYR9QVYArXNv73Lz7oDoeRWy27tic41mKc5s7bm_Bm1yot1Qmz6gdHyp56bV_4qA"/>
+</div>
+<p class="font-label text-[10px] uppercase tracking-widest text-secondary mt-3 text-right">FIG 01. SAND-PIGMENTED BRUTALISM, TASMANIA.</p>
+</header>
+<!-- Article Body -->
+<article class="prose prose-stone max-w-none mb-24">
+<div class="font-headline text-xl md:text-2xl leading-relaxed text-on-surface-variant editorial-rag space-y-12">
+<p class="first-letter:text-6xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:text-primary">
+                    For decades, the architectural zeitgeist was dominated by the clinical chill of grey cement and industrial steel. However, 2024 marks a definitive shift toward what critics are calling "Soft Brutalism." This movement prioritizes material honesty through the integration of warm, earth-toned aggregates and iron-oxide pigments.
+                </p>
+<p>
+                    The shift is particularly prominent in coastal residential projects. By incorporating local sands and crushed limestone into the concrete mix, architects are creating structures that don't merely sit upon the landscape—they emerge from it. These warm tones serve a dual purpose: they mitigate the harsh glare of coastal sunlight while providing a visual anchor against the shifting blues of the ocean.
+                </p>
+<p>
+                    In Tasmania and the California coast, we are seeing a rejection of smooth, troweled finishes. Instead, "board-forming"—where the texture of raw timber shuttering is left permanently etched into the concrete—is being celebrated. This tactile quality evokes a sense of permanence and "curated decay," allowing the building to age gracefully alongside the environment.
+                </p>
+</div>
+</article>
+<!-- Interaction Bar (Minimalist) -->
+<section class="flex items-center justify-between py-8 border-t border-transparent bg-surface-container-low px-8 mb-16">
+<div class="flex items-center gap-8">
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform" data-icon="keyboard_arrow_up">keyboard_arrow_up</span>
+<span class="font-label text-xs font-bold tracking-widest">12.4K</span>
+</button>
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-label text-xs font-bold tracking-widest uppercase">342 COMMENTS</span>
+</button>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-secondary hover:text-primary" data-icon="bookmark">bookmark</button>
+<button class="material-symbols-outlined text-secondary hover:text-primary" data-icon="share">share</button>
+</div>
+</section>
+<!-- Comments Section -->
+<section class="space-y-1">
+<h3 class="font-label text-[10px] uppercase tracking-[0.2em] text-secondary mb-10 pl-8">Critical Response</h3>
+<!-- Comment 1 -->
+<div class="bg-surface-container-low p-10 md:p-12 mb-1 group hover:bg-surface-container transition-colors duration-300">
+<div class="flex justify-between mb-4">
+<span class="font-label text-[10px] font-bold text-primary tracking-widest">U/TECTONIC_STUDIO</span>
+<span class="font-label text-[10px] text-secondary tracking-widest">2H AGO</span>
+</div>
+<p class="font-headline text-lg leading-relaxed text-on-surface italic mb-6">
+                    "The focus on material honesty is a breath of fresh air after the glass-and-steel era. There is something deeply primordial about concrete that carries the warmth of the earth."
+                </p>
+<div class="flex gap-4">
+<button class="font-label text-[9px] uppercase tracking-widest font-bold text-secondary hover:text-primary">Upvote</button>
+<button class="font-label text-[9px] uppercase tracking-widest font-bold text-secondary hover:text-primary">Reply</button>
+</div>
+</div>
+<!-- Comment 2 -->
+<div class="bg-surface p-10 md:p-12 mb-1 group hover:bg-surface-container-low transition-colors duration-300">
+<div class="flex justify-between mb-4">
+<span class="font-label text-[10px] font-bold text-primary tracking-widest">U/PIGMENT_LAB</span>
+<span class="font-label text-[10px] text-secondary tracking-widest">1H AGO</span>
+</div>
+<p class="font-headline text-lg leading-relaxed text-on-surface italic mb-6">
+                    "Interesting to see how these pigments age over time. Traditional grey concrete tends to streak and stain poorly in salt air, but these ochre and terracotta mixes seem to hide weathering as part of their character."
+                </p>
+<div class="flex gap-4">
+<button class="font-label text-[9px] uppercase tracking-widest font-bold text-secondary hover:text-primary">Upvote</button>
+<button class="font-label text-[9px] uppercase tracking-widest font-bold text-secondary hover:text-primary">Reply</button>
+</div>
+</div>
+<!-- Comment 3 (Nested feel via margin) -->
+<div class="bg-surface-container-low ml-8 md:ml-12 p-10 mb-1 group hover:bg-surface-container transition-colors duration-300">
+<div class="flex justify-between mb-4">
+<span class="font-label text-[10px] font-bold text-primary tracking-widest">U/SPATIAL_THEORY</span>
+<span class="font-label text-[10px] text-secondary tracking-widest">45M AGO</span>
+</div>
+<p class="font-headline text-base leading-relaxed text-on-surface-variant italic mb-6">
+                    "Exactly. The patina becomes the ornament."
+                </p>
+<div class="flex gap-4">
+<button class="font-label text-[9px] uppercase tracking-widest font-bold text-secondary hover:text-primary">Upvote</button>
+</div>
+</div>
+</section>
+<!-- Load More -->
+<div class="mt-12 flex justify-center">
+<button class="px-8 py-3 bg-primary text-on-primary font-label text-[10px] uppercase tracking-[0.2em] font-bold hover:bg-primary-container transition-colors duration-200">
+                Read All Conversations
+            </button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full mt-auto bg-[#f3f3f3] dark:bg-stone-900 w-full px-8 py-12 flex flex-col items-center gap-4 text-center">
+<div class="text-[#1a1c1c] dark:text-stone-100 font-headline font-bold italic text-xl">The Digital Archivist</div>
+<div class="flex gap-6">
+<a class="font-sans text-[10px] uppercase tracking-[0.1em] Inter text-stone-500 hover:text-[#864535] transition-colors duration-200 underline-offset-4 hover:underline" href="#">Terms</a>
+<a class="font-sans text-[10px] uppercase tracking-[0.1em] Inter text-stone-500 hover:text-[#864535] transition-colors duration-200 underline-offset-4 hover:underline" href="#">Privacy</a>
+<a class="font-sans text-[10px] uppercase tracking-[0.1em] Inter text-stone-500 hover:text-[#864535] transition-colors duration-200 underline-offset-4 hover:underline" href="#">Archive Policies</a>
+</div>
+<p class="font-sans text-[10px] uppercase tracking-[0.1em] Inter text-[#864535] dark:text-[#a35d4b] mt-4">© 2024 THE DIGITAL ARCHIVIST. ALL RIGHTS RESERVED.</p>
+</footer>
+</body></html>

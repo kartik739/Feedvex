@@ -1,4 +1,4 @@
-import './SkeletonLoader.css';
+
 
 interface SkeletonLoaderProps {
   count?: number;

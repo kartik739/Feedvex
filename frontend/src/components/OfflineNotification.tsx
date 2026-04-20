@@ -1,5 +1,5 @@
 import { useOfflineNotification } from '../hooks/useNetworkStatus';
-import './OfflineNotification.css';
+
 
 export default function OfflineNotification() {
   const { isOnline, showNotification } = useOfflineNotification();

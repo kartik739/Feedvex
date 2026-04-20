@@ -1,5 +1,5 @@
 import { X, Keyboard } from 'lucide-react';
-import './KeyboardShortcutsHelp.css';
+
 
 interface KeyboardShortcutsHelpProps {
   isOpen: boolean;

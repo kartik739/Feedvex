@@ -1,290 +1,58 @@
-import { useState, useEffect } from 'react';
-import { useAuthStore } from '../store/authStore';
-import { toast } from '../store/toastStore';
-import { api, authAPI } from '../services/api';
-import { User, Mail, Save, Camera, Clock, CheckCircle, XCircle, Trash2 } from 'lucide-react';
-import ConfirmDialog from '../components/ConfirmDialog';
-import './ProfilePage.css';
-
-interface HistoryEntry {
-  id: string;
-  query: string;
-  timestamp: string;
-  resultCount: number;
-}
+import { UserProfile, SignedIn, SignedOut, SignInButton } from '@clerk/clerk-react';
+import { dark } from '@clerk/themes';
 
 export default function ProfilePage() {
-  const { user, logout } = useAuthStore();
-  const [isEditing, setIsEditing] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [searchHistory, setSearchHistory] = useState<HistoryEntry[]>([]);
-  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
-  const [showClearDialog, setShowClearDialog] = useState(false);
-  const [formData, setFormData] = useState({
-    username: user?.username || '',
-    email: user?.email || '',
-  });
-
-  useEffect(() => {
-    if (user) {
-      loadSearchHistory();
-    } else {
-      setIsLoadingHistory(false);
-    }
-  }, [user]);
-
-  const loadSearchHistory = async () => {
-    try {
-      setIsLoadingHistory(true);
-      const response = await api.getHistory(10);
-      setSearchHistory(response.history || []);
-    } catch {
-      setSearchHistory([]);
-    } finally {
-      setIsLoadingHistory(false);
-    }
-  };
-
-  const handleClearHistory = async () => {
-    try {
-      await api.clearHistory();
-      setSearchHistory([]);
-      toast.success('Search history cleared successfully!');
-    } catch (error) {
-      toast.error('Failed to clear search history');
-    }
-  };
-
-  const handleDeleteEntry = async (entryId: string) => {
-    try {
-      await api.deleteHistoryEntry(entryId);
-      setSearchHistory(searchHistory.filter(entry => entry.id !== entryId));
-      toast.success('Entry deleted');
-    } catch (error) {
-      toast.error('Failed to delete entry');
-    }
-  };
-
-  const formatTimeAgo = (timestamp: string) => {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-
-    if (diffMins < 60) {
-      return `${diffMins} ${diffMins === 1 ? 'minute' : 'minutes'} ago`;
-    } else if (diffHours < 24) {
-      return `${diffHours} ${diffHours === 1 ? 'hour' : 'hours'} ago`;
-    } else {
-      return `${diffDays} ${diffDays === 1 ? 'day' : 'days'} ago`;
-    }
-  };
-
-  if (!user) {
-    return (
-      <div className="profile-page">
-        <div className="profile-container">
-          <div className="profile-card" style={{ textAlign: 'center', padding: '3rem' }}>
-            <h2>Please log in to view your profile</h2>
-            <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-              You need to be logged in to access this page.
-            </p>
-            <a href="/login" className="btn btn-primary">Go to Login</a>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSaving(true);
-
-    try {
-      await authAPI.updateProfile(formData.username, formData.email);
-      setIsSaving(false);
-      setIsEditing(false);
-      toast.success('Profile updated successfully!');
-    } catch (error) {
-      setIsSaving(false);
-      toast.error('Failed to update profile');
-    }
-  };
-
-  const handleAvatarClick = () => {
-    toast.info('Avatar upload feature coming soon!');
-  };
-
   return (
-    <div className="profile-page">
-      <div className="profile-container">
-        <div className="profile-card">
-          <div className="profile-header">
-            <div className="profile-avatar-wrapper">
-              <div className="profile-avatar">
-                {user.username.charAt(0).toUpperCase()}
-              </div>
-              <button className="avatar-upload-btn" onClick={handleAvatarClick}>
-                <Camera size={16} />
-              </button>
-            </div>
-            <div className="profile-info">
-              <h1>{user.username}</h1>
-              <p className="profile-email">
-                <Mail size={16} />
-                {user.email}
-              </p>
-              <p className="profile-joined">
-                <Clock size={16} />
-                Joined December 2024
-              </p>
-            </div>
+    <div className="flex-1 bg-[#0A0A0A] flex flex-col items-center py-12 relative overflow-hidden">
+      
+      <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="w-full max-w-4xl px-6 relative z-10 flex flex-col items-center">
+        <header className="mb-12 text-center w-full max-w-2xl">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4 tracking-tight">Account Access</h1>
+          <p className="text-white/40 text-sm font-sans max-w-xl mx-auto">
+            Manage your digital footprint, API limits, and saved archives.
+          </p>
+        </header>
+
+        <SignedIn>
+          <div className="w-full max-w-3xl glass-panel p-2 rounded-lg border border-white/10 shadow-2xl">
+            <UserProfile 
+              appearance={{
+                baseTheme: dark,
+                variables: {
+                  colorPrimary: '#F59E0B',
+                  colorBackground: '#121212',
+                  colorInputBackground: '#1A1A1A',
+                  colorText: '#FFFFFF',
+                  colorTextSecondary: '#A3A3A3',
+                  borderRadius: '0.25rem',
+                },
+                elements: {
+                  card: 'bg-transparent shadow-none',
+                  navbar: 'hidden',
+                  headerTitle: 'hidden',
+                  headerSubtitle: 'hidden',
+                  rootBox: 'w-full'
+                }
+              }} 
+            />
           </div>
+        </SignedIn>
 
-          <div className="profile-stats">
-            <div className="stat-card">
-              <div className="stat-value">127</div>
-              <div className="stat-label">Searches</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-value">45</div>
-              <div className="stat-label">Clicks</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-value">12</div>
-              <div className="stat-label">Saved</div>
-            </div>
+        <SignedOut>
+          <div className="max-w-md w-full glass-panel p-10 text-center rounded-sm border border-amber-500/20">
+            <span className="material-symbols-outlined text-4xl text-amber-500 mb-4 block">lock</span>
+            <h2 className="text-2xl font-serif font-bold text-white mb-2">Restricted Area</h2>
+            <p className="text-white/50 text-sm mb-8">You need an active clearance to access identity management.</p>
+            
+            <SignInButton mode="modal">
+              <button className="w-full premium-btn text-sm">Authenticate Identity</button>
+            </SignInButton>
           </div>
-
-          <div className="profile-form-section">
-            <div className="section-header">
-              <h2>Profile Information</h2>
-              {!isEditing && (
-                <button className="btn btn-secondary btn-sm" onClick={() => setIsEditing(true)}>
-                  Edit Profile
-                </button>
-              )}
-            </div>
-
-            <form onSubmit={handleSubmit} className="profile-form">
-              <div className="form-group">
-                <label htmlFor="username">
-                  <User size={16} />
-                  Username
-                </label>
-                <input
-                  id="username"
-                  name="username"
-                  type="text"
-                  className="input"
-                  value={formData.username}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="email">
-                  <Mail size={16} />
-                  Email
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  className="input"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  required
-                />
-              </div>
-
-              {isEditing && (
-                <div className="form-actions">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => {
-                      setIsEditing(false);
-                      setFormData({
-                        username: user.username,
-                        email: user.email,
-                      });
-                    }}
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn btn-primary" disabled={isSaving}>
-                    <Save size={16} />
-                    {isSaving ? 'Saving...' : 'Save Changes'}
-                  </button>
-                </div>
-              )}
-            </form>
-          </div>
-
-          <div className="profile-history-section">
-            <h2>Recent Searches</h2>
-            {isLoadingHistory ? (
-              <div className="loading-state">Loading history...</div>
-            ) : searchHistory.length > 0 ? (
-              <div className="search-history">
-                {searchHistory.map((entry) => (
-                  <div key={entry.id} className="history-item">
-                    <div>
-                      <span className="history-query">{entry.query}</span>
-                      <span className="history-time">{formatTimeAgo(entry.timestamp)}</span>
-                      <span className="history-results">{entry.resultCount} results</span>
-                    </div>
-                    <button
-                      className="btn-icon"
-                      onClick={() => handleDeleteEntry(entry.id)}
-                      title="Delete entry"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="empty-state">No search history yet</div>
-            )}
-            {searchHistory.length > 0 && (
-              <button className="btn btn-secondary btn-sm clear-history-btn" onClick={() => setShowClearDialog(true)}>
-                Clear History
-              </button>
-            )}
-          </div>
-
-          <div className="profile-actions">
-            <button className="btn btn-danger" onClick={logout}>
-              Logout
-            </button>
-          </div>
-        </div>
-
-        <ConfirmDialog
-          isOpen={showClearDialog}
-          title="Clear Search History?"
-          message="This will permanently delete all your search history. This action cannot be undone."
-          confirmText="Clear History"
-          cancelText="Cancel"
-          variant="danger"
-          onConfirm={handleClearHistory}
-          onCancel={() => setShowClearDialog(false)}
-        />
+        </SignedOut>
       </div>
+
     </div>
   );
 }

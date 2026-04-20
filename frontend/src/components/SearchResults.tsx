@@ -1,6 +1,6 @@
 import ResultCard from './ResultCard';
 import SkeletonLoader from './SkeletonLoader';
-import './SearchResults.css';
+
 
 // Shape coming from the search store
 interface StoreSearchResult {

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FeedVex | Data Terminal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#86736e",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#005046",
+                        "on-surface-variant": "#53433f",
+                        "primary-fixed-dim": "#ffb4a2",
+                        "on-secondary-fixed": "#1b1c1c",
+                        "tertiary-fixed-dim": "#87d5c4",
+                        "secondary": "#5f5e5e",
+                        "on-secondary-fixed-variant": "#474747",
+                        "on-primary-fixed-variant": "#713526",
+                        "tertiary-container": "#2b7c6e",
+                        "surface-tint": "#8e4c3b",
+                        "inverse-on-surface": "#f0f1f1",
+                        "tertiary-fixed": "#a3f1e0",
+                        "background": "#f9f9f9",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-primary-fixed": "#390b02",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#fff2ef",
+                        "surface-bright": "#f9f9f9",
+                        "surface-container-low": "#f3f3f3",
+                        "surface": "#f9f9f9",
+                        "on-tertiary-container": "#ccfff2",
+                        "inverse-surface": "#2f3131",
+                        "surface-dim": "#dadada",
+                        "primary": "#864535",
+                        "secondary-fixed": "#e4e2e1",
+                        "on-background": "#1a1c1c",
+                        "inverse-primary": "#ffb4a2",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#656464",
+                        "surface-variant": "#e2e2e2",
+                        "outline-variant": "#d8c2bc",
+                        "on-surface": "#1a1c1c",
+                        "primary-fixed": "#ffdbd2",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#00201b",
+                        "surface-container-high": "#e8e8e8",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "secondary-container": "#e4e2e1",
+                        "on-error": "#ffffff",
+                        "tertiary": "#006356",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#a35d4b",
+                        "surface-container": "#eeeeee"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Newsreader"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-background text-on-background font-body antialiased;
+                height: 100vh;
+                overflow: hidden;
+            }
+        }
+        .serif-display { font-family: 'Newsreader', serif; }
+        .ambient-shadow { box-shadow: 0 4px 24px rgba(26, 28, 28, 0.04); }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d8c2bc;
+        }
+        .compact-row:hover {
+            background-color: rgba(134, 69, 53, 0.03);
+        }
+    </style>
+</head>
+<body class="flex flex-col">
+<nav class="shrink-0 w-full z-50 bg-[#f9f9f9] border-b border-surface-container-highest">
+<div class="flex justify-between items-center px-6 py-4">
+<div class="flex items-center gap-6">
+<h1 class="text-xl font-serif tracking-tighter text-[#1a1c1c]">FeedVex</h1>
+<div class="h-6 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-4 bg-surface-container-lowest border border-outline-variant/30 px-4 py-1.5 rounded-sm w-[400px]">
+<span class="material-symbols-outlined text-outline text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full font-body text-sm text-on-surface p-0" placeholder="Search archive..." type="text" value="Modernist Architecture Trends 2024"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="font-label text-[0.6rem] uppercase tracking-widest text-outline">Terminal Mode v2.4</span>
+<span class="material-symbols-outlined text-[#864535] cursor-pointer text-xl">settings</span>
+<div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-on-primary text-xs font-bold">JD</div>
+</div>
+</div>
+</nav>
+<main class="flex-1 flex overflow-hidden">
+<aside class="w-64 shrink-0 border-r border-surface-container-highest bg-surface-container-lowest p-6 custom-scrollbar overflow-y-auto">
+<div class="space-y-8">
+<section>
+<h3 class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-primary font-bold mb-4">View Mode</h3>
+<div class="space-y-1">
+<button class="w-full text-left px-3 py-2 text-xs font-medium bg-primary/10 text-primary rounded-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">list</span> Compact List
+                    </button>
+<button class="w-full text-left px-3 py-2 text-xs font-medium text-on-surface-variant hover:bg-surface-container rounded-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">grid_view</span> Expanded Grid
+                    </button>
+<button class="w-full text-left px-3 py-2 text-xs font-medium text-on-surface-variant hover:bg-surface-container rounded-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">table_chart</span> Tabular
+                    </button>
+</div>
+</section>
+<section>
+<h3 class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-outline font-bold mb-4">Sources</h3>
+<div class="space-y-2">
+<label class="flex items-center gap-3 cursor-pointer">
+<input checked="" class="rounded-sm border-outline-variant text-primary focus:ring-primary h-3.5 w-3.5" type="checkbox"/>
+<span class="text-[0.75rem] text-on-surface-variant">r/ArchitecturePorn</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer">
+<input checked="" class="rounded-sm border-outline-variant text-primary focus:ring-primary h-3.5 w-3.5" type="checkbox"/>
+<span class="text-[0.75rem] text-on-surface-variant">r/UrbanPlanning</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer">
+<input class="rounded-sm border-outline-variant text-primary focus:ring-primary h-3.5 w-3.5" type="checkbox"/>
+<span class="text-[0.75rem] text-on-surface-variant">r/DesignThought</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer">
+<input class="rounded-sm border-outline-variant text-primary focus:ring-primary h-3.5 w-3.5" type="checkbox"/>
+<span class="text-[0.75rem] text-on-surface-variant">r/Modernism</span>
+</label>
+</div>
+</section>
+<section>
+<h3 class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-outline font-bold mb-4">Content Type</h3>
+<div class="flex flex-wrap gap-2">
+<span class="bg-surface-container-high px-2 py-1 text-[0.6rem] uppercase tracking-tighter rounded-sm">Analysis</span>
+<span class="bg-surface-container-high px-2 py-1 text-[0.6rem] uppercase tracking-tighter rounded-sm border border-primary/20 text-primary">Media</span>
+<span class="bg-surface-container-high px-2 py-1 text-[0.6rem] uppercase tracking-tighter rounded-sm">Discussion</span>
+<span class="bg-surface-container-high px-2 py-1 text-[0.6rem] uppercase tracking-tighter rounded-sm">Archival</span>
+</div>
+</section>
+<section>
+<h3 class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-outline font-bold mb-4">Recency</h3>
+<div class="space-y-1">
+<div class="h-1.5 w-full bg-surface-container rounded-full relative">
+<div class="absolute inset-y-0 left-0 w-2/3 bg-primary rounded-full"></div>
+</div>
+<div class="flex justify-between text-[0.6rem] text-outline mt-2">
+<span>24H</span>
+<span>ALL TIME</span>
+</div>
+</div>
+</section>
+</div>
+</aside>
+<section class="flex-1 overflow-y-auto custom-scrollbar bg-background">
+<div class="max-w-4xl mx-auto px-8 py-10">
+<header class="mb-10">
+<p class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-primary mb-1 font-bold">Search Query Intelligence</p>
+<h2 class="serif-display text-4xl font-light tracking-tight text-on-background leading-tight mb-2">
+                    Modernist Architecture <span class="italic text-primary">Trends 2024</span>
+</h2>
+<p class="text-xs text-outline font-label uppercase tracking-widest">1,428 results indexed in 0.2s</p>
+</header>
+<div class="divide-y divide-surface-container-highest border-t border-surface-container-highest">
+<article class="compact-row group cursor-pointer py-4 transition-colors">
+<div class="flex items-start gap-6">
+<div class="w-24 h-16 shrink-0 bg-surface-container-low overflow-hidden">
+<img alt="Thumbnail" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxWNcpg4uxIjfGUdHyyxpWxSUaIr--BHP15bmz6TOuynfDH1ADbUSo1Nob46ijKmEZwJLcP7B_Qbh-2pjVSAPkQXq86SAmVkNvQtV-DJJEU-MYVVOG37uYo44dR12yGLDp_cRxczXWtfvtQu2HCfvl6JiSoi5bLeyTZ1sKXOxSwgFupawCLfM6cyRwYqGAZKfNk_XqK3xQHQfzK5s8X23rkjCFyVH0othIEWxhSUpj89lvoe-SoYg3gdDPSq-pwFL_zl35yy7nXQA"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-3 mb-1">
+<span class="text-[0.6rem] font-bold text-primary uppercase tracking-widest">r/ArchitecturePorn</span>
+<span class="text-[0.6rem] text-outline uppercase tracking-widest">u/spatial_theory • 4h</span>
+<span class="bg-surface-container px-1.5 py-0.5 text-[0.55rem] text-outline-variant font-bold rounded">MEDIA</span>
+</div>
+<h3 class="serif-display text-xl text-on-surface group-hover:text-primary transition-colors leading-snug mb-1 truncate">
+                                The resurgence of warm-toned concrete in coastal residential projects: A 2024 overview.
+                            </h3>
+<p class="text-[0.8rem] text-on-surface-variant line-clamp-1 opacity-70">
+                                Common thread is a rejection of the "grey box." Pigments mixed directly into the pour to create earthy, terracotta-like finishes...
+                            </p>
+</div>
+<div class="flex items-center gap-4 shrink-0 text-outline">
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-sm">thumb_up</span>
+<span class="text-[0.65rem] font-bold">12.4K</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-sm">chat_bubble</span>
+<span class="text-[0.65rem] font-bold">482</span>
+</div>
+</div>
+</div>
+</article>
+<article class="compact-row group cursor-pointer py-4 transition-colors">
+<div class="flex items-start gap-6">
+<div class="w-24 h-16 shrink-0 bg-surface-container-low flex items-center justify-center border border-dashed border-outline-variant">
+<span class="material-symbols-outlined text-outline/30">subject</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-3 mb-1">
+<span class="text-[0.6rem] font-bold text-primary uppercase tracking-widest">r/DesignThought</span>
+<span class="text-[0.6rem] text-outline uppercase tracking-widest">u/curator_99 • 12h</span>
+<span class="bg-primary/5 text-primary px-1.5 py-0.5 text-[0.55rem] font-bold rounded">ANALYSIS</span>
+</div>
+<h3 class="serif-display text-xl text-on-surface group-hover:text-primary transition-colors leading-snug mb-1 truncate">
+                                Why the "Digital Bauhaus" is failing modern user interface design.
+                            </h3>
+<p class="text-[0.8rem] text-on-surface-variant line-clamp-1 opacity-70 italic">
+                                "The obsession with clean lines has stripped the soul from our digital environments..."
+                            </p>
+</div>
+<div class="flex items-center gap-4 shrink-0 text-outline">
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-sm">thumb_up</span>
+<span class="text-[0.65rem] font-bold">8.1K</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-sm">chat_bubble</span>
+<span class="text-[0.65rem] font-bold">1.2K</span>
+</div>
+</div>
+</div>
+</article>
+<article class="compact-row group cursor-pointer py-4 transition-colors">
+<div class="flex items-start gap-6">
+<div class="w-24 h-16 shrink-0 bg-surface-container-low overflow-hidden">
+<img alt="Thumbnail" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeOcRxtODqkzdGqElBqLZhHTFbU_nn4f4YXZr-MO0LWq3W7Rp_3s7qXFb2mLu5uDhtQbpxfYnfGukITl0HE1o0zAtu3ah1cAMtFHf1feQ2o92DphIlCYhE1eD5G1-bYaLWROjz0WW5tN4iirP0EUUB1pX6WYvOb2nE1Rk_bEdcUt-jsEnuqR9u-u0aRwYYbUry2v7d5T68ZK1kw44aqXiJGRMkt2oBIi28yLPH-km7NX18vtXXZrAbparUjh6omVDWa1_ejdq2xiI"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-3 mb-1">
+<span class="text-[0.6rem] font-bold text-primary uppercase tracking-widest">r/UrbanPlanning</span>
+<span class="text-[0.6rem] text-outline uppercase tracking-widest">u/city_lab • 1d</span>
+<span class="bg-surface-container px-1.5 py-0.5 text-[0.55rem] text-outline-variant font-bold rounded">ARCHIVAL</span>
+</div>
+<h3 class="serif-display text-xl text-on-surface group-hover:text-primary transition-colors leading-snug mb-1 truncate">
+                                Retrofitting Brutalism: How London is saving its 20th-century icons.
+                            </h3>
+<p class="text-[0.8rem] text-on-surface-variant line-clamp-1 opacity-70">
+                                Demolition is no longer the default. New planning mandates are forcing developers to work with skeletons...
+                            </p>
+</div>
+<div class="flex items-center gap-4 shrink-0 text-outline">
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-sm">thumb_up</span>
+<span class="text-[0.65rem] font-bold">5.5K</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-sm">chat_bubble</span>
+<span class="text-[0.65rem] font-bold">290</span>
+</div>
+</div>
+</div>
+</article>
+<article class="compact-row group cursor-pointer py-4 transition-colors">
+<div class="flex items-start gap-6">
+<div class="w-24 h-16 shrink-0 bg-surface-container-low flex items-center justify-center">
+<span class="material-symbols-outlined text-outline/30">link</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-3 mb-1">
+<span class="text-[0.6rem] font-bold text-primary uppercase tracking-widest">r/Architecture</span>
+<span class="text-[0.6rem] text-outline uppercase tracking-widest">u/blueprint_expert • 2d</span>
+<span class="bg-surface-container px-1.5 py-0.5 text-[0.55rem] text-outline-variant font-bold rounded">SOURCE</span>
+</div>
+<h3 class="serif-display text-xl text-on-surface group-hover:text-primary transition-colors leading-snug mb-1 truncate">
+                                The Sustainability of 3D Printed Homes in Arid Climates.
+                            </h3>
+<p class="text-[0.8rem] text-on-surface-variant line-clamp-1 opacity-70">
+                                Thermal mass remains the primary challenge for thin-walled concrete extrusions in desert environments...
+                            </p>
+</div>
+<div class="flex items-center gap-4 shrink-0 text-outline">
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-sm">thumb_up</span>
+<span class="text-[0.65rem] font-bold">3.2K</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-sm">chat_bubble</span>
+<span class="text-[0.65rem] font-bold">112</span>
+</div>
+</div>
+</div>
+</article>
+</div>
+<div class="mt-12 pt-8 border-t border-surface-container-highest flex justify-between items-center">
+<button class="text-xs font-bold font-label uppercase tracking-widest text-primary flex items-center gap-2 hover:translate-x-2 transition-transform">
+                    Next Page <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<p class="text-[0.65rem] text-outline uppercase tracking-widest">Records 1-20 of 1,428</p>
+</div>
+</div>
+</section>
+<aside class="w-[420px] shrink-0 bg-surface-container-low border-l border-surface-container-highest flex flex-col p-8 custom-scrollbar overflow-y-auto">
+<div class="sticky top-0">
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-label text-[0.7rem] uppercase tracking-[0.25em] font-bold text-primary">RAG-Synthesis Engine</span>
+</div>
+<div class="bg-surface-container-lowest p-8 border border-primary/10 ambient-shadow relative">
+<div class="absolute top-0 left-0 w-full h-1 bg-primary/20"></div>
+<h4 class="serif-display text-2xl text-on-surface mb-6 leading-snug italic">
+                    "The prevailing discourse suggests a pivot toward 'Soft Brutalism'—marrying the structural honesty of concrete with organic, biophilic interventions."
+                </h4>
+<div class="space-y-4 mb-8">
+<p class="text-xs text-on-surface-variant leading-relaxed">
+<span class="font-bold text-on-surface">Key Consensus:</span> Community archives highlight a renewed obsession with 1970s utopian planning as a template for 2024 climate resilience. 
+                    </p>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+<span class="font-bold text-on-surface">Emerging Tech:</span> Pigmented concrete (terracotta tones) is displacing grey industrial finishes across 68% of tracked coastal projects.
+                    </p>
+</div>
+<div class="space-y-3 pt-6 border-t border-surface-container">
+<button class="w-full bg-primary text-on-primary py-3 px-4 text-[0.65rem] font-bold uppercase tracking-widest hover:brightness-110 transition-all">
+                        Generate Full Analysis
+                    </button>
+<button class="w-full bg-surface-container text-on-surface py-3 px-4 text-[0.65rem] font-bold uppercase tracking-widest hover:bg-surface-container-high transition-all border border-outline-variant/20">
+                        Download Intelligence PDF
+                    </button>
+</div>
+</div>
+<div class="mt-8 space-y-4">
+<h5 class="text-[0.6rem] font-bold uppercase tracking-widest text-outline">Referenced Sources (4)</h5>
+<div class="space-y-2">
+<div class="flex items-center justify-between p-2 hover:bg-white transition-colors cursor-pointer border-b border-surface-container-highest">
+<span class="text-[0.7rem] text-on-surface truncate">u/spatial_theory...</span>
+<span class="text-[0.6rem] text-primary font-bold">RELEVANCE: 98%</span>
+</div>
+<div class="flex items-center justify-between p-2 hover:bg-white transition-colors cursor-pointer border-b border-surface-container-highest">
+<span class="text-[0.7rem] text-on-surface truncate">u/city_lab...</span>
+<span class="text-[0.6rem] text-primary font-bold">RELEVANCE: 84%</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</main>
+<footer class="shrink-0 h-10 border-t border-surface-container-highest bg-[#f3f3f3] flex items-center justify-between px-6">
+<div class="flex items-center gap-6">
+<span class="text-[0.6rem] font-sans uppercase tracking-widest text-stone-400">© 2024 FEEDVEX DATA TERMINAL</span>
+<div class="h-3 w-px bg-stone-300"></div>
+<span class="text-[0.6rem] font-sans uppercase tracking-widest text-stone-400">STATUS: ALL NODES OPERATIONAL</span>
+</div>
+<div class="flex gap-6">
+<a class="text-[0.6rem] font-sans uppercase tracking-widest text-stone-400 hover:text-primary transition-colors" href="#">ARCHIVE</a>
+<a class="text-[0.6rem] font-sans uppercase tracking-widest text-stone-400 hover:text-primary transition-colors" href="#">METHODOLOGY</a>
+<a class="text-[0.6rem] font-sans uppercase tracking-widest text-stone-400 hover:text-primary transition-colors" href="#">API</a>
+</div>
+</footer>
+
+</body></html>

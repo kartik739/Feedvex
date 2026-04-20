@@ -1,143 +1,39 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
-import { toast } from '../store/toastStore';
-import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
-import './AuthPages.css';
+import { SignIn } from '@clerk/clerk-react';
+import { dark } from '@clerk/themes';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuthStore();
-  const navigate = useNavigate();
-
-  const validateForm = () => {
-    const newErrors: { email?: string; password?: string } = {};
-
-    if (!email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = 'Email is invalid';
-    }
-
-    if (!password) {
-      newErrors.password = 'Password is required';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      await login(email, password);
-      toast.success('Login successful! Welcome back.');
-      navigate('/search');
-    } catch (err) {
-      setError('Invalid email or password');
-      toast.error('Login failed. Please check your credentials.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
-    <div className="auth-page">
-      <div className="auth-background"></div>
-      <div className="auth-container">
-        <div className="auth-card">
-          <div className="auth-header">
-            <h1>Welcome Back</h1>
-            <p className="auth-subtitle">Login to continue searching</p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="auth-form">
-            {error && (
-              <div className="error-banner">
-                <AlertCircle size={18} />
-                {error}
-              </div>
-            )}
-
-            <div className="form-group">
-              <label htmlFor="email" className="label">
-                <Mail size={16} />
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                className={`input ${errors.email ? 'input-error' : ''}`}
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
-                }}
-                placeholder="you@example.com"
-              />
-              {errors.email && <span className="error-text">{errors.email}</span>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="password" className="label">
-                <Lock size={16} />
-                Password
-              </label>
-              <div className="password-input-wrapper">
-                <input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  className={`input ${errors.password ? 'input-error' : ''}`}
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    if (errors.password) setErrors((prev) => ({ ...prev, password: undefined }));
-                  }}
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  className="password-toggle"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-              {errors.password && <span className="error-text">{errors.password}</span>}
-            </div>
-
-            <button type="submit" className="btn btn-primary btn-lg btn-submit" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <span className="spinner-small"></span>
-                  Logging in...
-                </>
-              ) : (
-                'Login'
-              )}
-            </button>
-          </form>
-
-          <p className="auth-footer">
-            Don't have an account?{' '}
-            <Link to="/signup" className="auth-link">
-              Sign up
-            </Link>
-          </p>
-        </div>
+    <div className="flex-1 bg-[#0A0A0A] flex items-center justify-center py-20 relative overflow-hidden">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
+      
+      <div className="relative z-10 w-full max-w-md px-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <SignIn 
+          routing="path" 
+          path="/login" 
+          signUpUrl="/signup" 
+          appearance={{
+            baseTheme: dark,
+            variables: {
+              colorPrimary: '#F59E0B',
+              colorBackground: '#121212',
+              colorInputBackground: '#1A1A1A',
+              colorText: '#FFFFFF',
+              colorTextSecondary: '#A3A3A3',
+              borderRadius: '0.125rem',
+            },
+            elements: {
+              card: 'bg-transparent shadow-2xl border border-white/10 rounded-sm p-8',
+              headerTitle: 'text-2xl font-serif text-white tracking-tight',
+              headerSubtitle: 'text-sm text-white/50',
+              formButtonPrimary: 'bg-amber-500 text-black font-semibold hover:bg-amber-400 transition-colors uppercase tracking-widest text-[10px] py-3',
+              footerActionLink: 'text-amber-500 hover:text-amber-400',
+              formFieldInput: 'border-white/10 focus:border-amber-500 bg-[#1A1A1A] text-white rounded-sm',
+              formFieldLabel: 'text-[10px] uppercase tracking-widest text-white/50',
+              identityPreviewText: 'text-white/70',
+              identityPreviewEditButton: 'text-amber-500 hover:text-amber-400'
+            }
+          }} 
+        />
       </div>
     </div>
   );

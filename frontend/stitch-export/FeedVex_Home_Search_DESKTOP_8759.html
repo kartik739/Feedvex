@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .serif { font-family: 'Newsreader', serif; }::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f9f9f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e2e2e2;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#ccfff2",
+                    "surface-tint": "#8e4c3b",
+                    "on-surface-variant": "#53433f",
+                    "on-error-container": "#93000a",
+                    "outline": "#86736e",
+                    "outline-variant": "#d8c2bc",
+                    "on-tertiary-fixed": "#00201b",
+                    "primary-fixed-dim": "#ffb4a2",
+                    "surface-container-high": "#e8e8e8",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#f9f9f9",
+                    "on-background": "#1a1c1c",
+                    "background": "#f9f9f9",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed-variant": "#474747",
+                    "surface-dim": "#dadada",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "secondary": "#5f5e5e",
+                    "inverse-on-surface": "#f0f1f1",
+                    "primary": "#864535",
+                    "on-primary": "#ffffff",
+                    "secondary-container": "#e4e2e1",
+                    "on-tertiary-fixed-variant": "#005046",
+                    "surface-variant": "#e2e2e2",
+                    "inverse-surface": "#2f3131",
+                    "secondary-fixed-dim": "#c8c6c5",
+                    "surface": "#f9f9f9",
+                    "tertiary-container": "#2b7c6e",
+                    "inverse-primary": "#ffb4a2",
+                    "on-secondary-fixed": "#1b1c1c",
+                    "on-secondary-container": "#656464",
+                    "on-primary-container": "#fff2ef",
+                    "tertiary": "#006356",
+                    "surface-container-highest": "#e2e2e2",
+                    "primary-container": "#a35d4b",
+                    "tertiary-fixed": "#a3f1e0",
+                    "secondary-fixed": "#e4e2e1",
+                    "surface-container": "#eeeeee",
+                    "on-surface": "#1a1c1c",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#87d5c4",
+                    "surface-container-low": "#f3f3f3",
+                    "primary-fixed": "#ffdbd2",
+                    "on-primary-fixed": "#390b02",
+                    "on-primary-fixed-variant": "#713526",
+                    "on-secondary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Newsreader"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container overflow-x-hidden">
+<header class="sticky top-0 w-full bg-background/80 backdrop-blur-md px-12 py-8 z-50 border-b border-black/5 flex justify-between items-center">
+<div class="flex items-center gap-12">
+<div class="text-2xl font-bold tracking-tight text-[#1a1c1c] font-['Newsreader']">
+            FEEDVEX
+        </div>
+<nav class="hidden md:flex gap-8 items-center">
+<a class="font-label text-[11px] uppercase tracking-[0.2em] text-secondary hover:text-primary transition-colors" href="#">Archive</a>
+<a class="font-label text-[11px] uppercase tracking-[0.2em] text-secondary hover:text-primary transition-colors" href="#">Journal</a>
+<a class="font-label text-[11px] uppercase tracking-[0.2em] text-secondary hover:text-primary transition-colors" href="#">About</a>
+<a class="font-label text-[11px] uppercase tracking-[0.2em] text-secondary hover:text-primary transition-colors" href="#">Curations</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">notifications</span>
+</button>
+<div class="w-9 h-9 rounded-full bg-surface-container-high overflow-hidden ring-1 ring-black/5 cursor-pointer">
+<img alt="Curator portrait" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3CjV7pO5gL1oONHnl8rbWOLaUbnm5lY1aYXQB4fcQaipW2SVuc5CGYSr5WAQVjXoVsyf25I2YEU4r9gflVqURjz9EUDXIcpYV7c84vkRnJQu3uHVduL4vajxkmy74z_C2xPVYRIE7OXwkpsiKvJ2g1X2R3XJLZ1euLNJ5N59_0ZaU7HoACajgDbBcEaGFgX-uv_rwAmNoFrznNB9o964kFA2KgMdBTjGvoaDNA4OIFbsKvwJu5MWwWWRRZqF39cYFQzt_jBBovek"/>
+</div>
+</div>
+</header>
+<main class="flex-grow flex flex-col items-center">
+<section class="min-h-[716px] flex flex-col justify-center items-center w-full max-w-7xl px-8 py-20">
+<div class="w-full max-w-4xl text-center space-y-12">
+<div class="space-y-6">
+<p class="font-label text-[10px] uppercase tracking-[0.3em] text-secondary/60">The Digital Library of Human Spirit</p>
+<h1 class="serif text-6xl lg:text-8xl font-light tracking-tight text-on-surface leading-[1.05]">
+                    The Archive of <br/>
+<span class="italic font-normal">Conversation.</span>
+</h1>
+</div>
+<div class="relative w-full max-w-2xl mx-auto pt-4">
+<div class="relative flex items-center bg-white border-b border-black/10 px-2 py-6 transition-all duration-500 focus-within:border-primary">
+<span class="material-symbols-outlined text-secondary opacity-40 ml-2" data-icon="search">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-2xl font-serif italic placeholder:text-outline-variant/50 text-on-surface outline-none px-6" placeholder="Seek what has been said..." type="text"/>
+<button class="bg-primary text-white px-8 py-3 rounded-none text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-opacity-90 transition-all">
+                        Seek
+                    </button>
+</div>
+</div>
+</div>
+</section>
+<section class="w-full max-w-7xl px-8 pb-32">
+<div class="flex flex-col space-y-16">
+<div class="flex justify-between items-end border-b border-black/5 pb-6">
+<h2 class="font-label text-[12px] uppercase tracking-[0.4em] text-secondary">Featured Collections</h2>
+<a class="font-label text-[11px] uppercase tracking-[0.2em] text-primary underline underline-offset-8 decoration-primary/30 hover:decoration-primary" href="#">View Full Index</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 lg:gap-12">
+<div class="group cursor-pointer space-y-4">
+<div class="aspect-[4/5] bg-surface-container-low overflow-hidden relative mb-6">
+<div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500"></div>
+<div class="p-8 h-full flex flex-col justify-end">
+<span class="text-[10px] uppercase tracking-widest text-secondary opacity-60 mb-2">Vol. 042</span>
+<h3 class="serif text-3xl font-light leading-tight group-hover:italic transition-all">Modern Architecture</h3>
+</div>
+</div>
+<p class="text-sm leading-relaxed text-secondary opacity-70 max-w-[240px]">
+                        Exploring the spatial dialogue between Brutalism and the digital landscape.
+                    </p>
+</div>
+<div class="group cursor-pointer space-y-4">
+<div class="aspect-[4/5] bg-surface-container-low overflow-hidden relative mb-6">
+<div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500"></div>
+<div class="p-8 h-full flex flex-col justify-end">
+<span class="text-[10px] uppercase tracking-widest text-secondary opacity-60 mb-2">Vol. 118</span>
+<h3 class="serif text-3xl font-light leading-tight group-hover:italic transition-all">Practical Philosophy</h3>
+</div>
+</div>
+<p class="text-sm leading-relaxed text-secondary opacity-70 max-w-[240px]">
+                        Ancient ethics applied to the velocity of contemporary existence.
+                    </p>
+</div>
+<div class="group cursor-pointer space-y-4">
+<div class="aspect-[4/5] bg-surface-container-low overflow-hidden relative mb-6">
+<div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500"></div>
+<div class="p-8 h-full flex flex-col justify-end">
+<span class="text-[10px] uppercase tracking-widest text-secondary opacity-60 mb-2">Vol. 089</span>
+<h3 class="serif text-3xl font-light leading-tight group-hover:italic transition-all">Deep Tech &amp; Ethos</h3>
+</div>
+</div>
+<p class="text-sm leading-relaxed text-secondary opacity-70 max-w-[240px]">
+                        The underlying logic of code as a form of modern literature and law.
+                    </p>
+</div>
+<div class="group cursor-pointer space-y-4">
+<div class="aspect-[4/5] bg-surface-container-low overflow-hidden relative mb-6">
+<div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500"></div>
+<div class="p-8 h-full flex flex-col justify-end">
+<span class="text-[10px] uppercase tracking-widest text-secondary opacity-60 mb-2">Vol. 015</span>
+<h3 class="serif text-3xl font-light leading-tight group-hover:italic transition-all">The Quietism Movement</h3>
+</div>
+</div>
+<p class="text-sm leading-relaxed text-secondary opacity-70 max-w-[240px]">
+                        A curation of silence and intentional focus in an age of constant noise.
+                    </p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none opacity-20">
+<div class="absolute top-0 right-0 w-[800px] h-[800px] rounded-full bg-primary/5 blur-[150px] -translate-y-1/2 translate-x-1/4"></div>
+<div class="absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full bg-primary/5 blur-[120px] translate-y-1/4 -translate-x-1/4"></div>
+</div>
+<footer class="bg-background border-t border-black/5 w-full px-12 py-16">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
+<div class="space-y-6 max-w-sm">
+<div class="text-xl font-bold tracking-tight text-[#1a1c1c] font-['Newsreader']">FEEDVEX</div>
+<p class="text-xs leading-relaxed text-secondary opacity-60">
+                Dedicated to the preservation of nuance. A digital sanctuary for thoughtful exploration and the permanent archive of intellectual dialogue.
+            </p>
+<div class="font-['Inter'] text-[10px] uppercase tracking-[0.3em] text-secondary opacity-40">
+                © 2024 FEEDVEX ARCHIVE — ALL RIGHTS RESERVED
+            </div>
+</div>
+<div class="grid grid-cols-2 lg:grid-cols-3 gap-16">
+<div class="space-y-4">
+<span class="text-[10px] uppercase tracking-[0.2em] font-semibold text-on-surface">Resources</span>
+<nav class="flex flex-col gap-3">
+<a class="text-[11px] uppercase tracking-[0.1em] text-secondary hover:text-primary transition-colors" href="#">The Archive</a>
+<a class="text-[11px] uppercase tracking-[0.1em] text-secondary hover:text-primary transition-colors" href="#">Recent Journals</a>
+<a class="text-[11px] uppercase tracking-[0.1em] text-secondary hover:text-primary transition-colors" href="#">Curator Access</a>
+</nav>
+</div>
+<div class="space-y-4">
+<span class="text-[10px] uppercase tracking-[0.2em] font-semibold text-on-surface">Legal</span>
+<nav class="flex flex-col gap-3">
+<a class="text-[11px] uppercase tracking-[0.1em] text-secondary hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-[11px] uppercase tracking-[0.1em] text-secondary hover:text-primary transition-colors" href="#">Terms of Use</a>
+<a class="text-[11px] uppercase tracking-[0.1em] text-secondary hover:text-primary transition-colors" href="#">Copyright</a>
+</nav>
+</div>
+<div class="space-y-4 hidden lg:block">
+<span class="text-[10px] uppercase tracking-[0.2em] font-semibold text-on-surface">Social</span>
+<nav class="flex flex-col gap-3">
+<a class="text-[11px] uppercase tracking-[0.1em] text-secondary hover:text-primary transition-colors" href="#">Read.cv</a>
+<a class="text-[11px] uppercase tracking-[0.1em] text-secondary hover:text-primary transition-colors" href="#">Substack</a>
+</nav>
+</div>
+</div>
+</div>
+</footer>
+
+</body></html>

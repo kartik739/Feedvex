@@ -70,6 +70,7 @@
   "dependencies": {
     "@clerk/clerk-react": "^5.61.4",
     "@clerk/clerk-sdk-node": "^5.1.6",
+    "@clerk/themes": "^2.4.57",
     "@sentry/node": "^8.55.0",
     "@sentry/react": "^10.45.0",
     "@trigger.dev/sdk": "^3.0.0",

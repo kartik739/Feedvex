@@ -7,7 +7,7 @@ import { RateLimiter } from '../services/rate-limiter';
 import { AnalyticsService } from '../services/analytics';
 import { DocumentStore } from '../services/document-store';
 import { Indexer } from '../services/indexer';
-import { IAuthService } from '../services/auth-interface';
+import { ClerkAuthMiddleware } from '../services/clerk-auth';
 import { SearchHistoryService } from '../services/search-history';
 import { Document } from '../models/document';
 import { register } from '../utils/metrics';
@@ -46,13 +46,18 @@ export function createApp(
   analyticsService: AnalyticsService,
   documentStore: DocumentStore,
   indexer: Indexer,
-  authService: IAuthService,
+  clerkAuth: ClerkAuthMiddleware,
   searchHistoryService: SearchHistoryService,
   config: ApiConfig = {}
 ): Express {
   const app = express();
 
-  // CORS must come BEFORE helmet to handle preflight OPTIONS requests
+  // CORS Hardening
+  const isProd = process.env.NODE_ENV === 'production';
+  if (isProd && (!config.corsOrigins || config.corsOrigins.includes('*'))) {
+    throw new Error('CRITICAL SECURITY: CORS is misconfigured for production. Wildcard (*) origin is not allowed.');
+  }
+
   app.use(
     cors({
       origin: config.corsOrigins || '*',
@@ -62,8 +67,20 @@ export function createApp(
       optionsSuccessStatus: 200,
     })
   );
+  
+  // Helmet Hardening - Re-enable CSP with strict directives
   app.use(helmet({
-    contentSecurityPolicy: false, // Disable CSP in dev - it blocks cross-origin requests
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com", "https://*.clerk.accounts.dev"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        imgSrc: ["'self'", "data:", "https://images.unsplash.com", "https://lh3.googleusercontent.com"],
+        connectSrc: ["'self'", "https://cdn.tailwindcss.com", "https://*.clerk.accounts.dev"]
+      }
+    },
     crossOriginResourcePolicy: { policy: 'cross-origin' },
   }));
   app.use(express.json({ limit: '1mb' })); // Body parser with size limit
@@ -143,230 +160,16 @@ export function createApp(
     }
   });
 
-  // POST /api/v1/auth/register endpoint
-  app.post('/api/v1/auth/register', async (req: Request, res: Response) => {
-    try {
-      const { email, username, password } = req.body;
-
-      // Validate input
-      if (!email || typeof email !== 'string' || !email.includes('@')) {
-        return res.status(400).json({
-          error: {
-            code: 'INVALID_EMAIL',
-            message: 'Valid email is required',
-            requestId: (req as any).requestId,
-          },
-        } as ErrorResponse);
-      }
-
-      if (!username || typeof username !== 'string' || username.length < 3) {
-        return res.status(400).json({
-          error: {
-            code: 'INVALID_USERNAME',
-            message: 'Username must be at least 3 characters',
-            requestId: (req as any).requestId,
-          },
-        } as ErrorResponse);
-      }
-
-      if (!password || typeof password !== 'string' || password.length < 6) {
-        return res.status(400).json({
-          error: {
-            code: 'INVALID_PASSWORD',
-            message: 'Password must be at least 6 characters',
-            requestId: (req as any).requestId,
-          },
-        } as ErrorResponse);
-      }
-
-      const result = await authService.register(email, username, password);
-      res.status(201).json(result);
-    } catch (error) {
-      if (error instanceof Error && error.message.includes('already exists')) {
-        return res.status(409).json({
-          error: {
-            code: 'USER_EXISTS',
-            message: error.message,
-            requestId: (req as any).requestId,
-          },
-        } as ErrorResponse);
-      }
-
-      logger.error('Registration error', { error, requestId: (req as any).requestId });
-      res.status(500).json({
-        error: {
-          code: 'INTERNAL_ERROR',
-          message: 'An internal error occurred during registration',
-          requestId: (req as any).requestId,
-        },
-      } as ErrorResponse);
-    }
-  });
-
-  // POST /api/v1/auth/login endpoint
-  app.post('/api/v1/auth/login', async (req: Request, res: Response) => {
-    try {
-      const { email, password } = req.body;
-
-      // Validate input
-      if (!email || typeof email !== 'string') {
-        return res.status(400).json({
-          error: {
-            code: 'INVALID_EMAIL',
-            message: 'Email is required',
-            requestId: (req as any).requestId,
-          },
-        } as ErrorResponse);
-      }
-
-      if (!password || typeof password !== 'string') {
-        return res.status(400).json({
-          error: {
-            code: 'INVALID_PASSWORD',
-            message: 'Password is required',
-            requestId: (req as any).requestId,
-          },
-        } as ErrorResponse);
-      }
-
-      const result = await authService.login(email, password);
-      res.json(result);
-    } catch (error) {
-      if (error instanceof Error && error.message.includes('Invalid email or password')) {
-        return res.status(401).json({
-          error: {
-            code: 'INVALID_CREDENTIALS',
-            message: 'Invalid email or password',
-            requestId: (req as any).requestId,
-          },
-        } as ErrorResponse);
-      }
-
-      logger.error('Login error', { error, requestId: (req as any).requestId });
-      res.status(500).json({
-        error: {
-          code: 'INTERNAL_ERROR',
-          message: 'An internal error occurred during login',
-          requestId: (req as any).requestId,
-        },
-      } as ErrorResponse);
-    }
-  });
-
+  // Clerk handles /register, /login, and /profile completely on the frontend.
+  // The backend only needs to trust the JWT.
+  
   // GET /api/v1/auth/me endpoint (get current user)
-  app.get('/api/v1/auth/me', async (req: Request, res: Response) => {
-    try {
-      const authHeader = req.headers.authorization;
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({
-          error: {
-            code: 'UNAUTHORIZED',
-            message: 'Authorization token required',
-            requestId: (req as any).requestId,
-          },
-        } as ErrorResponse);
-      }
-
-      const token = authHeader.substring(7);
-      const user = await authService.verifyToken(token);
-
-      if (!user) {
-        return res.status(401).json({
-          error: {
-            code: 'INVALID_TOKEN',
-            message: 'Invalid or expired token',
-            requestId: (req as any).requestId,
-          },
-        } as ErrorResponse);
-      }
-
-      res.json({ user });
-    } catch (error) {
-      logger.error('Auth verification error', { error, requestId: (req as any).requestId });
-      res.status(500).json({
-        error: {
-          code: 'INTERNAL_ERROR',
-          message: 'An internal error occurred',
-          requestId: (req as any).requestId,
-        },
-      } as ErrorResponse);
-    }
-  });
-
-  // PATCH /api/v1/auth/profile endpoint (update profile)
-  app.patch('/api/v1/auth/profile', async (req: Request, res: Response) => {
-    try {
-      const authHeader = req.headers.authorization;
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({
-          error: {
-            code: 'UNAUTHORIZED',
-            message: 'Authorization token required',
-            requestId: (req as any).requestId,
-          },
-        } as ErrorResponse);
-      }
-
-      const token = authHeader.substring(7);
-      const user = await authService.verifyToken(token);
-
-      if (!user) {
-        return res.status(401).json({
-          error: {
-            code: 'INVALID_TOKEN',
-            message: 'Invalid or expired token',
-            requestId: (req as any).requestId,
-          },
-        } as ErrorResponse);
-      }
-
-      const { username, email } = req.body;
-
-      // Validate input
-      if (username && (typeof username !== 'string' || username.length < 3)) {
-        return res.status(400).json({
-          error: {
-            code: 'INVALID_USERNAME',
-            message: 'Username must be at least 3 characters',
-            requestId: (req as any).requestId,
-          },
-        } as ErrorResponse);
-      }
-
-      if (email && (typeof email !== 'string' || !email.includes('@'))) {
-        return res.status(400).json({
-          error: {
-            code: 'INVALID_EMAIL',
-            message: 'Valid email is required',
-            requestId: (req as any).requestId,
-          },
-        } as ErrorResponse);
-      }
-
-      // For now, just return success (in-memory auth doesn't support updates)
-      // In a real implementation, this would update the database
-      res.json({
-        success: true,
-        user: {
-          ...user,
-          username: username || user.username,
-          email: email || user.email,
-        },
-      });
-    } catch (error) {
-      logger.error('Profile update error', { error, requestId: (req as any).requestId });
-      res.status(500).json({
-        error: {
-          code: 'INTERNAL_ERROR',
-          message: 'An internal error occurred',
-          requestId: (req as any).requestId,
-        },
-      } as ErrorResponse);
-    }
+  app.get('/api/v1/auth/me', clerkAuth.requireAuth, async (req: Request, res: Response) => {
+    res.json({ user: (req as any).clerkUser });
   });
 
   // POST /api/v1/search endpoint (Requirement 13.1, 13.6, 16.2)
-  app.post('/api/v1/search', async (req: Request, res: Response) => {
+  app.post('/api/v1/search', clerkAuth.requireAuth, async (req: Request, res: Response) => {
     try {
       const { query, page = 1, pageSize = 10, filters } = req.body;
 
@@ -377,6 +180,17 @@ export function createApp(
             code: 'INVALID_QUERY',
             message: 'Query must be a non-empty string',
             details: { field: 'query' },
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+
+      if (query.length > 200) {
+        return res.status(400).json({
+          error: {
+            code: 'PAYLOAD_TOO_LARGE',
+            message: 'Search query exceeds maximum length of 200 characters.',
+            details: { field: 'query', length: query.length },
             requestId: (req as any).requestId,
           },
         } as ErrorResponse);
@@ -475,8 +289,34 @@ export function createApp(
     }
   });
 
+  // GET /api/v1/documents/:id endpoint
+  app.get('/api/v1/documents/:id', async (req: Request, res: Response) => {
+    try {
+      const doc = documentStore.getById(req.params.id as string);
+      if (!doc) {
+        return res.status(404).json({
+          error: {
+            code: 'NOT_FOUND',
+            message: 'Document not found in index',
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+      res.json({ document: doc });
+    } catch (error) {
+      logger.error('Document fetch error', { error, requestId: (req as any).requestId });
+      res.status(500).json({
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'An internal error occurred while processing your request',
+          requestId: (req as any).requestId,
+        },
+      } as ErrorResponse);
+    }
+  });
+
   // GET /api/v1/autocomplete endpoint (Requirement 13.2, 13.6, 16.5)
-  app.get('/api/v1/autocomplete', async (req: Request, res: Response) => {
+  app.get('/api/v1/autocomplete', clerkAuth.requireAuth, async (req: Request, res: Response) => {
     try {
       const { prefix, limit = 10 } = req.query;
 
@@ -487,6 +327,17 @@ export function createApp(
             code: 'INVALID_PREFIX',
             message: 'Prefix must be a non-empty string',
             details: { field: 'prefix' },
+            requestId: (req as any).requestId,
+          },
+        } as ErrorResponse);
+      }
+
+      if (prefix.length > 50) {
+        return res.status(400).json({
+          error: {
+            code: 'PAYLOAD_TOO_LARGE',
+            message: 'Prefix exceeds maximum length of 50 characters.',
+            details: { field: 'prefix', length: prefix.length },
             requestId: (req as any).requestId,
           },
         } as ErrorResponse);
@@ -608,13 +459,16 @@ export function createApp(
         totalClicks: analyticsMetrics.totalClicks,
         overallCTR: analyticsMetrics.overallCTR,
         uniqueQueries: analyticsMetrics.uniqueQueries,
+        averageSearchLatency: analyticsMetrics.responseTimeStats?.mean || 0,
         responseTimeStats: analyticsMetrics.responseTimeStats,
         popularQueries: analyticsMetrics.popularQueries,
+        uptime: process.uptime(),
         documentsByType: {
           posts: docStats.postCount,
           comments: docStats.commentCount,
         },
         subreddits: docStats.subreddits,
+        documentsBySubreddit: docStats.documentsBySubreddit,
       };
 
       res.json(stats);
@@ -677,7 +531,7 @@ export function createApp(
 
     const token = authHeader.substring(7);
     try {
-      const user = await authService.verifyToken(token);
+      const user = await clerkAuth.verifyToken(token);
       return user?.id || null;
     } catch (error) {
       return null;

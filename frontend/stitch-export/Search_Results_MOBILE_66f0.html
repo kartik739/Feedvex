@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FeedVex | Editorial Archive</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#86736e",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#005046",
+                        "on-surface-variant": "#53433f",
+                        "primary-fixed-dim": "#ffb4a2",
+                        "on-secondary-fixed": "#1b1c1c",
+                        "tertiary-fixed-dim": "#87d5c4",
+                        "secondary": "#5f5e5e",
+                        "on-secondary-fixed-variant": "#474747",
+                        "on-primary-fixed-variant": "#713526",
+                        "tertiary-container": "#2b7c6e",
+                        "surface-tint": "#8e4c3b",
+                        "inverse-on-surface": "#f0f1f1",
+                        "tertiary-fixed": "#a3f1e0",
+                        "background": "#f9f9f9",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-primary-fixed": "#390b02",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#fff2ef",
+                        "surface-bright": "#f9f9f9",
+                        "surface-container-low": "#f3f3f3",
+                        "surface": "#f9f9f9",
+                        "on-tertiary-container": "#ccfff2",
+                        "inverse-surface": "#2f3131",
+                        "surface-dim": "#dadada",
+                        "primary": "#864535",
+                        "secondary-fixed": "#e4e2e1",
+                        "on-background": "#1a1c1c",
+                        "inverse-primary": "#ffb4a2",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#656464",
+                        "surface-variant": "#e2e2e2",
+                        "outline-variant": "#d8c2bc",
+                        "on-surface": "#1a1c1c",
+                        "primary-fixed": "#ffdbd2",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#00201b",
+                        "surface-container-high": "#e8e8e8",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "secondary-container": "#e4e2e1",
+                        "on-error": "#ffffff",
+                        "tertiary": "#006356",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#a35d4b",
+                        "surface-container": "#eeeeee"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Newsreader"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f9f9f9;
+            color: #1a1c1c;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .serif-display { font-family: 'Newsreader', serif; }
+        .ambient-shadow { box-shadow: 0 12px 40px rgba(26, 28, 28, 0.06); }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background">
+<!-- TopAppBar Shell -->
+<nav class="fixed top-0 w-full z-50 bg-[#f9f9f9] dark:bg-stone-950 shadow-[0_12px_40px_rgba(26,28,28,0.06)]">
+<div class="flex justify-between items-center px-8 py-6 max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-6">
+<span class="material-symbols-outlined text-[#864535] dark:text-[#a35d4b] cursor-pointer hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors duration-200 p-2 rounded">menu</span>
+<h1 class="text-2xl font-serif tracking-tighter text-[#1a1c1c] dark:text-stone-50">FeedVex</h1>
+</div>
+<!-- Desktop Search Bar -->
+<div class="hidden md:flex flex-1 max-w-2xl mx-12">
+<div class="w-full bg-surface-container-lowest ambient-shadow px-6 py-3 flex items-center gap-4 rounded-sm">
+<span class="material-symbols-outlined text-outline">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full font-body text-lg text-on-surface" placeholder="Search archive..." type="text" value="Modernist Architecture Trends 2024"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#864535] dark:text-[#a35d4b] cursor-pointer hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors duration-200 p-2 rounded">search</span>
+</div>
+</div>
+</nav>
+<main class="pt-32 pb-24 px-6 max-w-5xl mx-auto">
+<!-- Search Stats Header -->
+<header class="mb-16">
+<p class="font-label text-[0.75rem] uppercase tracking-[0.15em] text-outline mb-2">Search Results</p>
+<h2 class="serif-display text-5xl md:text-6xl font-light tracking-tight text-on-background leading-tight">
+                Modernist Architecture <span class="italic">Trends 2024</span>
+</h2>
+</header>
+<!-- Generative AI Overview (Pull-quote Style) -->
+<section class="mb-24 relative">
+<div class="bg-surface-container-lowest ambient-shadow p-10 md:p-14 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+<div class="max-w-3xl">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-label text-[0.7rem] uppercase tracking-widest font-bold text-primary">Archive Synthesis</span>
+</div>
+<blockquote class="serif-display text-2xl md:text-3xl text-on-surface leading-relaxed italic">
+                        "The prevailing discourse suggests a pivot toward 'Soft Brutalism'—marrying the structural honesty of concrete with organic, biophilic interventions. Community archives highlight a renewed obsession with 1970s utopian planning as a template for 2024 climate resilience."
+                    </blockquote>
+<div class="mt-8 flex gap-4">
+<button class="bg-primary text-on-primary px-6 py-3 font-label text-[0.7rem] uppercase tracking-widest font-bold hover:opacity-90 transition-opacity">
+                            Expand Analysis
+                        </button>
+<button class="text-primary font-label text-[0.7rem] uppercase tracking-widest font-bold border-b-2 border-primary/20 hover:border-primary transition-all pb-1">
+                            View Sources
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Filter Chips -->
+<div class="flex flex-wrap gap-3 mb-20">
+<button class="bg-primary text-on-primary px-5 py-2 text-xs font-label uppercase tracking-widest rounded-lg">All Posts</button>
+<button class="bg-secondary-container text-on-surface px-5 py-2 text-xs font-label uppercase tracking-widest rounded-lg hover:bg-surface-container-high transition-colors">Discussions</button>
+<button class="bg-secondary-container text-on-surface px-5 py-2 text-xs font-label uppercase tracking-widest rounded-lg hover:bg-surface-container-high transition-colors">Media</button>
+<button class="bg-secondary-container text-on-surface px-5 py-2 text-xs font-label uppercase tracking-widest rounded-lg hover:bg-surface-container-high transition-colors">Archival Links</button>
+</div>
+<!-- Search Results List (Asymmetrical Editorial Layout) -->
+<div class="space-y-24">
+<!-- Result 1 -->
+<article class="group cursor-pointer">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+<div class="md:col-span-8 md:pl-8">
+<div class="flex items-center gap-4 mb-4">
+<span class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-primary font-bold">r/ArchitecturePorn</span>
+<span class="w-1 h-1 bg-outline-variant rounded-full"></span>
+<span class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-outline">u/spatial_theory • 4h ago</span>
+</div>
+<h3 class="serif-display text-3xl md:text-4xl text-on-surface leading-tight mb-6 group-hover:text-primary transition-colors">
+                            The resurgence of warm-toned concrete in coastal residential projects: A 2024 overview.
+                        </h3>
+<p class="font-body text-on-surface-variant leading-relaxed text-lg max-w-2xl mb-6">
+                            I've been tracking over 200 new builds this year, and the common thread is a rejection of the "grey box." We're seeing pigments mixed directly into the pour to create these earthy, terracotta-like finishes...
+                        </p>
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2 text-outline">
+<span class="material-symbols-outlined text-sm">thumb_up</span>
+<span class="font-label text-[0.7rem] font-bold">12.4K</span>
+</div>
+<div class="flex items-center gap-2 text-outline">
+<span class="material-symbols-outlined text-sm">chat_bubble</span>
+<span class="font-label text-[0.7rem] font-bold">482</span>
+</div>
+</div>
+</div>
+<div class="md:col-span-4 h-64 bg-surface-container-low overflow-hidden">
+<img class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" data-alt="Modernist concrete villa with warm terracotta undertones at sunset, minimalist geometric lines and large glass panels" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxWNcpg4uxIjfGUdHyyxpWxSUaIr--BHP15bmz6TOuynfDH1ADbUSo1Nob46ijKmEZwJLcP7B_Qbh-2pjVSAPkQXq86SAmVkNvQtV-DJJEU-MYVVOG37uYo44dR12yGLDp_cRxczXWtfvtQu2HCfvl6JiSoi5bLeyTZ1sKXOxSwgFupawCLfM6cyRwYqGAZKfNk_XqK3xQHQfzK5s8X23rkjCFyVH0othIEWxhSUpj89lvoe-SoYg3gdDPSq-pwFL_zl35yy7nXQA"/>
+</div>
+</div>
+</article>
+<!-- Result 2 (Shifted/Asymmetric) -->
+<article class="group cursor-pointer md:pl-24">
+<div class="flex flex-col max-w-3xl">
+<div class="flex items-center gap-4 mb-4">
+<span class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-primary font-bold">r/DesignThought</span>
+<span class="w-1 h-1 bg-outline-variant rounded-full"></span>
+<span class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-outline">u/curator_99 • 12h ago</span>
+</div>
+<h3 class="serif-display text-3xl md:text-4xl text-on-surface leading-tight mb-6 group-hover:text-primary transition-colors">
+                        Why the "Digital Bauhaus" is failing modern user interface design.
+                    </h3>
+<p class="font-body text-on-surface-variant leading-relaxed text-lg mb-8 italic border-l-2 border-outline-variant pl-6">
+                        "The obsession with clean lines has stripped the soul from our digital environments. We are living in a sterilized web."
+                    </p>
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2 text-outline">
+<span class="material-symbols-outlined text-sm">thumb_up</span>
+<span class="font-label text-[0.7rem] font-bold">8.1K</span>
+</div>
+<div class="flex items-center gap-2 text-outline">
+<span class="material-symbols-outlined text-sm">chat_bubble</span>
+<span class="font-label text-[0.7rem] font-bold">1.2K</span>
+</div>
+</div>
+</div>
+</article>
+<!-- Result 3 -->
+<article class="group cursor-pointer">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+<div class="md:col-span-5 h-80 bg-surface-container-low overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Architectural detail of a brutalist building facade with sharp diagonal shadows and dramatic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeOcRxtODqkzdGqElBqLZhHTFbU_nn4f4YXZr-MO0LWq3W7Rp_3s7qXFb2mLu5uDhtQbpxfYnfGukITl0HE1o0zAtu3ah1cAMtFHf1feQ2o92DphIlCYhE1eD5G1-bYaLWROjz0WW5tN4iirP0EUUB1pX6WYvOb2nE1Rk_bEdcUt-jsEnuqR9u-u0aRwYYbUry2v7d5T68ZK1kw44aqXiJGRMkt2oBIi28yLPH-km7NX18vtXXZrAbparUjh6omVDWa1_ejdq2xiI"/>
+</div>
+<div class="md:col-span-7 md:pr-12">
+<div class="flex items-center gap-4 mb-4">
+<span class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-primary font-bold">r/UrbanPlanning</span>
+<span class="w-1 h-1 bg-outline-variant rounded-full"></span>
+<span class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-outline">u/city_lab • 1d ago</span>
+</div>
+<h3 class="serif-display text-3xl md:text-4xl text-on-surface leading-tight mb-6 group-hover:text-primary transition-colors">
+                            Retrofitting Brutalism: How London is saving its 20th-century icons.
+                        </h3>
+<p class="font-body text-on-surface-variant leading-relaxed text-lg mb-6">
+                            Demolition is no longer the default. New planning mandates are forcing developers to work with existing concrete skeletons, leading to some of the most interesting hybrid architecture we've seen in decades.
+                        </p>
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2 text-outline">
+<span class="material-symbols-outlined text-sm">thumb_up</span>
+<span class="font-label text-[0.7rem] font-bold">5.5K</span>
+</div>
+<div class="flex items-center gap-2 text-outline">
+<span class="material-symbols-outlined text-sm">chat_bubble</span>
+<span class="font-label text-[0.7rem] font-bold">290</span>
+</div>
+</div>
+</div>
+</div>
+</article>
+</div>
+<!-- Pagination / Load More -->
+<div class="mt-32 flex flex-col items-center">
+<button class="bg-surface-container-low text-on-surface px-12 py-5 font-label text-[0.75rem] uppercase tracking-[0.2em] font-bold hover:bg-surface-container-high transition-all ambient-shadow">
+                Fetch More Records
+            </button>
+<p class="mt-6 font-label text-[0.65rem] text-outline uppercase tracking-widest">Showing 3 of 1,428 indexed posts</p>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-[#f3f3f3] dark:bg-stone-900 w-full mt-24">
+<div class="flex flex-col md:flex-row justify-between items-center px-12 py-16 gap-8 max-w-screen-2xl mx-auto">
+<div class="flex flex-col gap-2">
+<span class="font-serif italic text-lg text-[#864535] dark:text-[#a35d4b]">FeedVex Archive</span>
+<p class="text-[0.75rem] font-sans uppercase tracking-[0.05em] text-stone-400">© 2024 FEEDVEX ARCHIVE. ALL RIGHTS RESERVED.</p>
+</div>
+<div class="flex gap-10">
+<a class="text-[0.75rem] font-sans uppercase tracking-[0.05em] text-stone-400 hover:text-[#864535] underline-offset-4 hover:underline transition-all duration-200" href="#">Archive</a>
+<a class="text-[0.75rem] font-sans uppercase tracking-[0.05em] text-stone-400 hover:text-[#864535] underline-offset-4 hover:underline transition-all duration-200" href="#">Methodology</a>
+<a class="text-[0.75rem] font-sans uppercase tracking-[0.05em] text-stone-400 hover:text-[#864535] underline-offset-4 hover:underline transition-all duration-200" href="#">Privacy</a>
+<a class="text-[0.75rem] font-sans uppercase tracking-[0.05em] text-stone-400 hover:text-[#864535] underline-offset-4 hover:underline transition-all duration-200" href="#">Contact</a>
+</div>
+</div>
+</footer>
+</body></html>

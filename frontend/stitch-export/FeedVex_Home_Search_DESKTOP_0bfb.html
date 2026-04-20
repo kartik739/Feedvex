@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .serif { font-family: 'Newsreader', serif; }.custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2e2e2;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#ccfff2",
+                    "surface-tint": "#8e4c3b",
+                    "on-surface-variant": "#53433f",
+                    "on-error-container": "#93000a",
+                    "outline": "#86736e",
+                    "outline-variant": "#d8c2bc",
+                    "on-tertiary-fixed": "#00201b",
+                    "primary-fixed-dim": "#ffb4a2",
+                    "surface-container-high": "#e8e8e8",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#f9f9f9",
+                    "on-background": "#1a1c1c",
+                    "background": "#f9f9f9",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed-variant": "#474747",
+                    "surface-dim": "#dadada",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "secondary": "#5f5e5e",
+                    "inverse-on-surface": "#f0f1f1",
+                    "primary": "#864535",
+                    "on-primary": "#ffffff",
+                    "secondary-container": "#e4e2e1",
+                    "on-tertiary-fixed-variant": "#005046",
+                    "surface-variant": "#e2e2e2",
+                    "inverse-surface": "#2f3131",
+                    "secondary-fixed-dim": "#c8c6c5",
+                    "surface": "#f9f9f9",
+                    "tertiary-container": "#2b7c6e",
+                    "inverse-primary": "#ffb4a2",
+                    "on-secondary-fixed": "#1b1c1c",
+                    "on-secondary-container": "#656464",
+                    "on-primary-container": "#fff2ef",
+                    "tertiary": "#006356",
+                    "surface-container-highest": "#e2e2e2",
+                    "primary-container": "#a35d4b",
+                    "tertiary-fixed": "#a3f1e0",
+                    "secondary-fixed": "#e4e2e1",
+                    "surface-container": "#eeeeee",
+                    "on-surface": "#1a1c1c",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#87d5c4",
+                    "surface-container-low": "#f3f3f3",
+                    "primary-fixed": "#ffdbd2",
+                    "on-primary-fixed": "#390b02",
+                    "on-primary-fixed-variant": "#713526",
+                    "on-secondary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Newsreader"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<header class="bg-background/80 backdrop-blur-sm sticky top-0 flex justify-between items-center w-full px-12 py-8 z-50 border-b border-outline-variant/20">
+<div class="flex items-center gap-12">
+<div class="text-2xl font-bold tracking-tight text-on-surface font-['Newsreader']">
+            FEEDVEX
+        </div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-label text-[10px] uppercase tracking-[0.2em] text-secondary hover:text-primary transition-colors" href="#">Archive</a>
+<a class="font-label text-[10px] uppercase tracking-[0.2em] text-secondary hover:text-primary transition-colors" href="#">Journal</a>
+<a class="font-label text-[10px] uppercase tracking-[0.2em] text-secondary hover:text-primary transition-colors" href="#">Legal</a>
+<a class="font-label text-[10px] uppercase tracking-[0.2em] text-secondary hover:text-primary transition-colors" href="#">Collections</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<span class="font-label text-[10px] uppercase tracking-[0.2em] text-secondary/60">Curator Dashboard</span>
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant/30 hover:opacity-80 transition-opacity duration-200 cursor-pointer">
+<img alt="Profile curator portrait" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3CjV7pO5gL1oONHnl8rbWOLaUbnm5lY1aYXQB4fcQaipW2SVuc5CGYSr5WAQVjXoVsyf25I2YEU4r9gflVqURjz9EUDXIcpYV7c84vkRnJQu3uHVduL4vajxkmy74z_C2xPVYRIE7OXwkpsiKvJ2g1X2R3XJLZ1euLNJ5N59_0ZaU7HoACajgDbBcEaGFgX-uv_rwAmNoFrznNB9o964kFA2KgMdBTjGvoaDNA4OIFbsKvwJu5MWwWWRRZqF39cYFQzt_jBBovek"/>
+</div>
+</div>
+</header>
+<main class="flex-grow w-full max-w-[1600px] mx-auto px-12 py-16 flex flex-col">
+<section class="flex flex-col items-center justify-center min-h-[409px] py-12">
+<div class="max-w-3xl w-full text-center space-y-12">
+<div class="space-y-4">
+<h1 class="serif text-6xl md:text-8xl font-medium tracking-tight text-on-surface leading-none">
+                    The Archive of <br/>
+<span class="italic font-normal">Conversation.</span>
+</h1>
+<p class="font-label text-[11px] uppercase tracking-[0.3em] text-secondary opacity-60">
+                    A Curated Index of Human Thought
+                </p>
+</div>
+<div class="relative group max-w-2xl mx-auto w-full">
+<div class="absolute inset-0 bg-surface-container-lowest rounded-lg blur-2xl opacity-10 group-focus-within:opacity-30 transition-opacity duration-500"></div>
+<div class="relative flex items-center bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-8 py-6 transition-all duration-300 focus-within:shadow-[0_20px_60px_rgba(26,28,28,0.06)] focus-within:border-primary/20">
+<span class="material-symbols-outlined text-primary/60 mr-4 text-2xl" data-icon="search">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-xl font-body placeholder:text-outline-variant/60 text-on-surface outline-none" placeholder="Search the archive..." type="text"/>
+<button class="bg-primary text-on-primary px-8 py-2.5 rounded-sm text-[11px] uppercase tracking-[0.2em] font-semibold hover:bg-primary/90 active:scale-95 transition-all ml-4">
+                        Seek
+                    </button>
+</div>
+</div>
+</div>
+</section>
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-12 mb-24">
+<div class="lg:col-span-7 space-y-8">
+<div class="flex items-center justify-between border-b border-outline-variant/30 pb-4">
+<h2 class="font-label text-[12px] uppercase tracking-[0.25em] text-on-surface font-semibold">Curated Collections</h2>
+<a class="font-label text-[10px] uppercase tracking-[0.1em] text-secondary hover:text-primary" href="#">View All</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="group cursor-pointer">
+<div class="aspect-[4/3] bg-surface-container-low overflow-hidden rounded-lg mb-4">
+<img alt="Architecture" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0 opacity-80 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmtzbxnjOOWq3AjppV0L_zG05mLbAbBSyrZc2HJUIDQrgPsVTbmHc3AAeJBEl6j6DJ_XSVYGY6tQ7QPfS6KANiUqraWJTSQZeDtH8MwklWhJMykdYnXKDg9kFWNKTPqUXyLLXbhFy58qcfBB9AQOCKvxHCJSJMBvQuKNG6jMD8dC0DvY4MX0hL5wm5uruR9SBR4vOSfW7E9ULHQj_rPAsylsTXrDgqUJbQzDbCOXqGDbWO2b13OacSkBRAZCMKFVhHx5CsNFRvoxM"/>
+</div>
+<div class="space-y-2">
+<h3 class="serif text-2xl font-medium group-hover:text-primary transition-colors">Rationalist Structures</h3>
+<p class="text-sm text-secondary leading-relaxed line-clamp-2">Exploring the intersections of mid-century brutalism and modern functional design through the lens of human habit.</p>
+<div class="flex gap-4 pt-2">
+<span class="text-[9px] uppercase tracking-widest text-outline">14 Essays</span>
+<span class="text-[9px] uppercase tracking-widest text-outline">Updated 2d ago</span>
+</div>
+</div>
+</div>
+<div class="group cursor-pointer">
+<div class="aspect-[4/3] bg-surface-container-low overflow-hidden rounded-lg mb-4">
+<img alt="Philosophy" class="w-full h-full object-cover grayscale transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0 opacity-80 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWAJ9QovYeq7ng14wYdnANMEQW1hH3jyJCJFNxVFInLzxqK8z6hlCbZPZxb7QgoEPaWR5mzmsJsRsIL-evT5GRiNm4Jhx-wMYN5UzMUOPO7PHT2H5VFDfAmh_abFECjLOsR1Zycc8bTKhnhiEhGsjBeAONnGzvyaS_hZ2wkDfqrY9ugeqBW_P1sMb3kvOK6eEYzMpsbL1HyzP1eQvZfdNdR64CQ7ook9v5qHYlyUOl0vEMBpj7fdt0vfCkHUCOaMlw5NaNob7I-Js"/>
+</div>
+<div class="space-y-2">
+<h3 class="serif text-2xl font-medium group-hover:text-primary transition-colors">The Art of Quietism</h3>
+<p class="text-sm text-secondary leading-relaxed line-clamp-2">A meditative deep-dive into silence, minimalism in lifestyle, and the philosophy of 'The Void'.</p>
+<div class="flex gap-4 pt-2">
+<span class="text-[9px] uppercase tracking-widest text-outline">28 Entries</span>
+<span class="text-[9px] uppercase tracking-widest text-outline">Updated 5d ago</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5 space-y-8 lg:pl-12 lg:border-l border-outline-variant/30">
+<div class="flex items-center justify-between border-b border-outline-variant/30 pb-4">
+<h2 class="font-label text-[12px] uppercase tracking-[0.25em] text-on-surface font-semibold">Trending Discoveries</h2>
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="trending_up">trending_up</span>
+</div>
+<div class="space-y-8 custom-scrollbar">
+<div class="group flex gap-6 items-start cursor-pointer">
+<span class="serif text-4xl text-outline-variant font-light group-hover:text-primary/40 transition-colors">01</span>
+<div class="space-y-1">
+<h4 class="font-body text-lg font-medium leading-tight group-hover:underline decoration-1 decoration-primary/30">Synthesizing Deep Tech and Traditionalism</h4>
+<p class="text-[11px] uppercase tracking-wider text-secondary/60">Technology • 4 min read</p>
+</div>
+</div>
+<div class="group flex gap-6 items-start cursor-pointer">
+<span class="serif text-4xl text-outline-variant font-light group-hover:text-primary/40 transition-colors">02</span>
+<div class="space-y-1">
+<h4 class="font-body text-lg font-medium leading-tight group-hover:underline decoration-1 decoration-primary/30">The Epistemology of Digital Archives</h4>
+<p class="text-[11px] uppercase tracking-wider text-secondary/60">Philosophy • 12 min read</p>
+</div>
+</div>
+<div class="group flex gap-6 items-start cursor-pointer">
+<span class="serif text-4xl text-outline-variant font-light group-hover:text-primary/40 transition-colors">03</span>
+<div class="space-y-1">
+<h4 class="font-body text-lg font-medium leading-tight group-hover:underline decoration-1 decoration-primary/30">Quiet Interiority: A Photographic Study</h4>
+<p class="text-[11px] uppercase tracking-wider text-secondary/60">Visual Arts • 6 min read</p>
+</div>
+</div>
+<div class="group flex gap-6 items-start cursor-pointer">
+<span class="serif text-4xl text-outline-variant font-light group-hover:text-primary/40 transition-colors">04</span>
+<div class="space-y-1">
+<h4 class="font-body text-lg font-medium leading-tight group-hover:underline decoration-1 decoration-primary/30">New Formalism in Contemporary Prose</h4>
+<p class="text-[11px] uppercase tracking-wider text-secondary/60">Literature • 8 min read</p>
+</div>
+</div>
+</div>
+<div class="mt-12 p-8 bg-surface-container rounded-lg border border-outline-variant/20">
+<h5 class="serif text-xl mb-2">Continue Curating</h5>
+<p class="text-xs text-secondary mb-6 leading-relaxed">You have 3 unpublished collections waiting for review. Maintain the standard of the archive.</p>
+<button class="w-full border border-primary text-primary hover:bg-primary hover:text-white transition-all py-3 font-label text-[10px] uppercase tracking-widest font-bold rounded-sm">
+                    Open Workspace
+                </button>
+</div>
+</div>
+</section>
+</main>
+<div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none opacity-20">
+<div class="absolute -top-48 -right-48 w-[800px] h-[800px] rounded-full bg-primary/5 blur-[160px]"></div>
+<div class="absolute bottom-0 -left-48 w-[600px] h-[600px] rounded-full bg-primary-container/10 blur-[140px]"></div>
+</div>
+<footer class="bg-background w-full px-12 py-16 flex flex-col items-center gap-12 border-t border-outline-variant/20">
+<div class="grid grid-cols-1 md:grid-cols-3 w-full max-w-[1600px] items-start">
+<div class="flex flex-col gap-4">
+<div class="text-xl font-bold tracking-tight text-on-surface font-['Newsreader']">FEEDVEX</div>
+<p class="font-label text-[10px] uppercase tracking-[0.2em] text-secondary/50">© 2024 FEEDVEX ARCHIVE. <br/>ALL RIGHTS RESERVED.</p>
+</div>
+<div class="flex justify-center gap-16">
+<div class="flex flex-col gap-4">
+<span class="font-label text-[10px] uppercase tracking-widest font-bold text-on-surface">Explore</span>
+<nav class="flex flex-col gap-2">
+<a class="font-label text-[10px] uppercase tracking-[5%] text-secondary hover:text-primary" href="#">Collections</a>
+<a class="font-label text-[10px] uppercase tracking-[5%] text-secondary hover:text-primary" href="#">Journal</a>
+<a class="font-label text-[10px] uppercase tracking-[5%] text-secondary hover:text-primary" href="#">Timeline</a>
+</nav>
+</div>
+<div class="flex flex-col gap-4">
+<span class="font-label text-[10px] uppercase tracking-widest font-bold text-on-surface">Legal</span>
+<nav class="flex flex-col gap-2">
+<a class="font-label text-[10px] uppercase tracking-[5%] text-secondary hover:text-primary" href="#">Privacy</a>
+<a class="font-label text-[10px] uppercase tracking-[5%] text-secondary hover:text-primary" href="#">Terms</a>
+<a class="font-label text-[10px] uppercase tracking-[5%] text-secondary hover:text-primary" href="#">Ethics</a>
+</nav>
+</div>
+</div>
+<div class="flex flex-col items-end gap-4">
+<div class="flex gap-4">
+<a class="w-8 h-8 rounded-full border border-outline-variant/40 flex items-center justify-center hover:border-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="share">share</span>
+</a>
+<a class="w-8 h-8 rounded-full border border-outline-variant/40 flex items-center justify-center hover:border-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="mail">mail</span>
+</a>
+</div>
+<span class="font-label text-[10px] uppercase tracking-widest text-secondary/40">Curated with precision</span>
+</div>
+</div>
+</footer>
+
+</body></html>

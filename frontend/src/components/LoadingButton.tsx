@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes } from 'react';
-import './LoadingButton.css';
+
 
 interface LoadingButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;

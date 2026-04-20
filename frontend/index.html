@@ -3,7 +3,81 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FeedVex</title>
+    <title>FeedVex Search Archive</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        .serif { font-family: 'Newsreader', serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e2e2; border-radius: 10px; }
+    </style>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#ccfff2",
+                    "surface-tint": "#8e4c3b",
+                    "on-surface-variant": "#53433f",
+                    "on-error-container": "#93000a",
+                    "outline": "#86736e",
+                    "outline-variant": "#d8c2bc",
+                    "on-tertiary-fixed": "#00201b",
+                    "primary-fixed-dim": "#ffb4a2",
+                    "surface-container-high": "#e8e8e8",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#f9f9f9",
+                    "on-background": "#1a1c1c",
+                    "background": "#f9f9f9",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed-variant": "#474747",
+                    "surface-dim": "#dadada",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "secondary": "#5f5e5e",
+                    "inverse-on-surface": "#f0f1f1",
+                    "primary": "#864535",
+                    "on-primary": "#ffffff",
+                    "secondary-container": "#e4e2e1",
+                    "on-tertiary-fixed-variant": "#005046",
+                    "surface-variant": "#e2e2e2",
+                    "inverse-surface": "#2f3131",
+                    "secondary-fixed-dim": "#c8c6c5",
+                    "surface": "#f9f9f9",
+                    "tertiary-container": "#2b7c6e",
+                    "inverse-primary": "#ffb4a2",
+                    "on-secondary-fixed": "#1b1c1c",
+                    "on-secondary-container": "#656464",
+                    "on-primary-container": "#fff2ef",
+                    "tertiary": "#006356",
+                    "surface-container-highest": "#e2e2e2",
+                    "primary-container": "#a35d4b",
+                    "tertiary-fixed": "#a3f1e0",
+                    "secondary-fixed": "#e4e2e1",
+                    "surface-container": "#eeeeee",
+                    "on-surface": "#1a1c1c",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#87d5c4",
+                    "surface-container-low": "#f3f3f3",
+                    "primary-fixed": "#ffdbd2",
+                    "on-primary-fixed": "#390b02",
+                    "on-primary-fixed-variant": "#713526",
+                    "on-secondary": "#ffffff"
+            },
+            "fontFamily": {
+                    "headline": ["Newsreader"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

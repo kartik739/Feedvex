@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Search, Loader2, Clock, Mic, MicOff } from 'lucide-react';
 import { api } from '../services/api';
-import './SearchBar.css';
 
 // TypeScript declarations for Web Speech API
 interface SpeechRecognitionEvent extends Event {
@@ -271,17 +270,17 @@ export default function SearchBar({ onSearch, initialQuery = '' }: SearchBarProp
   };
 
   return (
-    <div className="search-bar-container">
-      <form onSubmit={handleSubmit} className="search-form">
-        <div className={`search-input-wrapper ${isFocused ? 'focused' : ''}`}>
-          <div className="search-icon-wrapper">
-            <Search className="search-icon" size={20} />
+    <div className="relative w-full max-w-3xl mx-auto z-40 group">
+      <form onSubmit={handleSubmit} className="w-full relative shadow-[0_12px_40px_rgba(0,0,0,0.4)]">
+        <div className={`relative flex items-center bg-[#1D1D1D] transition-all duration-300 p-2 md:p-3 ${isFocused ? 'bg-[#1D1D1D] ring-2 ring-[#864535]/50' : 'hover:bg-[#252525]'}`}>
+          <div className="pl-4">
+            <Search size={22} className="text-[#864535]" />
           </div>
           <input
             ref={inputRef}
             type="text"
-            className="search-input"
-            placeholder={isListening ? "Listening..." : "Search Reddit posts and comments..."}
+            className="w-full bg-transparent border-none focus:ring-0 text-lg md:text-xl px-4 md:px-6 text-white placeholder-white/20 font-sans outline-none"
+            placeholder={isListening ? "Listening..." : "Query technical threads or events..."}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => {
@@ -297,54 +296,49 @@ export default function SearchBar({ onSearch, initialQuery = '' }: SearchBarProp
           {isVoiceSupported && (
             <button
               type="button"
-              className={`voice-search-button ${isListening ? 'listening' : ''}`}
+              className={`p-3 mr-2 transition-colors rounded-full ${isListening ? 'text-[#864535] bg-[#864535]/10 animate-pulse' : 'text-white/40 hover:text-white'}`}
               onClick={toggleVoiceSearch}
               title={isListening ? "Stop voice search" : "Start voice search"}
-              aria-label={isListening ? "Stop voice search" : "Start voice search"}
             >
-              {isListening ? (
-                <MicOff className="voice-icon" size={20} />
-              ) : (
-                <Mic className="voice-icon" size={20} />
-              )}
-              {isListening && <div className="voice-pulse" />}
+              {isListening ? <MicOff size={20} /> : <Mic size={20} />}
             </button>
           )}
           {isLoading && (
-            <div className="loading-spinner">
-              <Loader2 className="spinner-icon" size={20} />
+            <div className="absolute right-40 pr-2 pointer-events-none">
+              <Loader2 className="animate-spin text-white/50" size={20} />
             </div>
           )}
+          
+          <button type="submit" className="action-btn px-6 md:px-8 py-3 text-xs md:text-sm font-bold tracking-widest uppercase" disabled={!query.trim()}>
+            SEARCH
+          </button>
         </div>
-        <button type="submit" className="search-button btn btn-primary" disabled={!query.trim()}>
-          Search
-        </button>
       </form>
 
       {showSuggestions && (suggestions.length > 0 || (recentSearches.length > 0 && query.length < 2)) && (
-        <div className="suggestions-dropdown">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-[#121212] border border-white/5 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7)] backdrop-blur-xl max-h-[60vh] overflow-y-auto">
           {/* Recent Searches Section */}
           {query.length < 2 && recentSearches.length > 0 && (
-            <div className="suggestions-section">
-              <div className="suggestions-header">
-                <span className="suggestions-title">Recent Searches</span>
+            <div className="py-2">
+              <div className="flex items-center justify-between px-6 py-2">
+                <span className="label-caps">Recent Searches</span>
                 <button
                   type="button"
-                  className="clear-recent-btn"
+                  className="text-white/40 hover:text-white text-xs font-bold uppercase tracking-wider transition-colors"
                   onClick={clearRecentSearches}
                 >
                   Clear
                 </button>
               </div>
-              <ul className="suggestions-list">
+              <ul className="mb-2">
                 {recentSearches.map((search, index) => (
                   <li
                     key={`recent-${index}`}
-                    className={`suggestion-item ${index === selectedIndex ? 'selected' : ''}`}
+                    className={`flex items-center gap-4 px-6 py-3 cursor-pointer border-l-2 ${index === selectedIndex ? 'bg-[#1D1D1D] border-[#864535]' : 'border-transparent hover:bg-[#1D1D1D]'}`}
                     onClick={() => handleSuggestionClick(search)}
                   >
-                    <Clock size={16} className="suggestion-icon" />
-                    <span className="suggestion-text">{search}</span>
+                    <Clock size={16} className="text-[#864535]" />
+                    <span className="text-white/80 font-sans">{search}</span>
                   </li>
                 ))}
               </ul>
@@ -353,21 +347,21 @@ export default function SearchBar({ onSearch, initialQuery = '' }: SearchBarProp
 
           {/* Autocomplete Suggestions Section */}
           {suggestions.length > 0 && (
-            <div className="suggestions-section">
+            <div className="py-2 border-t border-white/5">
               {query.length >= 2 && (
-                <div className="suggestions-header">
-                  <span className="suggestions-title">Suggestions</span>
+                <div className="px-6 py-3">
+                  <span className="label-caps">Suggestions</span>
                 </div>
               )}
-              <ul className="suggestions-list">
+              <ul>
                 {suggestions.map((suggestion, index) => (
                   <li
                     key={`suggestion-${index}`}
-                    className={`suggestion-item ${index === selectedIndex ? 'selected' : ''}`}
+                    className={`flex items-center gap-4 px-6 py-3 cursor-pointer border-l-2 ${index === selectedIndex ? 'bg-[#1D1D1D] border-[#864535]' : 'border-transparent hover:bg-[#1D1D1D]'}`}
                     onClick={() => handleSuggestionClick(suggestion)}
                   >
-                    <Search size={16} className="suggestion-icon" />
-                    <span className="suggestion-text">
+                    <Search size={16} className="text-[#864535]" />
+                    <span className="text-white/80 font-sans">
                       {highlightMatch(suggestion, query)}
                     </span>
                   </li>

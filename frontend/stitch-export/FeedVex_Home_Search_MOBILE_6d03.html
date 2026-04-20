@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .serif { font-family: 'Newsreader', serif; }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#ccfff2",
+                    "surface-tint": "#8e4c3b",
+                    "on-surface-variant": "#53433f",
+                    "on-error-container": "#93000a",
+                    "outline": "#86736e",
+                    "outline-variant": "#d8c2bc",
+                    "on-tertiary-fixed": "#00201b",
+                    "primary-fixed-dim": "#ffb4a2",
+                    "surface-container-high": "#e8e8e8",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#f9f9f9",
+                    "on-background": "#1a1c1c",
+                    "background": "#f9f9f9",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed-variant": "#474747",
+                    "surface-dim": "#dadada",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "secondary": "#5f5e5e",
+                    "inverse-on-surface": "#f0f1f1",
+                    "primary": "#864535",
+                    "on-primary": "#ffffff",
+                    "secondary-container": "#e4e2e1",
+                    "on-tertiary-fixed-variant": "#005046",
+                    "surface-variant": "#e2e2e2",
+                    "inverse-surface": "#2f3131",
+                    "secondary-fixed-dim": "#c8c6c5",
+                    "surface": "#f9f9f9",
+                    "tertiary-container": "#2b7c6e",
+                    "inverse-primary": "#ffb4a2",
+                    "on-secondary-fixed": "#1b1c1c",
+                    "on-secondary-container": "#656464",
+                    "on-primary-container": "#fff2ef",
+                    "tertiary": "#006356",
+                    "surface-container-highest": "#e2e2e2",
+                    "primary-container": "#a35d4b",
+                    "tertiary-fixed": "#a3f1e0",
+                    "secondary-fixed": "#e4e2e1",
+                    "surface-container": "#eeeeee",
+                    "on-surface": "#1a1c1c",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#87d5c4",
+                    "surface-container-low": "#f3f3f3",
+                    "primary-fixed": "#ffdbd2",
+                    "on-primary-fixed": "#390b02",
+                    "on-primary-fixed-variant": "#713526",
+                    "on-secondary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Newsreader"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation Anchor -->
+<header class="bg-[#f9f9f9] dark:bg-[#1a1c1c] docked full-width top-0 flex justify-between items-center w-full px-8 py-6 z-50">
+<div class="flex items-center gap-4">
+<button class="text-[#864535] dark:text-[#a35d4b] hover:opacity-80 transition-opacity duration-200 active:scale-95 duration-150">
+<span class="material-symbols-outlined text-2xl" data-icon="menu">menu</span>
+</button>
+</div>
+<div class="text-2xl font-bold tracking-[-2%] text-[#1a1c1c] dark:text-[#f9f9f9] font-['Newsreader'] tracking-tight">
+            FEEDVEX
+        </div>
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden hover:opacity-80 transition-opacity duration-200 cursor-pointer">
+<img alt="Profile curator portrait" class="w-full h-full object-cover grayscale" data-alt="Sophisticated portrait of a curator in a minimalist studio setting with soft natural window lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3CjV7pO5gL1oONHnl8rbWOLaUbnm5lY1aYXQB4fcQaipW2SVuc5CGYSr5WAQVjXoVsyf25I2YEU4r9gflVqURjz9EUDXIcpYV7c84vkRnJQu3uHVduL4vajxkmy74z_C2xPVYRIE7OXwkpsiKvJ2g1X2R3XJLZ1euLNJ5N59_0ZaU7HoACajgDbBcEaGFgX-uv_rwAmNoFrznNB9o964kFA2KgMdBTjGvoaDNA4OIFbsKvwJu5MWwWWRRZqF39cYFQzt_jBBovek"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col justify-center px-6 pb-24 md:pb-0">
+<div class="max-w-xl mx-auto w-full text-center space-y-12">
+<!-- Hero Typography -->
+<div class="space-y-4">
+<h1 class="serif text-5xl md:text-7xl font-medium tracking-tight text-on-surface leading-[1.1]">
+                    The Archive of <br/>
+<span class="italic font-normal">Conversation.</span>
+</h1>
+<p class="font-label text-[10px] uppercase tracking-[0.15em] text-secondary opacity-60">
+                    A Curated Index of Human Thought
+                </p>
+</div>
+<!-- Signature Search Bar -->
+<div class="relative group">
+<div class="absolute inset-0 bg-surface-container-lowest rounded-lg blur-xl opacity-20 group-focus-within:opacity-40 transition-opacity duration-300"></div>
+<div class="relative flex items-center bg-surface-container-lowest shadow-[0_12px_40px_rgba(26,28,28,0.04)] rounded-lg px-6 py-5 transition-all duration-300 focus-within:shadow-[0_20px_60px_rgba(26,28,28,0.08)]">
+<span class="material-symbols-outlined text-primary mr-4" data-icon="search">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-lg font-body placeholder:text-outline-variant text-on-surface outline-none" placeholder="Search the archive..." type="text"/>
+<button class="bg-primary text-on-primary px-4 py-1.5 rounded-sm text-[10px] uppercase tracking-widest font-semibold hover:opacity-90 active:scale-95 transition-all">
+                        Seek
+                    </button>
+</div>
+</div>
+<!-- Quick Access / Trending -->
+<div class="pt-8 flex flex-wrap justify-center gap-3">
+<span class="font-label text-[10px] uppercase tracking-wider text-secondary flex items-center gap-2 mb-2 w-full justify-center">Recent Collections</span>
+<a class="px-4 py-2 bg-surface-container-low text-secondary font-label text-[10px] uppercase tracking-wider hover:bg-secondary-container transition-colors rounded-lg" href="#">Architecture</a>
+<a class="px-4 py-2 bg-surface-container-low text-secondary font-label text-[10px] uppercase tracking-wider hover:bg-secondary-container transition-colors rounded-lg" href="#">Philosophy</a>
+<a class="px-4 py-2 bg-surface-container-low text-secondary font-label text-[10px] uppercase tracking-wider hover:bg-secondary-container transition-colors rounded-lg" href="#">Deep Tech</a>
+<a class="px-4 py-2 bg-surface-container-low text-secondary font-label text-[10px] uppercase tracking-wider hover:bg-secondary-container transition-colors rounded-lg" href="#">Quietism</a>
+</div>
+</div>
+</main>
+<!-- Visual Anchor Background Detail -->
+<div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none opacity-40">
+<div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary/5 blur-[120px]"></div>
+<div class="absolute bottom-1/4 -left-24 w-64 h-64 rounded-full bg-primary-container/10 blur-[100px]"></div>
+</div>
+<!-- Footer Component -->
+<footer class="bg-[#f9f9f9] dark:bg-[#1a1c1c] w-full px-12 py-12 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="font-['Inter'] text-[10px] uppercase tracking-[5%] text-[#1a1c1c] opacity-40">
+            © 2024 FEEDVEX ARCHIVE
+        </div>
+<nav class="flex gap-8">
+<a class="font-['Inter'] text-[10px] uppercase tracking-[5%] text-[#1a1c1c] opacity-40 hover:opacity-100 underline decoration-1" href="#">Archive</a>
+<a class="font-['Inter'] text-[10px] uppercase tracking-[5%] text-[#1a1c1c] opacity-40 hover:opacity-100 underline decoration-1" href="#">Journal</a>
+<a class="font-['Inter'] text-[10px] uppercase tracking-[5%] text-[#1a1c1c] opacity-40 hover:opacity-100 underline decoration-1" href="#">Legal</a>
+<a class="font-['Inter'] text-[10px] uppercase tracking-[5%] text-[#1a1c1c] opacity-40 hover:opacity-100 underline decoration-1" href="#">Privacy</a>
+</nav>
+<div class="hidden md:flex gap-4">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="north_east">north_east</span>
+</div>
+</footer>
+<!-- Mobile Navigation Suppressed based on transactional/focused intent (Search Home) -->
+<!-- Navigation only provided via TopAppBar per brief -->
+</body></html>

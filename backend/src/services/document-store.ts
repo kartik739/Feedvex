@@ -215,15 +215,22 @@ export class DocumentStore {
     postCount: number;
     commentCount: number;
     subreddits: string[];
+    documentsBySubreddit: Record<string, number>;
   } {
     const docs = Array.from(this.documents.values());
-    const subreddits = new Set(docs.map((d) => d.subreddit));
+    const subredditsMap: Record<string, number> = {};
+    
+    docs.forEach(d => {
+      const sub = d.subreddit || 'unknown';
+      subredditsMap[sub] = (subredditsMap[sub] || 0) + 1;
+    });
 
     return {
       totalDocuments: docs.length,
       postCount: docs.filter((d) => d.type === 'post').length,
       commentCount: docs.filter((d) => d.type === 'comment').length,
-      subreddits: Array.from(subreddits),
+      subreddits: Object.keys(subredditsMap),
+      documentsBySubreddit: subredditsMap,
     };
   }
 }

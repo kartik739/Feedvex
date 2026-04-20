@@ -4,6 +4,7 @@ import path from 'path';
 
 // https://vite.dev/config/
 export default defineConfig({
+  envDir: '../',
   plugins: [react()],
   resolve: {
     // Look for modules in root node_modules since frontend has no package.json

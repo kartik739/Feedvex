@@ -1,6 +1,6 @@
 import Toast from './Toast';
 import type { Toast as ToastData } from '../types/toast';
-import './ToastContainer.css';
+
 
 interface ToastContainerProps {
   toasts: ToastData[];

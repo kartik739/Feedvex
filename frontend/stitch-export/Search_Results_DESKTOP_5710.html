@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FeedVex | Editorial Archive - Desktop</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#86736e",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#005046",
+                        "on-surface-variant": "#53433f",
+                        "primary-fixed-dim": "#ffb4a2",
+                        "on-secondary-fixed": "#1b1c1c",
+                        "tertiary-fixed-dim": "#87d5c4",
+                        "secondary": "#5f5e5e",
+                        "on-secondary-fixed-variant": "#474747",
+                        "on-primary-fixed-variant": "#713526",
+                        "tertiary-container": "#2b7c6e",
+                        "surface-tint": "#8e4c3b",
+                        "inverse-on-surface": "#f0f1f1",
+                        "tertiary-fixed": "#a3f1e0",
+                        "background": "#f9f9f9",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-primary-fixed": "#390b02",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#fff2ef",
+                        "surface-bright": "#f9f9f9",
+                        "surface-container-low": "#f3f3f3",
+                        "surface": "#f9f9f9",
+                        "on-tertiary-container": "#ccfff2",
+                        "inverse-surface": "#2f3131",
+                        "surface-dim": "#dadada",
+                        "primary": "#864535",
+                        "secondary-fixed": "#e4e2e1",
+                        "on-background": "#1a1c1c",
+                        "inverse-primary": "#ffb4a2",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#656464",
+                        "surface-variant": "#e2e2e2",
+                        "outline-variant": "#d8c2bc",
+                        "on-surface": "#1a1c1c",
+                        "primary-fixed": "#ffdbd2",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#00201b",
+                        "surface-container-high": "#e8e8e8",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "secondary-container": "#e4e2e1",
+                        "on-error": "#ffffff",
+                        "tertiary": "#006356",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#a35d4b",
+                        "surface-container": "#eeeeee"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Newsreader"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f9f9f9;
+            color: #1a1c1c;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .serif-display { font-family: 'Newsreader', serif; }
+        .ambient-shadow { box-shadow: 0 12px 40px rgba(26, 28, 28, 0.04); }.no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background overflow-x-hidden">
+<nav class="fixed top-0 w-full z-50 bg-[#f9f9f9]/90 backdrop-blur-md border-b border-surface-container">
+<div class="flex justify-between items-center px-12 py-6 max-w-[1920px] mx-auto">
+<div class="flex items-center gap-12">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer p-2 rounded hover:bg-surface-container transition-colors">menu</span>
+<h1 class="text-3xl font-serif tracking-tighter text-on-background">FeedVex</h1>
+</div>
+<div class="hidden lg:flex items-center bg-surface-container-low px-6 py-2.5 w-[500px] rounded-sm group focus-within:ring-1 focus-within:ring-primary/20 transition-all">
+<span class="material-symbols-outlined text-outline text-xl">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full font-body text-sm text-on-surface" placeholder="Search archive..." type="text" value="Modernist Architecture Trends 2024"/>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<span class="font-label text-[0.7rem] uppercase tracking-widest text-outline cursor-pointer hover:text-primary transition-colors">Archive Index</span>
+<span class="font-label text-[0.7rem] uppercase tracking-widest text-outline cursor-pointer hover:text-primary transition-colors">Methodology</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center cursor-pointer">
+<span class="material-symbols-outlined text-sm">person</span>
+</div>
+</div>
+</div>
+</nav>
+<div class="flex max-w-[1920px] mx-auto pt-24 min-h-screen">
+<aside class="w-[450px] fixed h-[calc(100vh-96px)] overflow-y-auto no-scrollbar border-r border-surface-container px-12 py-16 bg-background">
+<header class="mb-12">
+<p class="font-label text-[0.7rem] uppercase tracking-[0.2em] text-outline mb-3">Insights Report</p>
+<h2 class="serif-display text-4xl font-light tracking-tight text-on-background leading-tight">
+                Modernist Architecture <span class="italic">Trends 2024</span>
+</h2>
+</header>
+<section class="mb-16">
+<div class="bg-surface-container-lowest ambient-shadow p-8 relative overflow-hidden group rounded-sm">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-label text-[0.65rem] uppercase tracking-widest font-bold text-primary">Archive Synthesis</span>
+</div>
+<blockquote class="serif-display text-xl text-on-surface leading-relaxed italic mb-8">
+                    "The prevailing discourse suggests a pivot toward 'Soft Brutalism'—marrying the structural honesty of concrete with organic, biophilic interventions. Community archives highlight a renewed obsession with 1970s utopian planning."
+                </blockquote>
+<div class="space-y-4">
+<button class="w-full bg-primary text-on-primary py-4 font-label text-[0.65rem] uppercase tracking-widest font-bold hover:bg-primary-container transition-colors">
+                        Full Synthesis Report
+                    </button>
+<button class="w-full text-outline font-label text-[0.65rem] uppercase tracking-widest font-bold border border-outline-variant py-4 hover:bg-surface-container-low transition-colors">
+                        Inspect 12 Sources
+                    </button>
+</div>
+</div>
+</section>
+<nav class="space-y-10">
+<div>
+<h4 class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-outline mb-6">Filter Results</h4>
+<div class="flex flex-col gap-2">
+<button class="flex items-center justify-between w-full px-4 py-3 bg-primary text-on-primary rounded-sm text-[0.7rem] font-bold uppercase tracking-widest">
+                        All Archives <span class="opacity-60">1.4k</span>
+</button>
+<button class="flex items-center justify-between w-full px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-sm text-[0.7rem] font-bold uppercase tracking-widest">
+                        Discussions <span class="text-outline">892</span>
+</button>
+<button class="flex items-center justify-between w-full px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-sm text-[0.7rem] font-bold uppercase tracking-widest">
+                        Multimedia <span class="text-outline">412</span>
+</button>
+<button class="flex items-center justify-between w-full px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-sm text-[0.7rem] font-bold uppercase tracking-widest">
+                        Archival Links <span class="text-outline">124</span>
+</button>
+</div>
+</div>
+<div>
+<h4 class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-outline mb-6">Sort By</h4>
+<div class="flex items-center gap-4">
+<span class="text-[0.7rem] font-bold uppercase tracking-widest text-primary border-b-2 border-primary pb-1 cursor-pointer">Relevance</span>
+<span class="text-[0.7rem] font-bold uppercase tracking-widest text-outline hover:text-on-surface transition-colors cursor-pointer pb-1">Recency</span>
+<span class="text-[0.7rem] font-bold uppercase tracking-widest text-outline hover:text-on-surface transition-colors cursor-pointer pb-1">Impact</span>
+</div>
+</div>
+</nav>
+</aside>
+<main class="ml-[450px] flex-1 px-20 py-16">
+<div class="max-w-4xl space-y-40">
+<article class="group cursor-pointer">
+<div class="flex flex-col gap-10">
+<div class="aspect-[21/9] w-full bg-surface-container-low overflow-hidden">
+<img alt="Modernist Architecture" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxWNcpg4uxIjfGUdHyyxpWxSUaIr--BHP15bmz6TOuynfDH1ADbUSo1Nob46ijKmEZwJLcP7B_Qbh-2pjVSAPkQXq86SAmVkNvQtV-DJJEU-MYVVOG37uYo44dR12yGLDp_cRxczXWtfvtQu2HCfvl6JiSoi5bLeyTZ1sKXOxSwgFupawCLfM6cyRwYqGAZKfNk_XqK3xQHQfzK5s8X23rkjCFyVH0othIEWxhSUpj89lvoe-SoYg3gdDPSq-pwFL_zl35yy7nXQA"/>
+</div>
+<div class="max-w-3xl">
+<div class="flex items-center gap-4 mb-6">
+<span class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-primary font-bold">r/ArchitecturePorn</span>
+<span class="w-1 h-1 bg-outline-variant rounded-full"></span>
+<span class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-outline">u/spatial_theory • 4h ago</span>
+</div>
+<h3 class="serif-display text-5xl text-on-surface leading-[1.1] mb-8 group-hover:text-primary transition-colors">
+                            The resurgence of warm-toned concrete in coastal residential projects: A 2024 overview.
+                        </h3>
+<p class="font-body text-on-surface-variant leading-relaxed text-xl mb-10">
+                            I've been tracking over 200 new builds this year, and the common thread is a rejection of the cold "grey box." We're seeing minerals and warm pigments mixed directly into the pour to create these earthy, terracotta-like finishes that bleed into the landscape...
+                        </p>
+<div class="flex items-center gap-10">
+<div class="flex items-center gap-2 text-outline group-hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-lg">thumb_up</span>
+<span class="font-label text-[0.75rem] font-bold">12,482</span>
+</div>
+<div class="flex items-center gap-2 text-outline group-hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-lg">chat_bubble</span>
+<span class="font-label text-[0.75rem] font-bold">482 Comments</span>
+</div>
+<span class="material-symbols-outlined text-outline ml-auto hover:text-primary">bookmark</span>
+</div>
+</div>
+</div>
+</article>
+<article class="group cursor-pointer pl-32 border-l-4 border-surface-container-high py-4">
+<div class="max-w-2xl">
+<div class="flex items-center gap-4 mb-6">
+<span class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-primary font-bold">r/DesignThought</span>
+<span class="w-1 h-1 bg-outline-variant rounded-full"></span>
+<span class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-outline">u/curator_99 • 12h ago</span>
+</div>
+<h3 class="serif-display text-4xl text-on-surface leading-tight mb-8 group-hover:text-primary transition-colors">
+                        Why the "Digital Bauhaus" is failing modern user interface design.
+                    </h3>
+<blockquote class="serif-display text-2xl text-on-surface-variant italic leading-relaxed mb-10 pl-8 relative">
+<span class="absolute left-0 top-0 text-6xl text-outline-variant opacity-30 font-serif">“</span>
+                        "The obsession with clean lines has stripped the soul from our digital environments. We are living in a sterilized web, devoid of the tactile imperfections that make architecture human."
+                    </blockquote>
+<div class="flex items-center gap-10">
+<div class="flex items-center gap-2 text-outline">
+<span class="material-symbols-outlined text-lg">thumb_up</span>
+<span class="font-label text-[0.75rem] font-bold">8.1K</span>
+</div>
+<div class="flex items-center gap-2 text-outline">
+<span class="material-symbols-outlined text-lg">chat_bubble</span>
+<span class="font-label text-[0.75rem] font-bold">1.2K</span>
+</div>
+</div>
+</div>
+</article>
+<article class="group cursor-pointer">
+<div class="grid grid-cols-12 gap-16 items-start">
+<div class="col-span-5 aspect-[4/5] bg-surface-container-low overflow-hidden">
+<img alt="Retrofitting Brutalism" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeOcRxtODqkzdGqElBqLZhHTFbU_nn4f4YXZr-MO0LWq3W7Rp_3s7qXFb2mLu5uDhtQbpxfYnfGukITl0HE1o0zAtu3ah1cAMtFHf1feQ2o92DphIlCYhE1eD5G1-bYaLWROjz0WW5tN4iirP0EUUB1pX6WYvOb2nE1Rk_bEdcUt-jsEnuqR9u-u0aRwYYbUry2v7d5T68ZK1kw44aqXiJGRMkt2oBIi28yLPH-km7NX18vtXXZrAbparUjh6omVDWa1_ejdq2xiI"/>
+</div>
+<div class="col-span-7 pt-12">
+<div class="flex items-center gap-4 mb-6">
+<span class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-primary font-bold">r/UrbanPlanning</span>
+<span class="w-1 h-1 bg-outline-variant rounded-full"></span>
+<span class="font-label text-[0.65rem] uppercase tracking-[0.2em] text-outline">u/city_lab • 1d ago</span>
+</div>
+<h3 class="serif-display text-4xl text-on-surface leading-tight mb-8 group-hover:text-primary transition-colors">
+                            Retrofitting Brutalism: How London is saving its 20th-century icons from the wrecking ball.
+                        </h3>
+<p class="font-body text-on-surface-variant leading-relaxed text-lg mb-10">
+                            Demolition is no longer the default ecological or aesthetic choice. New planning mandates are forcing developers to work with existing concrete skeletons, leading to some of the most interesting hybrid architecture we've seen in decades. The National Theatre's latest overhaul is a masterclass in this approach.
+                        </p>
+<div class="flex items-center gap-10">
+<div class="flex items-center gap-2 text-outline">
+<span class="material-symbols-outlined text-lg">thumb_up</span>
+<span class="font-label text-[0.75rem] font-bold">5.5K</span>
+</div>
+<div class="flex items-center gap-2 text-outline">
+<span class="material-symbols-outlined text-lg">chat_bubble</span>
+<span class="font-label text-[0.75rem] font-bold">290</span>
+</div>
+</div>
+</div>
+</div>
+</article>
+<div class="pt-20 border-t border-surface-container flex flex-col items-start gap-6">
+<button class="bg-surface-container-low text-on-surface px-16 py-6 font-label text-[0.75rem] uppercase tracking-[0.25em] font-bold hover:bg-primary hover:text-on-primary transition-all ambient-shadow">
+                    Load More Archives
+                </button>
+<p class="font-label text-[0.65rem] text-outline uppercase tracking-widest">Displaying 3 of 1,428 indexed entries for this query</p>
+</div>
+<footer class="pt-40 pb-20 border-t border-surface-container-high opacity-40 hover:opacity-100 transition-opacity">
+<div class="flex flex-col gap-8">
+<span class="serif-display italic text-2xl text-primary">FeedVex Archive</span>
+<div class="flex flex-wrap gap-x-12 gap-y-4">
+<a class="text-[0.65rem] font-bold uppercase tracking-widest text-on-background hover:text-primary" href="#">Methodology</a>
+<a class="text-[0.65rem] font-bold uppercase tracking-widest text-on-background hover:text-primary" href="#">Privacy Protocol</a>
+<a class="text-[0.65rem] font-bold uppercase tracking-widest text-on-background hover:text-primary" href="#">Curatorial Standards</a>
+<a class="text-[0.65rem] font-bold uppercase tracking-widest text-on-background hover:text-primary" href="#">Contact</a>
+<span class="text-[0.65rem] uppercase tracking-widest text-outline ml-auto">© 2024 FEEDVEX. ALL RIGHTS RESERVED.</span>
+</div>
+</div>
+</footer>
+</div>
+</main>
+</div>
+
+</body></html>

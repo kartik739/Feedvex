@@ -3,7 +3,7 @@ import { Search, Sun, Moon, BarChart3, User, LogOut, Menu, X, Keyboard } from 'l
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { useThemeStore } from '../store/themeStore';
-import './Header.css';
+
 
 interface HeaderProps {
   onShowShortcuts?: () => void;
@@ -74,98 +74,94 @@ export default function Header({ onShowShortcuts }: HeaderProps) {
   };
 
   return (
-    <header className={`header ${isScrolled ? 'scrolled' : ''} ${isHeaderVisible ? 'visible' : 'hidden'}`}>
-      <div className="container">
-        <div className="header-content">
-          <Link to="/" className="logo">
-            <Search className="logo-icon" />
-            <h1 className="logo-text">Feedvex</h1>
+    <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'glass-header py-3' : 'bg-transparent py-5'} ${isHeaderVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-3 text-[#A3A3A3] hover:text-white transition-colors">
+            <Search className="w-5 h-5 text-[#864535]" />
+            <h1 className="font-serif text-xl font-bold tracking-tight">Feedvex</h1>
           </Link>
 
-          <nav className={`nav ${isMenuOpen ? 'open' : ''}`}>
+          <nav className={`hidden md:flex items-center gap-8 ${isMenuOpen ? 'block' : ''}`}>
             <Link 
               to="/search" 
-              className={`nav-link ${isActiveLink('/search') ? 'active' : ''}`}
+              className={`flex items-center gap-2 label-caps hover:text-[#864535] transition-colors ${isActiveLink('/search') ? 'text-[#864535]' : 'text-white/60'}`}
             >
-              <Search size={18} />
-              <span>Search</span>
+              <Search size={16} />
+              <span>SEARCH</span>
             </Link>
             <Link 
               to="/stats" 
-              className={`nav-link ${isActiveLink('/stats') ? 'active' : ''}`}
+              className={`flex items-center gap-2 label-caps hover:text-[#864535] transition-colors ${isActiveLink('/stats') ? 'text-[#864535]' : 'text-white/60'}`}
             >
-              <BarChart3 size={18} />
-              <span>Stats</span>
+              <BarChart3 size={16} />
+              <span>STATS</span>
             </Link>
           </nav>
 
-          <div className="header-actions">
+          <div className="flex items-center gap-4">
             <button
               onClick={toggleTheme}
-              className="icon-button theme-toggle"
+              className="text-[#A3A3A3] hover:text-white transition-colors p-2"
               aria-label="Toggle theme"
               title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
             >
               {theme === 'light' ? (
-                <Moon size={20} className="theme-icon" />
+                <Moon size={18} />
               ) : (
-                <Sun size={20} className="theme-icon" />
+                <Sun size={18} />
               )}
             </button>
 
             {onShowShortcuts && (
               <button
                 onClick={onShowShortcuts}
-                className="icon-button"
+                className="text-[#A3A3A3] hover:text-white transition-colors p-2"
                 aria-label="Keyboard shortcuts"
                 title="Keyboard shortcuts (?)"
               >
-                <Keyboard size={20} />
+                <Keyboard size={18} />
               </button>
             )}
 
             {isAuthenticated ? (
-              <div className="user-menu">
+              <div className="relative user-menu">
                 <button 
-                  className="user-button" 
-                  aria-label="User menu"
+                  className="flex items-center gap-2 text-white/80 hover:text-white p-2" 
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  aria-expanded={isUserMenuOpen}
                 >
-                  <div className="user-avatar">
-                    <User size={18} />
+                  <div className="w-8 h-8 rounded-full bg-[#1D1D1D] flex items-center justify-center border border-white/10">
+                    <User size={14} className="text-[#864535]" />
                   </div>
-                  <span className="user-name">{user?.username}</span>
+                  <span className="font-sans text-sm">{user?.username}</span>
                 </button>
                 {isUserMenuOpen && (
-                  <div className="user-dropdown">
-                    <Link to="/profile" className="dropdown-item">
-                      <User size={16} />
+                  <div className="absolute right-0 mt-2 w-48 bg-[#121212] border border-white/5 shadow-2xl rounded-sm overflow-hidden backdrop-blur-xl">
+                    <Link to="/profile" className="flex items-center gap-3 px-4 py-3 text-sm text-white/80 hover:text-white hover:bg-[#1D1D1D] transition-colors">
+                      <User size={14} />
                       <span>Profile</span>
                     </Link>
-                    <button onClick={handleLogout} className="dropdown-item">
-                      <LogOut size={16} />
+                    <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-sm text-[#864535] hover:text-[#A35D4B] hover:bg-[#1D1D1D] transition-colors text-left">
+                      <LogOut size={14} />
                       <span>Logout</span>
                     </button>
                   </div>
                 )}
               </div>
             ) : (
-              <div className="auth-buttons">
-                <Link to="/login" className="btn btn-secondary">
-                  Login
+              <div className="hidden md:flex items-center gap-4 ml-4">
+                <Link to="/login" className="label-caps hover:text-white transition-colors">
+                  LOGIN
                 </Link>
-                <Link to="/signup" className="btn btn-primary">
-                  Sign Up
+                <Link to="/signup" className="bg-[#864535] text-white px-5 py-2 text-xs font-bold tracking-widest hover:bg-[#A35D4B] transition-colors rounded-sm shadow-lg">
+                  SIGN UP
                 </Link>
               </div>
             )}
 
             <button
-              className="mobile-menu-button"
+              className="md:hidden text-white p-2"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={isMenuOpen}
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>

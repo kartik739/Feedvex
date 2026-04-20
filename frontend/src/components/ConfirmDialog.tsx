@@ -1,5 +1,5 @@
 import { X, AlertTriangle } from 'lucide-react';
-import './ConfirmDialog.css';
+
 
 interface ConfirmDialogProps {
   isOpen: boolean;

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f9f9f9",
+                        "surface-container-low": "#f3f3f3",
+                        "on-primary-fixed": "#390b02",
+                        "surface-container-highest": "#e2e2e2",
+                        "inverse-primary": "#ffb4a2",
+                        "tertiary-fixed": "#a3f1e0",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#e8e8e8",
+                        "on-tertiary-fixed": "#00201b",
+                        "primary-container": "#a35d4b",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#eeeeee",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#fff2ef",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#1a1c1c",
+                        "outline": "#86736e",
+                        "secondary-fixed": "#e4e2e1",
+                        "inverse-on-surface": "#f0f1f1",
+                        "on-secondary-fixed-variant": "#474747",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "on-tertiary-container": "#ccfff2",
+                        "on-primary-fixed-variant": "#713526",
+                        "surface-dim": "#dadada",
+                        "surface-bright": "#f9f9f9",
+                        "tertiary-container": "#2b7c6e",
+                        "secondary-container": "#e4e2e1",
+                        "background": "#f9f9f9",
+                        "surface-tint": "#8e4c3b",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e2e2e2",
+                        "outline-variant": "#d8c2bc",
+                        "primary-fixed": "#ffdbd2",
+                        "on-secondary-container": "#656464",
+                        "primary-fixed-dim": "#ffb4a2",
+                        "on-tertiary-fixed-variant": "#005046",
+                        "tertiary": "#006356",
+                        "secondary": "#5f5e5e",
+                        "on-background": "#1a1c1c",
+                        "on-secondary-fixed": "#1b1c1c",
+                        "tertiary-fixed-dim": "#87d5c4",
+                        "primary": "#864535",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#53433f",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#2f3131"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Newsreader", "serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            background-color: #f9f9f9;
+            color: #1a1c1c;
+            -webkit-font-smoothing: antialiased;
+        }
+        .sidebar-item:hover .sidebar-icon {
+            color: #864535;
+        }
+        .main-content-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: #e2e2e2 transparent;
+        }
+        .editorial-rag {
+            padding-left: clamp(1rem, 2vw, 2rem);
+        }
+    </style>
+</head>
+<body class="font-body selection:bg-primary-fixed selection:text-on-primary-fixed overflow-hidden flex h-screen">
+<aside class="w-20 lg:w-24 border-r border-surface-container-high bg-surface-container-low flex flex-col items-center py-10 gap-10 shrink-0 h-full z-50">
+<button class="text-[#864535] hover:opacity-70 transition-all duration-200" title="Back to Archive">
+<span class="material-symbols-outlined text-3xl" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="flex-grow flex flex-col gap-12 mt-10">
+<button class="sidebar-item flex flex-col items-center gap-1 group" title="Notes">
+<span class="material-symbols-outlined sidebar-icon text-secondary transition-colors" data-icon="edit_note">edit_note</span>
+<span class="text-[9px] font-bold uppercase tracking-widest text-secondary group-hover:text-primary transition-colors">Notes</span>
+</button>
+<button class="sidebar-item flex flex-col items-center gap-1 group" title="Highlights">
+<span class="material-symbols-outlined sidebar-icon text-secondary transition-colors" data-icon="ink_highlighter">ink_highlighter</span>
+<span class="text-[9px] font-bold uppercase tracking-widest text-secondary group-hover:text-primary transition-colors">Markers</span>
+</button>
+<button class="sidebar-item flex flex-col items-center gap-1 group" title="Archive This Article">
+<span class="material-symbols-outlined sidebar-icon text-secondary transition-colors" data-icon="inventory_2">inventory_2</span>
+<span class="text-[9px] font-bold uppercase tracking-widest text-secondary group-hover:text-primary transition-colors">Archive</span>
+</button>
+<button class="sidebar-item flex flex-col items-center gap-1 group" title="Citations">
+<span class="material-symbols-outlined sidebar-icon text-secondary transition-colors" data-icon="format_quote">format_quote</span>
+<span class="text-[9px] font-bold uppercase tracking-widest text-secondary group-hover:text-primary transition-colors">Cite</span>
+</button>
+</div>
+<div class="mt-auto">
+<button class="sidebar-item flex flex-col items-center gap-1 group" title="Settings">
+<span class="material-symbols-outlined sidebar-icon text-secondary transition-colors" data-icon="settings">settings</span>
+</button>
+</div>
+</aside>
+<main class="flex-grow h-screen overflow-y-auto main-content-scroll bg-[#f9f9f9]">
+<nav class="flex justify-between items-center w-full px-12 py-6 sticky top-0 z-40 bg-[#f9f9f9] bg-opacity-95 backdrop-blur-sm">
+<div class="flex items-center gap-2">
+<span class="text-xs font-bold tracking-[0.3em] text-[#1a1c1c] uppercase font-label">Digital Archivist // Workbench</span>
+</div>
+<div class="flex items-center gap-8">
+<div class="h-[1px] w-24 bg-surface-container-highest"></div>
+<button class="text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</button>
+<button class="text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+</button>
+</div>
+</nav>
+<div class="max-w-4xl mx-auto px-12 py-12 lg:py-20">
+<header class="mb-20">
+<div class="mb-10 editorial-rag">
+<p class="font-label text-[0.7rem] uppercase tracking-[0.25em] text-secondary mb-6 flex items-center gap-2">
+<span>r/architectureporn</span>
+<span class="text-surface-container-highest">•</span>
+<span>u/spatial_theory</span>
+<span class="text-surface-container-highest">•</span>
+<span>4h ago</span>
+</p>
+<h1 class="font-headline text-5xl md:text-7xl lg:text-8xl leading-[1.05] tracking-tighter font-bold text-on-surface italic">
+                        The resurgence of warm-toned concrete in coastal residential projects: A 2024 overview
+                    </h1>
+</div>
+<div class="w-full aspect-[21/9] bg-surface-container overflow-hidden group mb-4">
+<img alt="Minimalist architectural concrete structure" class="w-full h-full object-cover grayscale contrast-125 transition-transform duration-1000 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmPmpkhro6R56FY4B7IUxwf7UbZVQPWMDE8rrTrcj7UbfD2osBiuCi1d5srGJfKcakbXdzQmhcsB_1yvZNNGGhXnnxBZ48_q5_E4W7xsFBAp-jrrS04C4MxmhP7UgdVsbNF_EjNjdM7Cqk-KKSCoBrCFCqyMtdx2Faq6oAN7OoHb8ByoBIStUCEQhUtg5_4KG-5z74U5EKPhfZYR9QVYArXNv73Lz7oDoeRWy27tic41mKc5s7bm_Bm1yot1Qmz6gdHyp56bV_4qA"/>
+</div>
+<p class="font-label text-[9px] uppercase tracking-widest text-secondary mt-3 text-right border-r-2 border-primary pr-3">FIG 01. SAND-PIGMENTED BRUTALISM, TASMANIA.</p>
+</header>
+<article class="prose prose-stone max-w-none mb-32">
+<div class="font-headline text-2xl lg:text-3xl leading-relaxed text-on-surface-variant editorial-rag space-y-16">
+<p class="first-letter:text-8xl first-letter:font-bold first-letter:mr-4 first-letter:mt-2 first-letter:float-left first-letter:text-primary first-letter:leading-none">
+                        For decades, the architectural zeitgeist was dominated by the clinical chill of grey cement and industrial steel. However, 2024 marks a definitive shift toward what critics are calling "Soft Brutalism." This movement prioritizes material honesty through the integration of warm, earth-toned aggregates and iron-oxide pigments.
+                    </p>
+<p>
+                        The shift is particularly prominent in coastal residential projects. By incorporating local sands and crushed limestone into the concrete mix, architects are creating structures that don't merely sit upon the landscape—they emerge from it. These warm tones serve a dual purpose: they mitigate the harsh glare of coastal sunlight while providing a visual anchor against the shifting blues of the ocean.
+                    </p>
+<p class="border-l-4 border-surface-container-highest pl-10 py-4 italic">
+                        In Tasmania and the California coast, we are seeing a rejection of smooth, troweled finishes. Instead, "board-forming"—where the texture of raw timber shuttering is left permanently etched into the concrete—is being celebrated. This tactile quality evokes a sense of permanence and "curated decay," allowing the building to age gracefully alongside the environment.
+                    </p>
+</div>
+</article>
+<section class="flex items-center justify-between py-10 bg-surface-container-low px-12 mb-20">
+<div class="flex items-center gap-12">
+<button class="flex items-center gap-3 group">
+<span class="material-symbols-outlined text-primary group-hover:translate-y-[-2px] transition-transform" data-icon="keyboard_arrow_up">keyboard_arrow_up</span>
+<span class="font-label text-sm font-bold tracking-widest">12.4K UPVOTES</span>
+</button>
+<button class="flex items-center gap-3 group">
+<span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-label text-sm font-bold tracking-widest uppercase">342 COMMENTS</span>
+</button>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-[10px] uppercase tracking-[0.2em] text-secondary">Researcher's Workbench Tools</span>
+<span class="material-symbols-outlined text-surface-container-highest">more_vert</span>
+</div>
+</section>
+<section class="space-y-1 mb-24">
+<h3 class="font-label text-[11px] uppercase tracking-[0.3em] text-secondary mb-12 border-b border-surface-container-high pb-4">Critical Response Journal</h3>
+<div class="bg-surface-container-low p-12 mb-1 group hover:bg-white transition-all duration-300 border-l-2 border-transparent hover:border-primary">
+<div class="flex justify-between mb-6">
+<span class="font-label text-[10px] font-bold text-primary tracking-widest">U/TECTONIC_STUDIO</span>
+<span class="font-label text-[10px] text-secondary tracking-widest">2H AGO</span>
+</div>
+<p class="font-headline text-xl leading-relaxed text-on-surface italic mb-8">
+                        "The focus on material honesty is a breath of fresh air after the glass-and-steel era. There is something deeply primordial about concrete that carries the warmth of the earth."
+                    </p>
+<div class="flex gap-8">
+<button class="font-label text-[10px] uppercase tracking-widest font-bold text-secondary hover:text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">thumb_up</span> Upvote
+                        </button>
+<button class="font-label text-[10px] uppercase tracking-widest font-bold text-secondary hover:text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">reply</span> Reply
+                        </button>
+</div>
+</div>
+<div class="bg-surface p-12 mb-1 group hover:bg-white transition-all duration-300 border-l-2 border-transparent hover:border-primary">
+<div class="flex justify-between mb-6">
+<span class="font-label text-[10px] font-bold text-primary tracking-widest">U/PIGMENT_LAB</span>
+<span class="font-label text-[10px] text-secondary tracking-widest">1H AGO</span>
+</div>
+<p class="font-headline text-xl leading-relaxed text-on-surface italic mb-8">
+                        "Interesting to see how these pigments age over time. Traditional grey concrete tends to streak and stain poorly in salt air, but these ochre and terracotta mixes seem to hide weathering as part of their character."
+                    </p>
+<div class="flex gap-8">
+<button class="font-label text-[10px] uppercase tracking-widest font-bold text-secondary hover:text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">thumb_up</span> Upvote
+                        </button>
+<button class="font-label text-[10px] uppercase tracking-widest font-bold text-secondary hover:text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">reply</span> Reply
+                        </button>
+</div>
+</div>
+<div class="bg-surface-container-low ml-20 p-12 mb-1 group hover:bg-white transition-all duration-300 border-l-2 border-primary">
+<div class="flex justify-between mb-6">
+<span class="font-label text-[10px] font-bold text-primary tracking-widest">U/SPATIAL_THEORY</span>
+<span class="font-label text-[10px] text-secondary tracking-widest">45M AGO</span>
+</div>
+<p class="font-headline text-lg leading-relaxed text-on-surface-variant italic mb-8">
+                        "Exactly. The patina becomes the ornament."
+                    </p>
+<div class="flex gap-8">
+<button class="font-label text-[10px] uppercase tracking-widest font-bold text-secondary hover:text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">thumb_up</span> Upvote
+                        </button>
+</div>
+</div>
+</section>
+<div class="mt-20 flex flex-col items-center gap-4">
+<button class="px-12 py-4 border border-primary text-primary hover:bg-primary hover:text-on-primary transition-all duration-300 font-label text-[11px] uppercase tracking-[0.3em] font-bold">
+                    View Entire Archive Chain
+                </button>
+<span class="text-[9px] uppercase tracking-widest text-secondary opacity-50">342 COMMENTS TOTAL</span>
+</div>
+<footer class="w-full mt-32 pt-20 border-t border-surface-container-high flex flex-col items-center gap-8 text-center pb-20">
+<div class="text-[#1a1c1c] font-headline font-bold italic text-3xl">The Digital Archivist</div>
+<div class="flex gap-10">
+<a class="font-label text-[10px] uppercase tracking-[0.2em] text-secondary hover:text-primary transition-colors underline-offset-8 hover:underline" href="#">Terms of Use</a>
+<a class="font-label text-[10px] uppercase tracking-[0.2em] text-secondary hover:text-primary transition-colors underline-offset-8 hover:underline" href="#">Privacy Protocol</a>
+<a class="font-label text-[10px] uppercase tracking-[0.2em] text-secondary hover:text-primary transition-colors underline-offset-8 hover:underline" href="#">Archive Policies</a>
+</div>
+<p class="font-label text-[9px] uppercase tracking-[0.25em] text-primary mt-6">© 2024 THE DIGITAL ARCHIVIST. ARCHIVED FOR RESEARCH PURPOSES.</p>
+</footer>
+</div>
+</main>
+<aside class="hidden xl:flex w-16 border-l border-surface-container-high bg-surface flex-col items-center py-10 shrink-0">
+<div class="flex flex-col gap-8 opacity-20">
+<span class="material-symbols-outlined text-xl">vertical_align_top</span>
+<span class="material-symbols-outlined text-xl">vertical_align_bottom</span>
+</div>
+</aside>
+
+</body></html>

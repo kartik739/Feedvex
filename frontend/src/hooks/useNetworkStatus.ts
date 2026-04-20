@@ -1,15 +1,20 @@
 import { useState, useEffect } from 'react';
-import { isOnline, onNetworkStatusChange } from '../utils/networkErrorHandler';
 
 /**
  * Hook to track network status
  */
 export function useNetworkStatus() {
-  const [online, setOnline] = useState(isOnline());
+  const [online, setOnline] = useState(navigator.onLine);
 
   useEffect(() => {
-    const cleanup = onNetworkStatusChange(setOnline);
-    return cleanup;
+    const goOnline = () => setOnline(true);
+    const goOffline = () => setOnline(false);
+    window.addEventListener('online', goOnline);
+    window.addEventListener('offline', goOffline);
+    return () => {
+      window.removeEventListener('online', goOnline);
+      window.removeEventListener('offline', goOffline);
+    };
   }, []);
 
   return online;
@@ -26,7 +31,6 @@ export function useOfflineNotification() {
     if (!isOnlineStatus) {
       setShowNotification(true);
     } else {
-      // Hide notification after coming back online
       const timer = setTimeout(() => setShowNotification(false), 3000);
       return () => clearTimeout(timer);
     }
