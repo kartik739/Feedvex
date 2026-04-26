@@ -1,4 +1,5 @@
 import { logger } from '../utils/logger';
+import axios from 'axios';
 
 export interface RedditPost {
   id: string;
@@ -82,7 +83,9 @@ export class RedditOAuthClient {
    * Fetches hot posts from a subreddit.
    */
   async fetchHot(subreddit: string = 'all', limit: number = 25): Promise<RedditPost[]> {
-    if (!this.client) return [];
+    if (!this.client) {
+      return this.fetchPublicApi(subreddit, 'hot', limit);
+    }
 
     try {
       const listing = await this.client.getSubreddit(subreddit).getHot({ limit });
@@ -97,7 +100,9 @@ export class RedditOAuthClient {
    * Fetches new posts from a subreddit.
    */
   async fetchNew(subreddit: string = 'all', limit: number = 25): Promise<RedditPost[]> {
-    if (!this.client) return [];
+    if (!this.client) {
+      return this.fetchPublicApi(subreddit, 'new', limit);
+    }
 
     try {
       const listing = await this.client.getSubreddit(subreddit).getNew({ limit });
@@ -116,7 +121,9 @@ export class RedditOAuthClient {
     time: 'hour' | 'day' | 'week' = 'day',
     limit: number = 25
   ): Promise<RedditPost[]> {
-    if (!this.client) return [];
+    if (!this.client) {
+      return this.fetchPublicApi(subreddit, 'top', limit, time);
+    }
 
     try {
       const listing = await this.client.getSubreddit(subreddit).getTop({ time, limit });
@@ -179,6 +186,49 @@ export class RedditOAuthClient {
         url: `https://reddit.com${item.permalink}`,
         author: item.author?.name || '[deleted]',
         subreddit: item.subreddit_name_prefixed?.replace('r/', '') || item.subreddit || '',
+        score: item.score || 0,
+        commentCount: item.num_comments || 0,
+        createdUtc: new Date((item.created_utc || 0) * 1000),
+        permalink: item.permalink || '',
+      }));
+  }
+
+  private async fetchPublicApi(
+    subreddit: string,
+    sort: 'hot' | 'new' | 'top',
+    limit: number,
+    time?: string
+  ): Promise<RedditPost[]> {
+    try {
+      const url = `https://www.reddit.com/r/${subreddit}/${sort}.json`;
+      const params = { limit, ...(time ? { t: time } : {}) };
+      
+      const response = await axios.get(url, {
+        params,
+        headers: {
+          'User-Agent': this.userAgent,
+        },
+      });
+
+      return this.mapPublicPosts(response.data?.data?.children || []);
+    } catch (error) {
+      logger.error(`Failed to fetch public API fallback (${sort})`, { subreddit, error });
+      return [];
+    }
+  }
+
+  private mapPublicPosts(children: any[]): RedditPost[] {
+    return children
+      .map((child) => child.data)
+      .filter((item) => item && item.id && item.title)
+      .map((item) => ({
+        id: item.id,
+        type: 'post' as const,
+        title: item.title || '',
+        content: item.selftext || item.url || '',
+        url: `https://reddit.com${item.permalink}`,
+        author: item.author || '[deleted]',
+        subreddit: item.subreddit || '',
         score: item.score || 0,
         commentCount: item.num_comments || 0,
         createdUtc: new Date((item.created_utc || 0) * 1000),
