@@ -1,17 +1,17 @@
 # FeedVex - Reddit Search Engine
 
-A production-ready Reddit search engine built with modern cloud services. Search across all of Reddit with fast, relevant results powered by BM25 ranking.
+A production-ready Reddit search engine built with modern 100% free cloud services. Search across all of Reddit with fast, relevant results powered by BM25 ranking.
 
-**Live Demo**: [feedvex.vercel.app](https://feedvex.vercel.app) | **API**: [feedvex.up.railway.app](https://feedvex.up.railway.app)
+**Live Demo**: [feedvex.vercel.app](https://feedvex.vercel.app) | **API**: [feedvex-api.onrender.com](https://feedvex-api.onrender.com)
 
 ## Architecture
 
 ```
-Browser → Vercel (Frontend) → Railway (Backend API)
+Browser → Vercel (Frontend) → Render (Backend API)
                                     ↓
-                    Upstash Redis (Cache) + Railway PostgreSQL (DB)
+                    Upstash Redis (Cache) + Neon PostgreSQL (DB)
                                     ↓
-                    Reddit OAuth API (600 req/min)
+                    Reddit Public API (60 req/min)
 
 External: Clerk (Auth) · Resend (Email) · Trigger.dev (Jobs) · Sentry (Errors)
 ```
@@ -21,7 +21,8 @@ External: Clerk (Auth) · Resend (Email) · Trigger.dev (Jobs) · Sentry (Errors
 | Service | Purpose | Why chosen |
 |---------|---------|------------|
 | **Clerk** | Authentication | OAuth, social login, JWT - no custom auth needed |
-| **Railway** | PostgreSQL + Backend hosting | Managed DB, automatic backups, simple deploys |
+| **Render** | Backend hosting | Zero-cost web services with automated GitHub deploys |
+| **Neon** | PostgreSQL | Serverless DB with a generous permanent free tier |
 | **Upstash** | Redis caching | Serverless, no infra to manage, 10K cmds/day free |
 | **Vercel** | Frontend deployment | Auto deploys from GitHub, global CDN, free tier |
 | **Resend** | Transactional email | Developer-friendly API, 3K emails/month free |
@@ -32,7 +33,7 @@ External: Clerk (Auth) · Resend (Email) · Trigger.dev (Jobs) · Sentry (Errors
 
 ### Prerequisites
 - Node.js 20+
-- Accounts: [Clerk](https://clerk.com), [Upstash](https://upstash.com), [Railway](https://railway.app), [Reddit App](https://www.reddit.com/prefs/apps)
+- Accounts: [Clerk](https://clerk.com), [Upstash](https://upstash.com), [Render](https://render.com), [Neon](https://neon.tech)
 
 ### Local Development
 
@@ -60,10 +61,8 @@ Copy `.env.example` to `.env` and fill in:
 # Required for full functionality
 CLERK_SECRET_KEY=sk_test_...
 VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
-DATABASE_URL=postgresql://...  # From Railway
+DATABASE_URL=postgresql://...  # From Neon
 REDIS_URL=redis://...          # From Upstash
-REDDIT_CLIENT_ID=...
-REDDIT_CLIENT_SECRET=...
 
 # Optional (features degrade gracefully without these)
 RESEND_API_KEY=re_...
@@ -102,4 +101,4 @@ docker-compose up
 
 - Search p95: < 100ms (cache hit < 10ms)
 - Lighthouse score: 90+
-- Reddit data: 600 req/min via OAuth (10x public API)
+- Reddit data: Fallback public API usage (No authentication needed)
