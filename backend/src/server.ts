@@ -75,7 +75,7 @@ await pgDocStore.initialize();
     } else {
       logger.warn('No DATABASE_URL configured, falling back to fully in-memory document store.');
       documentStore = new DocumentStore({ maxDocuments: 100000 });
-      indexer = new Indexer({ indexPath: './data/index.json', autoPersist: false });
+      indexer = new Indexer({ autoPersist: true });
 
       // Seed sample data for development so search works immediately
       logger.info('Seeding sample data for development...');
