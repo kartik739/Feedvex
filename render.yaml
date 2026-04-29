@@ -2,7 +2,7 @@ services:
   - type: web
     name: feedvex-api
     env: node
-    buildCommand: npm install && npm run build:backend
+    buildCommand: npm install --include=dev && npm run build:backend
     startCommand: npm start
     plan: free
     envVars:

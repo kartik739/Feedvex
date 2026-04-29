@@ -14,7 +14,8 @@
     "declarationMap": true,
     "sourceMap": true,
     "moduleResolution": "node",
-    "types": ["node", "jest"]
+    "types": ["node", "jest"],
+    "ignoreDeprecations": "5.0"
   },
   "include": ["backend/src/**/*"],
   "exclude": ["node_modules", "backend/dist", "frontend"]
