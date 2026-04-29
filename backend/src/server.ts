@@ -62,6 +62,7 @@ async function startServer() {
       const pgClient = new PostgresClient({ connectionString: config.database.url });
       await pgClient.initialize();
       const pgDocStore = new PostgresDocumentStore(pgClient);
+await pgDocStore.initialize();
 
       logger.info('Hydrating in-memory store from PostgreSQL...');
       documentStore = new DocumentStore({ maxDocuments: 100000 });
