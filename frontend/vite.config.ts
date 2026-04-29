@@ -7,8 +7,9 @@ export default defineConfig({
   envDir: '../',
   plugins: [react()],
   resolve: {
-    // Look for modules in root node_modules since frontend has no package.json
-    modules: [path.resolve(__dirname, '../node_modules'), 'node_modules'],
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
   },
   build: {
     target: 'es2020',
