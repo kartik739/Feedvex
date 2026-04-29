@@ -71,11 +71,18 @@ await pgDocStore.initialize();
       logger.info(`Hydrated ${allDocs.length} documents into memory.`);
 
       indexer = new Indexer({ autoPersist: true, pgClient });
-      await indexer.load(); // Load state from Postgres
+      try {
+        await indexer.load(); // Load persisted index state from Postgres
+      } catch (loadErr) {
+        logger.warn('Could not load index state from Postgres, starting with empty index', {
+          error: String(loadErr),
+        });
+      }
     } else {
       logger.warn('No DATABASE_URL configured, falling back to fully in-memory document store.');
       documentStore = new DocumentStore({ maxDocuments: 100000 });
-      indexer = new Indexer({ autoPersist: true });
+      // No pgClient or indexPath — pure in-memory, no load() needed
+      indexer = new Indexer({ autoPersist: false });
 
       // Seed sample data for development so search works immediately
       logger.info('Seeding sample data for development...');
