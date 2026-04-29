@@ -389,8 +389,12 @@ await pgDocStore.initialize();
         'Trigger.dev skipped. Standalone collector daemon will handle background scraping.'
       );
     }
-  } catch (error) {
-    logger.error('Failed to start server', { error });
+  } catch (error: any) {
+    logger.error('Failed to start server', { 
+      message: error.message,
+      stack: error.stack,
+      error: error // Keep the original for other potential properties
+    });
     process.exit(1);
   }
 }

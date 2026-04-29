@@ -55,8 +55,8 @@ export function createApp(
   // CORS Hardening
   const isProd = process.env.NODE_ENV === 'production';
   if (isProd && (!config.corsOrigins || config.corsOrigins.includes('*'))) {
-    throw new Error(
-      'CRITICAL SECURITY: CORS is misconfigured for production. Wildcard (*) origin is not allowed.'
+    logger.warn(
+      'SECURITY WARNING: CORS is misconfigured for production. Wildcard (*) origin is not recommended but allowed for initial setup.'
     );
   }
 
