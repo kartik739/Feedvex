@@ -27,20 +27,8 @@ const logger = winston.createLogger({
   ],
 });
 
-// Add file transport in production
-if (process.env.NODE_ENV === 'production') {
-  logger.add(
-    new winston.transports.File({
-      filename: 'logs/error.log',
-      level: 'error',
-    })
-  );
-  logger.add(
-    new winston.transports.File({
-      filename: 'logs/combined.log',
-    })
-  );
-}
+// Render captures stdout/stderr automatically.
+// Do not use file transports as the filesystem is ephemeral and logs/ dir may not exist.
 
 function generateUUID(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
