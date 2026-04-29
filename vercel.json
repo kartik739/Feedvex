@@ -1,7 +1,7 @@
 {
-  "buildCommand": "npm run build:frontend",
+  "buildCommand": "npm run vercel-build",
   "outputDirectory": "frontend/dist",
-  "framework": "vite",
+  "framework": null,
   "rewrites": [
     {
       "source": "/(.*)",
