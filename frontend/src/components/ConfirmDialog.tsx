@@ -1,6 +1,5 @@
 import { X, AlertTriangle } from 'lucide-react';
 
-
 interface ConfirmDialogProps {
   isOpen: boolean;
   title: string;
@@ -32,16 +31,17 @@ export default function ConfirmDialog({
 
   return (
     <div className="confirm-dialog-overlay" onClick={handleBackdropClick}>
-      <div className="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+      <div
+        className="confirm-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dialog-title"
+      >
         <div className="confirm-dialog-header">
           <div className={`confirm-dialog-icon confirm-dialog-icon-${variant}`}>
             <AlertTriangle size={24} />
           </div>
-          <button
-            className="confirm-dialog-close"
-            onClick={onCancel}
-            aria-label="Close dialog"
-          >
+          <button className="confirm-dialog-close" onClick={onCancel} aria-label="Close dialog">
             <X size={20} />
           </button>
         </div>
@@ -54,11 +54,7 @@ export default function ConfirmDialog({
         </div>
 
         <div className="confirm-dialog-actions">
-          <button
-            className="btn btn-secondary"
-            onClick={onCancel}
-            autoFocus
-          >
+          <button className="btn btn-secondary" onClick={onCancel} autoFocus>
             {cancelText}
           </button>
           <button

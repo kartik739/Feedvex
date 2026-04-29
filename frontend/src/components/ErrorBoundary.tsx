@@ -94,8 +94,8 @@ export default class ErrorBoundary extends Component<Props, State> {
               maxWidth: '500px',
             }}
           >
-            We're sorry for the inconvenience. An unexpected error occurred. Please try refreshing the page or contact
-            support if the problem persists.
+            We're sorry for the inconvenience. An unexpected error occurred. Please try refreshing
+            the page or contact support if the problem persists.
           </p>
           {this.state.error && (
             <details

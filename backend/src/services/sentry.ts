@@ -32,7 +32,10 @@ export function captureException(error: Error, context?: Record<string, any>): v
   });
 }
 
-export function captureMessage(message: string, level: 'error' | 'warning' | 'info' = 'info'): void {
+export function captureMessage(
+  message: string,
+  level: 'error' | 'warning' | 'info' = 'info'
+): void {
   Sentry.captureMessage(message, level);
 }
 

@@ -4,12 +4,36 @@ import { createApp } from '../api/app';
 // Mock dependencies
 const mockQueryProcessor = { processQuery: jest.fn() } as any;
 const mockAutocompleteService = { getSuggestions: jest.fn() } as any;
-const mockRateLimiter = { checkRateLimit: jest.fn().mockResolvedValue({ allowed: true }), recordRequest: jest.fn() } as any;
-const mockAnalyticsService = { logQuery: jest.fn(), logClick: jest.fn(), getOverallMetrics: jest.fn() } as any;
-const mockDocumentStore = { getById: jest.fn(), getTotalDocuments: jest.fn(), getStats: jest.fn(), store: jest.fn() } as any;
-const mockIndexer = { getTotalDocuments: jest.fn(), getStats: jest.fn(), indexDocument: jest.fn() } as any;
-const mockClerkAuth = { requireAuth: jest.fn((req, res, next) => next()), verifyToken: jest.fn() } as any;
-const mockSearchHistoryService = { getHistory: jest.fn(), deleteEntry: jest.fn(), clearHistory: jest.fn(), addEntry: jest.fn() } as any;
+const mockRateLimiter = {
+  checkRateLimit: jest.fn().mockResolvedValue({ allowed: true }),
+  recordRequest: jest.fn(),
+} as any;
+const mockAnalyticsService = {
+  logQuery: jest.fn(),
+  logClick: jest.fn(),
+  getOverallMetrics: jest.fn(),
+} as any;
+const mockDocumentStore = {
+  getById: jest.fn(),
+  getTotalDocuments: jest.fn(),
+  getStats: jest.fn(),
+  store: jest.fn(),
+} as any;
+const mockIndexer = {
+  getTotalDocuments: jest.fn(),
+  getStats: jest.fn(),
+  indexDocument: jest.fn(),
+} as any;
+const mockClerkAuth = {
+  requireAuth: jest.fn((req, res, next) => next()),
+  verifyToken: jest.fn(),
+} as any;
+const mockSearchHistoryService = {
+  getHistory: jest.fn(),
+  deleteEntry: jest.fn(),
+  clearHistory: jest.fn(),
+  addEntry: jest.fn(),
+} as any;
 
 const app = createApp(
   mockQueryProcessor,
@@ -45,7 +69,9 @@ describe('API Endpoints Verification', () => {
 
   it('POST /api/v1/search should return results for valid query', async () => {
     mockQueryProcessor.processQuery.mockResolvedValue({ items: [], totalCount: 0 });
-    const res = await request(app).post('/api/v1/search').send({ query: 'test', page: 1, pageSize: 10 });
+    const res = await request(app)
+      .post('/api/v1/search')
+      .send({ query: 'test', page: 1, pageSize: 10 });
     expect(res.status).toBe(200);
     expect(mockQueryProcessor.processQuery).toHaveBeenCalled();
   });
@@ -76,14 +102,25 @@ describe('API Endpoints Verification', () => {
   });
 
   it('GET /api/v1/stats should return stats', async () => {
-    mockDocumentStore.getStats.mockReturnValue({ totalDocuments: 10, postCount: 5, commentCount: 5 });
-    mockAnalyticsService.getOverallMetrics.mockReturnValue({ totalQueries: 0, totalClicks: 0, overallCTR: 0, uniqueQueries: 0 });
+    mockDocumentStore.getStats.mockReturnValue({
+      totalDocuments: 10,
+      postCount: 5,
+      commentCount: 5,
+    });
+    mockAnalyticsService.getOverallMetrics.mockReturnValue({
+      totalQueries: 0,
+      totalClicks: 0,
+      overallCTR: 0,
+      uniqueQueries: 0,
+    });
     const res = await request(app).get('/api/v1/stats');
     expect(res.status).toBe(200);
   });
 
   it('POST /api/v1/click should log click and return 200', async () => {
-    const res = await request(app).post('/api/v1/click').send({ query: 'test', docId: '1', position: 1 });
+    const res = await request(app)
+      .post('/api/v1/click')
+      .send({ query: 'test', docId: '1', position: 1 });
     expect(res.status).toBe(200);
     expect(mockAnalyticsService.logClick).toHaveBeenCalled();
   });
@@ -104,15 +141,19 @@ describe('API Endpoints Verification', () => {
   it('DELETE /api/v1/history should clear history', async () => {
     mockClerkAuth.verifyToken.mockResolvedValue({ id: 'user123' });
     mockSearchHistoryService.clearHistory.mockReturnValue(5);
-    const res = await request(app).delete('/api/v1/history').set('Authorization', 'Bearer fake-token');
+    const res = await request(app)
+      .delete('/api/v1/history')
+      .set('Authorization', 'Bearer fake-token');
     expect(res.status).toBe(200);
     expect(res.body.deletedCount).toBe(5);
   });
-  
+
   it('DELETE /api/v1/history/:entryId should delete specific entry', async () => {
     mockClerkAuth.verifyToken.mockResolvedValue({ id: 'user123' });
     mockSearchHistoryService.deleteEntry.mockReturnValue(true);
-    const res = await request(app).delete('/api/v1/history/entry1').set('Authorization', 'Bearer fake-token');
+    const res = await request(app)
+      .delete('/api/v1/history/entry1')
+      .set('Authorization', 'Bearer fake-token');
     expect(res.status).toBe(200);
   });
 });

@@ -19,7 +19,7 @@ export interface DocumentStats {
 
 /**
  * PostgresDocumentStore - persists Reddit posts in Railway PostgreSQL.
- * 
+ *
  * Why Railway over self-hosted? Railway gives us managed PostgreSQL with
  * automatic backups, connection pooling, and zero ops overhead.
  * We connect via DATABASE_URL which Railway provides automatically.
@@ -74,9 +74,18 @@ export class PostgresDocumentStore {
            comment_count = EXCLUDED.comment_count,
            collected_at = EXCLUDED.collected_at`,
         [
-          doc.id, doc.type || 'post', doc.title, doc.content, doc.url,
-          doc.author, doc.subreddit, doc.redditScore || 0, doc.commentCount || 0,
-          doc.createdUtc, doc.collectedAt || new Date(), doc.processed || false,
+          doc.id,
+          doc.type || 'post',
+          doc.title,
+          doc.content,
+          doc.url,
+          doc.author,
+          doc.subreddit,
+          doc.redditScore || 0,
+          doc.commentCount || 0,
+          doc.createdUtc,
+          doc.collectedAt || new Date(),
+          doc.processed || false,
         ]
       );
       return true;
@@ -103,9 +112,18 @@ export class PostgresDocumentStore {
              comment_count = EXCLUDED.comment_count,
              collected_at = EXCLUDED.collected_at`,
           [
-            doc.id, doc.type || 'post', doc.title, doc.content, doc.url,
-            doc.author, doc.subreddit, doc.redditScore || 0, doc.commentCount || 0,
-            doc.createdUtc, doc.collectedAt || new Date(), doc.processed || false,
+            doc.id,
+            doc.type || 'post',
+            doc.title,
+            doc.content,
+            doc.url,
+            doc.author,
+            doc.subreddit,
+            doc.redditScore || 0,
+            doc.commentCount || 0,
+            doc.createdUtc,
+            doc.collectedAt || new Date(),
+            doc.processed || false,
           ]
         );
         stored++;
@@ -120,10 +138,7 @@ export class PostgresDocumentStore {
    * Retrieves a document by ID.
    */
   async getById(id: string): Promise<Document | null> {
-    const row = await this.db.queryOne<any>(
-      'SELECT * FROM documents WHERE id = $1',
-      [id]
-    );
+    const row = await this.db.queryOne<any>('SELECT * FROM documents WHERE id = $1', [id]);
     return row ? this.rowToDocument(row) : null;
   }
 
@@ -160,7 +175,7 @@ export class PostgresDocumentStore {
     }
 
     const result = await this.db.query<any>(query, params);
-    return result.rows.map(this.rowToDocument);
+    return result.rows.map((row: any) => this.rowToDocument(row));
   }
 
   /**
@@ -168,10 +183,11 @@ export class PostgresDocumentStore {
    */
   async update(id: string, updates: Partial<Document>): Promise<boolean> {
     try {
-      await this.db.query(
-        'UPDATE documents SET processed = $1, collected_at = $2 WHERE id = $3',
-        [updates.processed ?? false, updates.collectedAt ?? new Date(), id]
-      );
+      await this.db.query('UPDATE documents SET processed = $1, collected_at = $2 WHERE id = $3', [
+        updates.processed ?? false,
+        updates.collectedAt ?? new Date(),
+        id,
+      ]);
       return true;
     } catch (error) {
       logger.error('Failed to update document', { id, error });
@@ -191,7 +207,9 @@ export class PostgresDocumentStore {
           COUNT(*) FILTER (WHERE type = 'comment') as comments
         FROM documents
       `),
-      this.db.query<any>('SELECT DISTINCT subreddit FROM documents WHERE subreddit IS NOT NULL LIMIT 100'),
+      this.db.query<any>(
+        'SELECT DISTINCT subreddit FROM documents WHERE subreddit IS NOT NULL LIMIT 100'
+      ),
     ]);
 
     const counts = countResult.rows[0];

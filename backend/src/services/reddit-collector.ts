@@ -401,7 +401,7 @@ export class RedditCollector {
    */
   scheduleCollection(intervalMs: number): NodeJS.Timeout {
     logger.info('Scheduling Reddit collection', { intervalMs });
-    
+
     return setInterval(async () => {
       try {
         await this.runCollectionCycle();

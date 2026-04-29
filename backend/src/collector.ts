@@ -14,29 +14,34 @@ async function startCollector() {
     logger.info('Connecting Collector to PostgreSQL database...');
     const pgClient = new PostgresClient({ connectionString: config.database.url });
     await pgClient.initialize();
-    
+
     const pgDocStore = new PostgresDocumentStore(pgClient);
     logger.info('Hydrating in-memory store from PostgreSQL...');
     documentStore = new DocumentStore({ maxDocuments: 100000 });
     const allDocs = await pgDocStore.getAll();
     await documentStore.storeMany(allDocs);
   } else {
-    logger.warn('No DATABASE_URL configured, Collector falling back to in-memory store (WARNING: DATA WILL NOT PERSIST TO API)');
+    logger.warn(
+      'No DATABASE_URL configured, Collector falling back to in-memory store (WARNING: DATA WILL NOT PERSIST TO API)'
+    );
     documentStore = new DocumentStore({ maxDocuments: 100000 });
   }
 
-  const collector = new RedditCollector({
-    clientId: config.reddit.clientId,
-    clientSecret: config.reddit.clientSecret,
-    userAgent: config.reddit.userAgent || 'FeedvexCollector/1.0',
-    subreddits: config.reddit.subreddits,
-    maxPostsPerSubreddit: config.reddit.maxPostsPerSubreddit,
-  }, documentStore);
+  const collector = new RedditCollector(
+    {
+      clientId: config.reddit.clientId,
+      clientSecret: config.reddit.clientSecret,
+      userAgent: config.reddit.userAgent || 'FeedvexCollector/1.0',
+      subreddits: config.reddit.subreddits,
+      maxPostsPerSubreddit: config.reddit.maxPostsPerSubreddit,
+    },
+    documentStore
+  );
 
   // Interval from config, or default 6 hours
   const intervalHours = config.reddit.collectionIntervalHours || 6;
   const intervalMs = intervalHours * 60 * 60 * 1000;
-  
+
   // Run immediately on boot
   logger.info('Running initial collection cycle on boot...');
   try {
@@ -47,7 +52,7 @@ async function startCollector() {
 
   // Schedule the interval
   collector.scheduleCollection(intervalMs);
-  
+
   // Keep process alive gracefully
   process.on('SIGTERM', () => {
     logger.info('SIGTERM received. Shutting down collector...');

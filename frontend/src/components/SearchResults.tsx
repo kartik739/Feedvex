@@ -1,7 +1,6 @@
 import ResultCard from './ResultCard';
 import SkeletonLoader from './SkeletonLoader';
 
-
 // Shape coming from the search store
 interface StoreSearchResult {
   docId: string;
@@ -68,42 +67,42 @@ export default function SearchResults({ results, query, isLoading = false }: Sea
                 <stop offset="100%" stopColor="var(--color-secondary)" />
               </linearGradient>
             </defs>
-            
+
             {/* Background */}
             <circle cx="80" cy="80" r="70" fill="url(#bgGradient)" />
-            
+
             {/* Magnifying glass */}
-            <circle 
-              cx="65" 
-              cy="65" 
-              r="25" 
-              stroke="url(#iconGradient)" 
-              strokeWidth="4" 
+            <circle
+              cx="65"
+              cy="65"
+              r="25"
+              stroke="url(#iconGradient)"
+              strokeWidth="4"
               fill="none"
               strokeLinecap="round"
             />
-            <line 
-              x1="85" 
-              y1="85" 
-              x2="105" 
-              y2="105" 
-              stroke="url(#iconGradient)" 
-              strokeWidth="4" 
+            <line
+              x1="85"
+              y1="85"
+              x2="105"
+              y2="105"
+              stroke="url(#iconGradient)"
+              strokeWidth="4"
               strokeLinecap="round"
             />
-            
+
             {/* Question mark inside magnifying glass */}
-            <text 
-              x="65" 
-              y="75" 
-              fontSize="32" 
-              fontWeight="bold" 
+            <text
+              x="65"
+              y="75"
+              fontSize="32"
+              fontWeight="bold"
               fill="var(--color-text-tertiary)"
               textAnchor="middle"
             >
               ?
             </text>
-            
+
             {/* Decorative dots */}
             <circle cx="30" cy="30" r="3" fill="var(--color-primary)" opacity="0.4" />
             <circle cx="130" cy="40" r="4" fill="var(--color-secondary)" opacity="0.4" />
@@ -120,25 +119,41 @@ export default function SearchResults({ results, query, isLoading = false }: Sea
           <ul className="suggestions-list">
             <li key="suggestion-1">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M10 2L12 8L18 10L12 12L10 18L8 12L2 10L8 8L10 2Z" fill="var(--color-primary)" opacity="0.6" />
+                <path
+                  d="M10 2L12 8L18 10L12 12L10 18L8 12L2 10L8 8L10 2Z"
+                  fill="var(--color-primary)"
+                  opacity="0.6"
+                />
               </svg>
               <span>Try different or more general keywords</span>
             </li>
             <li key="suggestion-2">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M10 2L12 8L18 10L12 12L10 18L8 12L2 10L8 8L10 2Z" fill="var(--color-primary)" opacity="0.6" />
+                <path
+                  d="M10 2L12 8L18 10L12 12L10 18L8 12L2 10L8 8L10 2Z"
+                  fill="var(--color-primary)"
+                  opacity="0.6"
+                />
               </svg>
               <span>Check your spelling</span>
             </li>
             <li key="suggestion-3">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M10 2L12 8L18 10L12 12L10 18L8 12L2 10L8 8L10 2Z" fill="var(--color-primary)" opacity="0.6" />
+                <path
+                  d="M10 2L12 8L18 10L12 12L10 18L8 12L2 10L8 8L10 2Z"
+                  fill="var(--color-primary)"
+                  opacity="0.6"
+                />
               </svg>
               <span>Use fewer filters or broader date ranges</span>
             </li>
             <li key="suggestion-4">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M10 2L12 8L18 10L12 12L10 18L8 12L2 10L8 8L10 2Z" fill="var(--color-primary)" opacity="0.6" />
+                <path
+                  d="M10 2L12 8L18 10L12 12L10 18L8 12L2 10L8 8L10 2Z"
+                  fill="var(--color-primary)"
+                  opacity="0.6"
+                />
               </svg>
               <span>Search for related or similar topics</span>
             </li>
@@ -147,11 +162,21 @@ export default function SearchResults({ results, query, isLoading = false }: Sea
         <div className="popular-searches">
           <p className="popular-title">Popular searches:</p>
           <div className="popular-tags">
-            <button key="tag-js" className="tag-button">JavaScript</button>
-            <button key="tag-react" className="tag-button">React</button>
-            <button key="tag-python" className="tag-button">Python</button>
-            <button key="tag-ml" className="tag-button">Machine Learning</button>
-            <button key="tag-webdev" className="tag-button">Web Development</button>
+            <button key="tag-js" className="tag-button">
+              JavaScript
+            </button>
+            <button key="tag-react" className="tag-button">
+              React
+            </button>
+            <button key="tag-python" className="tag-button">
+              Python
+            </button>
+            <button key="tag-ml" className="tag-button">
+              Machine Learning
+            </button>
+            <button key="tag-webdev" className="tag-button">
+              Web Development
+            </button>
           </div>
         </div>
       </div>

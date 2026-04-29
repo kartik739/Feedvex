@@ -29,10 +29,7 @@ export default function Layout() {
           <Outlet />
         </main>
       </div>
-      <KeyboardShortcutsHelp
-        isOpen={showShortcuts}
-        onClose={() => setShowShortcuts(false)}
-      />
+      <KeyboardShortcutsHelp isOpen={showShortcuts} onClose={() => setShowShortcuts(false)} />
     </>
   );
 }

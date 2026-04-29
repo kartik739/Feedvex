@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { CheckCircle, XCircle, AlertCircle, Info, X } from 'lucide-react';
 import type { ToastProps } from '../types/toast';
 
-
 export default function Toast({ id, type, message, duration = 5000, onClose }: ToastProps) {
   useEffect(() => {
     if (duration > 0) {
@@ -25,11 +24,7 @@ export default function Toast({ id, type, message, duration = 5000, onClose }: T
     <div className={`toast toast-${type}`} role="alert" aria-live="polite">
       <div className="toast-icon">{icons[type]}</div>
       <div className="toast-message">{message}</div>
-      <button
-        className="toast-close"
-        onClick={() => onClose(id)}
-        aria-label="Close notification"
-      >
+      <button className="toast-close" onClick={() => onClose(id)} aria-label="Close notification">
         <X size={16} />
       </button>
     </div>

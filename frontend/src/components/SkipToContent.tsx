@@ -5,9 +5,13 @@ export default function SkipToContent() {
     if (mainContent) {
       mainContent.setAttribute('tabindex', '-1');
       mainContent.focus();
-      mainContent.addEventListener('blur', () => {
-        mainContent.removeAttribute('tabindex');
-      }, { once: true });
+      mainContent.addEventListener(
+        'blur',
+        () => {
+          mainContent.removeAttribute('tabindex');
+        },
+        { once: true }
+      );
     }
   };
 
@@ -28,8 +32,12 @@ export default function SkipToContent() {
         textDecoration: 'none',
         transition: 'top 0.2s',
       }}
-      onFocus={(e) => { (e.target as HTMLElement).style.top = '8px'; }}
-      onBlur={(e) => { (e.target as HTMLElement).style.top = '-100px'; }}
+      onFocus={(e) => {
+        (e.target as HTMLElement).style.top = '8px';
+      }}
+      onBlur={(e) => {
+        (e.target as HTMLElement).style.top = '-100px';
+      }}
     >
       Skip to main content
     </a>

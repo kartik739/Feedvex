@@ -24,7 +24,7 @@ interface ResultCardProps {
 export default function ResultCard({ result, query }: ResultCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const SNIPPET_LIMIT = 200;
-  
+
   const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     // Log click but don't block navigation if it fails
     try {
@@ -33,7 +33,7 @@ export default function ResultCard({ result, query }: ResultCardProps) {
       // Fail silently - don't show error to user
       console.warn('Click tracking failed:', error);
     }
-    
+
     // Create ripple effect
     const card = e.currentTarget.closest('.result-card') as HTMLElement;
     if (card) {
@@ -42,14 +42,14 @@ export default function ResultCard({ result, query }: ResultCardProps) {
       const size = Math.max(rect.width, rect.height);
       const x = e.clientX - rect.left - size / 2;
       const y = e.clientY - rect.top - size / 2;
-      
+
       ripple.style.width = ripple.style.height = `${size}px`;
       ripple.style.left = `${x}px`;
       ripple.style.top = `${y}px`;
       ripple.classList.add('ripple');
-      
+
       card.appendChild(ripple);
-      
+
       setTimeout(() => ripple.remove(), 600);
     }
   };
@@ -70,28 +70,34 @@ export default function ResultCard({ result, query }: ResultCardProps) {
 
   const highlightText = (text: string, query: string) => {
     if (!query || !text) return text;
-    
+
     // Split query into terms and filter out empty strings
-    const terms = query.toLowerCase().split(/\s+/).filter(term => term.length > 0);
+    const terms = query
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((term) => term.length > 0);
     if (terms.length === 0) return text;
-    
+
     // Create a regex pattern that matches any of the query terms
-    const pattern = terms.map(term => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+    const pattern = terms.map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
     const regex = new RegExp(`(${pattern})`, 'gi');
-    
+
     // Split text by matches and wrap matches in mark tags
     const parts = text.split(regex);
-    
-    return parts.map((part, index) => {
-      const isMatch = terms.some(term => part.toLowerCase() === term);
-      return isMatch ? `<mark>${part}</mark>` : part;
-    }).join('');
+
+    return parts
+      .map((part, _index) => {
+        const isMatch = terms.some((term) => part.toLowerCase() === term);
+        return isMatch ? `<mark>${part}</mark>` : part;
+      })
+      .join('');
   };
 
   const shouldShowExpand = result.snippet && result.snippet.length > SNIPPET_LIMIT;
-  const displaySnippet = shouldShowExpand && !isExpanded 
-    ? result.snippet!.substring(0, SNIPPET_LIMIT) + '...'
-    : result.snippet;
+  const displaySnippet =
+    shouldShowExpand && !isExpanded
+      ? result.snippet!.substring(0, SNIPPET_LIMIT) + '...'
+      : result.snippet;
 
   return (
     <div className="premium-card p-8 flex flex-col group h-full">
@@ -115,9 +121,9 @@ export default function ResultCard({ result, query }: ResultCardProps) {
 
       {result.snippet && (
         <div className="font-sans text-white/70 leading-relaxed mb-6 flex-grow">
-          <p 
+          <p
             className={`transition-all duration-300 ${isExpanded ? '' : 'line-clamp-3'}`}
-            dangerouslySetInnerHTML={{ __html: highlightText(displaySnippet || '', query) }} 
+            dangerouslySetInnerHTML={{ __html: highlightText(displaySnippet || '', query) }}
           />
           {shouldShowExpand && (
             <button

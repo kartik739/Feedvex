@@ -52,7 +52,10 @@ export class GracefulShutdown {
         }
 
         const duration = Date.now() - startTime;
-        logger.info('Graceful shutdown complete', { duration, timestamp: new Date().toISOString() });
+        logger.info('Graceful shutdown complete', {
+          duration,
+          timestamp: new Date().toISOString(),
+        });
         process.exit(0);
       } catch (error) {
         logger.error('Error during shutdown cleanup', { error });

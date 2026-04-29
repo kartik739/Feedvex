@@ -1,6 +1,5 @@
 import { X, Keyboard } from 'lucide-react';
 
-
 interface KeyboardShortcutsHelpProps {
   isOpen: boolean;
   onClose: () => void;
@@ -27,25 +26,24 @@ export default function KeyboardShortcutsHelp({ isOpen, onClose }: KeyboardShort
 
   return (
     <div className="shortcuts-overlay" onClick={handleBackdropClick}>
-      <div className="shortcuts-modal" role="dialog" aria-modal="true" aria-labelledby="shortcuts-title">
+      <div
+        className="shortcuts-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="shortcuts-title"
+      >
         <div className="shortcuts-header">
           <div className="shortcuts-title-wrapper">
             <Keyboard size={24} className="shortcuts-icon" />
             <h2 id="shortcuts-title">Keyboard Shortcuts</h2>
           </div>
-          <button
-            className="shortcuts-close"
-            onClick={onClose}
-            aria-label="Close shortcuts help"
-          >
+          <button className="shortcuts-close" onClick={onClose} aria-label="Close shortcuts help">
             <X size={20} />
           </button>
         </div>
 
         <div className="shortcuts-content">
-          <p className="shortcuts-description">
-            Use these keyboard shortcuts to navigate faster
-          </p>
+          <p className="shortcuts-description">Use these keyboard shortcuts to navigate faster</p>
           <div className="shortcuts-list">
             {shortcuts.map((shortcut, index) => (
               <div key={index} className="shortcut-item">

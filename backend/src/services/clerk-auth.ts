@@ -15,7 +15,7 @@ export interface ClerkUser {
 
 /**
  * ClerkAuthMiddleware - verifies Clerk JWT tokens on API requests.
- * 
+ *
  * Why Clerk over custom auth? Clerk handles OAuth, social login, MFA,
  * password reset, and JWT management. We get all of that for free
  * instead of building and maintaining it ourselves.

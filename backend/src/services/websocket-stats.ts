@@ -68,8 +68,8 @@ export class WebSocketStatsService {
    * Initialize WebSocket server and attach to HTTP server
    */
   initialize(server: Server, path: string = '/ws/stats'): void {
-    this.wss = new WebSocketServer({ 
-      server, 
+    this.wss = new WebSocketServer({
+      server,
       path,
       // Handle reconnection
       clientTracking: true,

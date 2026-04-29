@@ -1,6 +1,5 @@
 import { ButtonHTMLAttributes } from 'react';
 
-
 interface LoadingButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
   loadingText?: string;

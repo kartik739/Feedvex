@@ -219,8 +219,8 @@ export class DocumentStore {
   } {
     const docs = Array.from(this.documents.values());
     const subredditsMap: Record<string, number> = {};
-    
-    docs.forEach(d => {
+
+    docs.forEach((d) => {
       const sub = d.subreddit || 'unknown';
       subredditsMap[sub] = (subredditsMap[sub] || 0) + 1;
     });

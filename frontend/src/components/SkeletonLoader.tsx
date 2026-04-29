@@ -1,5 +1,3 @@
-
-
 interface SkeletonLoaderProps {
   count?: number;
 }

@@ -1,7 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 
-
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -14,7 +13,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
   const handlePageChange = (page: number) => {
     // Scroll to top smoothly
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    
+
     // Call the parent's page change handler
     onPageChange(page);
   };

@@ -55,7 +55,9 @@ export function createApp(
   // CORS Hardening
   const isProd = process.env.NODE_ENV === 'production';
   if (isProd && (!config.corsOrigins || config.corsOrigins.includes('*'))) {
-    throw new Error('CRITICAL SECURITY: CORS is misconfigured for production. Wildcard (*) origin is not allowed.');
+    throw new Error(
+      'CRITICAL SECURITY: CORS is misconfigured for production. Wildcard (*) origin is not allowed.'
+    );
   }
 
   app.use(
@@ -67,22 +69,34 @@ export function createApp(
       optionsSuccessStatus: 200,
     })
   );
-  
+
   // Helmet Hardening - Re-enable CSP with strict directives
-  app.use(helmet({
-    contentSecurityPolicy: {
-      useDefaults: true,
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com", "https://*.clerk.accounts.dev"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-        fontSrc: ["'self'", "https://fonts.gstatic.com"],
-        imgSrc: ["'self'", "data:", "https://images.unsplash.com", "https://lh3.googleusercontent.com"],
-        connectSrc: ["'self'", "https://cdn.tailwindcss.com", "https://*.clerk.accounts.dev"]
-      }
-    },
-    crossOriginResourcePolicy: { policy: 'cross-origin' },
-  }));
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            'https://cdn.tailwindcss.com',
+            'https://*.clerk.accounts.dev',
+          ],
+          styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+          fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+          imgSrc: [
+            "'self'",
+            'data:',
+            'https://images.unsplash.com',
+            'https://lh3.googleusercontent.com',
+          ],
+          connectSrc: ["'self'", 'https://cdn.tailwindcss.com', 'https://*.clerk.accounts.dev'],
+        },
+      },
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+    })
+  );
   app.use(express.json({ limit: '1mb' })); // Body parser with size limit
 
   // Request logging middleware (Requirement 16.4, 16.6)
@@ -162,7 +176,7 @@ export function createApp(
 
   // Clerk handles /register, /login, and /profile completely on the frontend.
   // The backend only needs to trust the JWT.
-  
+
   // GET /api/v1/auth/me endpoint (get current user)
   app.get('/api/v1/auth/me', clerkAuth.requireAuth, async (req: Request, res: Response) => {
     res.json({ user: (req as any).clerkUser });
@@ -675,7 +689,8 @@ export function createApp(
         {
           id: 'test1',
           title: 'Introduction to TypeScript: A Comprehensive Guide',
-          content: 'TypeScript is a strongly typed programming language that builds on JavaScript. It adds optional static typing to the language, which can help catch errors early in development.',
+          content:
+            'TypeScript is a strongly typed programming language that builds on JavaScript. It adds optional static typing to the language, which can help catch errors early in development.',
           url: 'https://reddit.com/r/programming/test1',
           subreddit: 'programming',
           author: 'test_user_1',
@@ -686,7 +701,8 @@ export function createApp(
         {
           id: 'test2',
           title: 'React vs Vue: Which Framework Should You Choose?',
-          content: 'Comparing React and Vue.js frameworks for modern web development. Both have their strengths and are excellent choices for building user interfaces.',
+          content:
+            'Comparing React and Vue.js frameworks for modern web development. Both have their strengths and are excellent choices for building user interfaces.',
           url: 'https://reddit.com/r/webdev/test2',
           subreddit: 'webdev',
           author: 'test_user_2',
@@ -697,7 +713,8 @@ export function createApp(
         {
           id: 'test3',
           title: 'Machine Learning Basics: Getting Started with Python',
-          content: 'Learn the fundamentals of machine learning using Python. This guide covers supervised learning, neural networks, and popular libraries like scikit-learn and TensorFlow.',
+          content:
+            'Learn the fundamentals of machine learning using Python. This guide covers supervised learning, neural networks, and popular libraries like scikit-learn and TensorFlow.',
           url: 'https://reddit.com/r/machinelearning/test3',
           subreddit: 'machinelearning',
           author: 'test_user_3',
@@ -723,7 +740,7 @@ export function createApp(
           processed: false,
           type: 'post',
         };
-        
+
         await documentStore.store(doc);
         const processed = textProcessor.processDocument(doc);
         indexer.indexDocument(processed);

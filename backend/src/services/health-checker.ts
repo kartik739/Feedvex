@@ -1,7 +1,6 @@
 import { PostgresClient } from './postgres-client';
 import { UpstashCache } from './upstash-cache';
 import { RedditOAuthClient } from './reddit-oauth-client';
-import { logger } from '../utils/logger';
 
 export interface ComponentHealth {
   status: 'up' | 'down' | 'degraded';

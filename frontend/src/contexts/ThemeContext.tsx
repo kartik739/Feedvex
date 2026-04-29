@@ -27,7 +27,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   useEffect(() => {
     // Detect system preference on first load if no theme is stored
     const storedTheme = localStorage.getItem('theme-storage');
-    
+
     if (!storedTheme) {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const systemTheme = prefersDark ? 'dark' : 'light';
@@ -58,9 +58,5 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     setTheme,
   };
 
-  return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };

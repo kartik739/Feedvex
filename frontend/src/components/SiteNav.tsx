@@ -13,47 +13,57 @@ export default function SiteNav() {
     if (query.trim()) navigate(`/search?q=${encodeURIComponent(query.trim())}`);
   };
 
-  const isHome = location.pathname === '/';
-  const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + '?');
+  const isActive = (path: string) =>
+    location.pathname === path || location.pathname.startsWith(path + '?');
 
   return (
-    <nav style={{
-      position: 'sticky',
-      top: 0,
-      zIndex: 50,
-      width: '100%',
-      background: 'rgba(10, 10, 10, 0.92)',
-      backdropFilter: 'blur(24px)',
-      WebkitBackdropFilter: 'blur(24px)',
-      borderBottom: '1px solid rgba(255,255,255,0.05)',
-    }}>
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '0 40px',
-        height: '56px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '32px',
-      }}>
-
+    <nav
+      style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+        width: '100%',
+        background: 'rgba(10, 10, 10, 0.92)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        borderBottom: '1px solid rgba(255,255,255,0.05)',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '0 40px',
+          height: '56px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '32px',
+        }}
+      >
         {/* Logo */}
-        <Link to="/" style={{
-          fontFamily: "'Noto Serif', Georgia, serif",
-          fontSize: '17px',
-          fontWeight: 600,
-          fontStyle: 'italic',
-          color: '#4edea3',
-          textDecoration: 'none',
-          letterSpacing: '-0.01em',
-          flexShrink: 0,
-        }}>
+        <Link
+          to="/"
+          style={{
+            fontFamily: "'Noto Serif', Georgia, serif",
+            fontSize: '17px',
+            fontWeight: 600,
+            fontStyle: 'italic',
+            color: '#4edea3',
+            textDecoration: 'none',
+            letterSpacing: '-0.01em',
+            flexShrink: 0,
+          }}
+        >
           FeedVex
         </Link>
 
         {/* Nav links + Search — always shown */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1 }}>
-          <NavLink to="/search?q=" label="Search" active={location.pathname.startsWith('/search')} />
+          <NavLink
+            to="/search?q="
+            label="Search"
+            active={location.pathname.startsWith('/search')}
+          />
           <NavLink to="/stats" label="Stats" active={isActive('/stats')} />
           <form
             onSubmit={handleSearch}
@@ -68,12 +78,23 @@ export default function SiteNav() {
               marginLeft: '12px',
             }}
           >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-              <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#555"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ flexShrink: 0 }}
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
             </svg>
             <input
               value={query}
-              onChange={e => setQuery(e.target.value)}
+              onChange={(e) => setQuery(e.target.value)}
               placeholder="Search threads..."
               style={{
                 background: 'transparent',
@@ -93,7 +114,9 @@ export default function SiteNav() {
           <SignedIn>
             <UserButton
               afterSignOutUrl="/"
-              appearance={{ elements: { avatarBox: { width: '30px', height: '30px', borderRadius: '6px' } } }}
+              appearance={{
+                elements: { avatarBox: { width: '30px', height: '30px', borderRadius: '6px' } },
+              }}
             />
           </SignedIn>
           <SignedOut>
@@ -111,11 +134,11 @@ export default function SiteNav() {
                 borderRadius: '6px',
                 transition: 'color 0.15s, background 0.15s',
               }}
-              onMouseEnter={e => {
+              onMouseEnter={(e) => {
                 (e.currentTarget as HTMLElement).style.color = '#fff';
                 (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)';
               }}
-              onMouseLeave={e => {
+              onMouseLeave={(e) => {
                 (e.currentTarget as HTMLElement).style.color = '#999';
                 (e.currentTarget as HTMLElement).style.background = 'transparent';
               }}
@@ -137,14 +160,17 @@ export default function SiteNav() {
                 letterSpacing: '0.02em',
                 transition: 'filter 0.15s',
               }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.filter = 'brightness(1.1)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = 'none'; }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.filter = 'brightness(1.1)';
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.filter = 'none';
+              }}
             >
               Get Started
             </button>
           </SignedOut>
         </div>
-
       </div>
     </nav>
   );
@@ -166,13 +192,13 @@ function NavLink({ to, label, active }: { to: string; label: string; active: boo
         transition: 'color 0.15s, background 0.15s',
         letterSpacing: '0.01em',
       }}
-      onMouseEnter={e => {
+      onMouseEnter={(e) => {
         if (!active) {
           (e.currentTarget as HTMLElement).style.color = '#e5e2e1';
           (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)';
         }
       }}
-      onMouseLeave={e => {
+      onMouseLeave={(e) => {
         if (!active) {
           (e.currentTarget as HTMLElement).style.color = '#777';
           (e.currentTarget as HTMLElement).style.background = 'transparent';

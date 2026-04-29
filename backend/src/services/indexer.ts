@@ -238,10 +238,13 @@ export class Indexer {
             updated_at TIMESTAMP NOT NULL
           )
         `);
-        const res = await this.config.pgClient.query('SELECT data FROM search_index_state WHERE id = 1');
+        const res = await this.config.pgClient.query(
+          'SELECT data FROM search_index_state WHERE id = 1'
+        );
         if (res.rows.length > 0) {
           const rawData = res.rows[0].data;
-          const serialized: SerializableInvertedIndex = typeof rawData === 'string' ? JSON.parse(rawData) : rawData;
+          const serialized: SerializableInvertedIndex =
+            typeof rawData === 'string' ? JSON.parse(rawData) : rawData;
           this.index = deserializeIndex(serialized);
           return;
         }

@@ -1,7 +1,6 @@
 import Toast from './Toast';
 import type { Toast as ToastData } from '../types/toast';
 
-
 interface ToastContainerProps {
   toasts: ToastData[];
   onClose: (id: string) => void;

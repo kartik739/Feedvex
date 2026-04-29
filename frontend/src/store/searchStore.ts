@@ -39,7 +39,7 @@ interface SearchState {
   reset: () => void;
 }
 
-export const useSearchStore = create<SearchState>((set, get) => ({
+export const useSearchStore = create<SearchState>((set) => ({
   query: '',
   results: null,
   isLoading: false,
@@ -74,12 +74,13 @@ export const useSearchStore = create<SearchState>((set, get) => ({
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
   setCurrentPage: (currentPage) => set({ currentPage }),
-  
-  reset: () => set({
-    query: '',
-    results: null,
-    isLoading: false,
-    error: null,
-    currentPage: 1,
-  }),
+
+  reset: () =>
+    set({
+      query: '',
+      results: null,
+      isLoading: false,
+      error: null,
+      currentPage: 1,
+    }),
 }));

@@ -35,7 +35,11 @@ export class ResendEmailService {
         return data?.id ?? null;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
-        logger.warn('Email send failed, retrying', { attempt, maxRetries, error: lastError.message });
+        logger.warn('Email send failed, retrying', {
+          attempt,
+          maxRetries,
+          error: lastError.message,
+        });
 
         if (attempt < maxRetries) {
           await new Promise((r) => setTimeout(r, 100 * Math.pow(2, attempt - 1)));

@@ -28,7 +28,7 @@ export const useAuthStore = create<AuthState>()(
 
       login: async (email: string, password: string) => {
         const data = await authAPI.login(email, password);
-        
+
         set({
           user: data.user,
           token: data.token,
@@ -38,7 +38,7 @@ export const useAuthStore = create<AuthState>()(
 
       signup: async (email: string, username: string, password: string) => {
         const data = await authAPI.register(email, username, password);
-        
+
         set({
           user: data.user,
           token: data.token,

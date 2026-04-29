@@ -1,6 +1,5 @@
 import { useOfflineNotification } from '../hooks/useNetworkStatus';
 
-
 export default function OfflineNotification() {
   const { isOnline, showNotification } = useOfflineNotification();
 
@@ -13,9 +12,7 @@ export default function OfflineNotification() {
       aria-live="assertive"
     >
       <div className="offline-notification-content">
-        <span className="offline-notification-icon">
-          {isOnline ? '✓' : '⚠'}
-        </span>
+        <span className="offline-notification-icon">{isOnline ? '✓' : '⚠'}</span>
         <span className="offline-notification-message">
           {isOnline
             ? 'You are back online'

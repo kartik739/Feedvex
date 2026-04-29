@@ -29,13 +29,13 @@ export interface CollectionOptions {
 
 /**
  * RedditOAuthClient - collects posts from Reddit using OAuth.
- * 
+ *
  * Why OAuth over public API? OAuth gives us 600 req/min vs 60 req/min.
  * That's 10x more data collection capacity, which means fresher results.
  * We use client credentials flow (no user login needed).
  */
 export class RedditOAuthClient {
-  private client: any | null = null;
+  private client: any = null;
   private rateLimitStatus: RateLimitStatus = {
     remaining: 600,
     reset: new Date(),
@@ -202,7 +202,7 @@ export class RedditOAuthClient {
     try {
       const url = `https://www.reddit.com/r/${subreddit}/${sort}.json`;
       const params = { limit, ...(time ? { t: time } : {}) };
-      
+
       const response = await axios.get(url, {
         params,
         headers: {

@@ -3,7 +3,7 @@ import { z } from 'zod';
 /**
  * Environment variable validation schema using Zod.
  * Validates all required env vars at startup - fails fast with clear errors.
- * 
+ *
  * Why Zod? TypeScript only checks types at compile time.
  * Zod validates at runtime, catching missing env vars before they cause silent failures.
  */
@@ -72,8 +72,8 @@ export function validateEnv(): Env {
   const env = result.data;
 
   // Log which services are configured (mask sensitive values)
-  const mask = (val?: string) => val ? `${val.slice(0, 4)}****` : 'not set';
-  
+  const mask = (val?: string) => (val ? `${val.slice(0, 4)}****` : 'not set');
+
   console.log('✅ Environment validated:');
   console.log(`  NODE_ENV: ${env.NODE_ENV}`);
   console.log(`  CLERK_SECRET_KEY: ${mask(env.CLERK_SECRET_KEY)}`);

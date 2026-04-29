@@ -176,10 +176,7 @@ export class PostgresClient {
    * Executes a query and returns a single row or null
    * Requirement 1.2: Acquire connection from pool
    */
-  async queryOne<T extends QueryResultRow = any>(
-    text: string,
-    params?: any[]
-  ): Promise<T | null> {
+  async queryOne<T extends QueryResultRow = any>(text: string, params?: any[]): Promise<T | null> {
     const result = await this.query<T>(text, params);
     return result.rows.length > 0 ? result.rows[0] : null;
   }
@@ -189,9 +186,7 @@ export class PostgresClient {
    * Requirement 1.5: Use database transactions for atomic operations
    * Requirement 1.9: Wrap write operations in transactions
    */
-  async transaction<T>(
-    callback: (client: PoolClient) => Promise<T>
-  ): Promise<T> {
+  async transaction<T>(callback: (client: PoolClient) => Promise<T>): Promise<T> {
     this.ensureInitialized();
 
     return this.executeWithRetry(async () => {
@@ -228,10 +223,7 @@ export class PostgresClient {
    * Executes a function with exponential backoff retry logic
    * Requirement 1.10: Retry connections with exponential backoff up to 5 attempts
    */
-  private async executeWithRetry<T>(
-    fn: () => Promise<T>,
-    attempt = 1
-  ): Promise<T> {
+  private async executeWithRetry<T>(fn: () => Promise<T>, attempt = 1): Promise<T> {
     try {
       return await fn();
     } catch (error: any) {
@@ -240,7 +232,8 @@ export class PostgresClient {
 
       if (isRetryable && canRetry) {
         const delay = Math.min(
-          this.retryConfig.initialDelayMs * Math.pow(this.retryConfig.backoffMultiplier, attempt - 1),
+          this.retryConfig.initialDelayMs *
+            Math.pow(this.retryConfig.backoffMultiplier, attempt - 1),
           this.retryConfig.maxDelayMs
         );
 
