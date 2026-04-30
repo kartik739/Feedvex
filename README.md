@@ -1,104 +1,134 @@
-# FeedVex - Reddit Search Engine
+<div align="center">
+  <img src="https://raw.githubusercontent.com/kartik739/Feedvex/main/frontend/public/favicon.svg" width="120" height="120" alt="FeedVex Logo" />
+  
+  <h1>FeedVex</h1>
+  <p><strong>A Premium, High-Performance Reddit Search Engine</strong></p>
+  
+  <p>
+    <a href="https://feedvex.vercel.app">Live Demo</a> •
+    <a href="#features">Features</a> •
+    <a href="#tech-stack">Tech Stack</a> •
+    <a href="#getting-started">Getting Started</a>
+  </p>
+</div>
 
-A production-ready Reddit search engine built with modern 100% free cloud services. Search across all of Reddit with fast, relevant results powered by BM25 ranking.
+<br />
 
-**Live Demo**: [feedvex.vercel.app](https://feedvex.vercel.app) | **API**: [feedvex-api.onrender.com](https://feedvex-api.onrender.com)
+## 📖 About FeedVex
 
-## Architecture
+FeedVex is a premium, production-ready search engine designed specifically for Reddit. It bypasses the limitations of Reddit's native search by intelligently indexing posts from top subreddits, parsing discussions, and delivering ultra-relevant results using a custom **BM25 Ranking Algorithm**. 
 
-```
-Browser → Vercel (Frontend) → Render (Backend API)
-                                    ↓
-                    Upstash Redis (Cache) + Neon PostgreSQL (DB)
-                                    ↓
-                    Reddit Public API (60 req/min)
+Built with modern web technologies, FeedVex features the bespoke "Vex Obsidian" design system—a stunning, handcrafted UI featuring dark mode aesthetics, glassmorphism, and dynamic micro-animations for an unparalleled user experience.
 
-External: Clerk (Auth) · Resend (Email) · Trigger.dev (Jobs) · Sentry (Errors)
-```
+---
 
-## Cloud Services
+## ✨ Features
 
-| Service | Purpose | Why chosen |
-|---------|---------|------------|
-| **Clerk** | Authentication | OAuth, social login, JWT - no custom auth needed |
-| **Render** | Backend hosting | Zero-cost web services with automated GitHub deploys |
-| **Neon** | PostgreSQL | Serverless DB with a generous permanent free tier |
-| **Upstash** | Redis caching | Serverless, no infra to manage, 10K cmds/day free |
-| **Vercel** | Frontend deployment | Auto deploys from GitHub, global CDN, free tier |
-| **Resend** | Transactional email | Developer-friendly API, 3K emails/month free |
-| **Trigger.dev** | Background jobs | Managed cron with dashboard, replaces node-cron |
-| **Sentry** | Error tracking | Full stack traces, 5K errors/month free |
+- 🔍 **BM25 Full-Text Search**: Highly relevant, lightning-fast search results matching titles, content, and metadata.
+- ⚡ **Real-time Ingestion**: Automatically pulls and indexes live data from Reddit using background collector daemons.
+- 🛡️ **Secure Authentication**: Seamless login and user management powered by Clerk.
+- 🚄 **Edge Caching**: 5-minute intelligent caching via Upstash Redis for instant repeat searches.
+- 📊 **Live Telemetry & Metrics**: Real-time server health and search telemetry via WebSockets.
+- 🎨 **Premium Aesthetics**: Bespoke "Vex Obsidian" design utilizing Inter typography and tailored color palettes.
 
-## Quick Start
+---
+
+## 🛠 Tech Stack
+
+FeedVex is built using a modern, serverless-first architecture optimized for performance and zero-ops deployments.
+
+### Frontend
+- **Framework**: React 18 + Vite
+- **Styling**: Tailwind CSS (Vex Obsidian Theme) + Framer Motion
+- **Icons**: Lucide React
+- **Deployment**: Vercel (Global Edge Network)
+
+### Backend
+- **Runtime**: Node.js + Express
+- **Database**: PostgreSQL (hosted on Neon)
+- **Caching & Rate Limiting**: Upstash Redis
+- **Authentication**: Clerk
+- **Deployment**: Render
+
+---
+
+## 🚀 Getting Started
+
+Follow these instructions to set up FeedVex on your local machine for development and testing.
 
 ### Prerequisites
-- Node.js 20+
-- Accounts: [Clerk](https://clerk.com), [Upstash](https://upstash.com), [Render](https://render.com), [Neon](https://neon.tech)
+- [Node.js](https://nodejs.org/en/) (v18 or higher)
+- [Git](https://git-scm.com/)
+- A free PostgreSQL database (e.g., [Neon](https://neon.tech))
+- A free Redis database (e.g., [Upstash](https://upstash.com))
+- A [Clerk](https://clerk.com) account for authentication
 
-### Local Development
+### Installation
 
-```bash
-# Clone and install
-git clone https://github.com/kartik739/Feedvex.git
-cd Feedvex
-npm install
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/kartik739/Feedvex.git
+   cd Feedvex
+   ```
 
-# Copy env file and fill in your keys
-cp .env.example .env
+2. **Install dependencies:**
+   ```bash
+   # This will install dependencies for both the frontend and backend workspaces
+   npm install
+   ```
 
-# Start backend
-npm run dev:backend
+3. **Configure Environment Variables:**
+   Copy the example environment file and fill in your keys:
+   ```bash
+   cp .env.example .env
+   ```
+   *Note: Ensure you fill out the `DATABASE_URL`, `REDIS_URL`, `CLERK_SECRET_KEY`, and `VITE_CLERK_PUBLISHABLE_KEY` in the `.env` file.*
 
-# Start frontend (separate terminal)
-npm run dev:frontend
-```
+4. **Start the Development Servers:**
+   ```bash
+   # Terminal 1: Start the backend API (Runs on port 3000)
+   npm run dev:backend
 
-### Environment Variables
+   # Terminal 2: Start the frontend Vite server (Runs on port 5173)
+   npm run dev:frontend
+   ```
 
-Copy `.env.example` to `.env` and fill in:
+5. **Access the Application:**
+   Open your browser and navigate to `http://localhost:5173`.
 
-```env
-# Required for full functionality
-CLERK_SECRET_KEY=sk_test_...
-VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
-DATABASE_URL=postgresql://...  # From Neon
-REDIS_URL=redis://...          # From Upstash
+---
 
-# Optional (features degrade gracefully without these)
-RESEND_API_KEY=re_...
-TRIGGER_API_KEY=tr_dev_...
-SENTRY_DSN=https://...
-```
+## 🌐 Production Deployment
 
-### Docker
+FeedVex is designed to be easily deployable on Vercel and Render.
 
-```bash
-docker-compose up
-```
+1. **Backend (Render)**:
+   - Create a new Web Service on Render.
+   - Set the Build Command: `npm install --include=dev && npm run build:backend`
+   - Set the Start Command: `npm start`
+   - Ensure all environment variables from `.env` are mirrored in the Render dashboard.
 
-## Key Features
+2. **Frontend (Vercel)**:
+   - Import the repository into Vercel.
+   - Set the Framework Preset to `Vite`.
+   - Set the Build Command: `npm run build:frontend`
+   - Set the Output Directory: `dist`
+   - Add `VITE_CLERK_PUBLISHABLE_KEY` and `VITE_API_URL` (pointing to your Render URL) to the Vercel Environment Variables.
 
-- **Full-text search** across Reddit posts using BM25 ranking
-- **On-demand collection** - fresh data collected when you search
-- **5-minute cache** via Upstash Redis for fast repeat searches
-- **Rate limiting** - 100 req/min per IP using Upstash
-- **Graceful shutdown** - closes DB/Redis connections cleanly on SIGTERM
-- **Health checks** - verifies PostgreSQL, Redis, Reddit API connectivity
-- **Structured logging** - JSON logs with request IDs for tracing
-- **Error tracking** - Sentry captures errors with full context
+---
 
-## API Endpoints
+## 🤝 Contributing
 
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/api/v1/search` | Search Reddit posts |
-| GET | `/api/v1/health` | Health check (all dependencies) |
-| GET | `/api/v1/metrics` | Prometheus metrics |
-| GET | `/api/v1/autocomplete` | Search suggestions |
-| POST | `/api/webhooks/clerk` | Clerk webhook (welcome emails) |
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/kartik739/Feedvex/issues). 
 
-## Performance
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-- Search p95: < 100ms (cache hit < 10ms)
-- Lighthouse score: 90+
-- Reddit data: Fallback public API usage (No authentication needed)
+---
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
