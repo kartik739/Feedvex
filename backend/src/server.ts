@@ -70,7 +70,7 @@ await pgDocStore.initialize();
       await documentStore.storeMany(allDocs);
       logger.info(`Hydrated ${allDocs.length} documents into memory.`);
 
-      indexer = new Indexer({ autoPersist: true, pgClient });
+      indexer = new Indexer({ autoPersist: false, pgClient });
       try {
         await indexer.load(); // Load persisted index state from Postgres
       } catch (loadErr) {
@@ -363,6 +363,11 @@ await pgDocStore.initialize();
               indexed++;
             }
           }
+          
+          if (indexed > 0) {
+            await indexer.persist();
+          }
+
           logger.info(`Trigger.dev ingestion complete`, { indexed });
           
           return { postsCollected: res.documentsCollected };
@@ -392,6 +397,13 @@ await pgDocStore.initialize();
               indexed++;
             }
           }
+          
+          if (indexed > 0) {
+            // Persist the index ONCE after all documents are indexed, 
+            // rather than doing it concurrently for each document.
+            await indexer.persist();
+          }
+
           logger.info(`Reddit ingestion complete`, {
             collected: result.documentsCollected,
             indexed,
