@@ -248,37 +248,7 @@ await pgDocStore.initialize();
         documentStore
       );
 
-      const runIngestion = async () => {
-        try {
-          logger.info('Starting Reddit data ingestion...', { subreddits, maxPosts });
-          const result = await collector.runCollectionCycle();
-          // Index every newly collected document
-          const allDocs = documentStore.getAll();
-          let indexed = 0;
-          for (const doc of allDocs) {
-            if (!doc.processed) {
-              const processedDoc = textProcessor.processDocument(doc);
-              indexer.indexDocument(processedDoc);
-              // Mark as processed
-              await documentStore.store({ ...doc, processed: true });
-              indexed++;
-            }
-          }
-          logger.info(`Reddit ingestion complete`, {
-            collected: result.documentsCollected,
-            indexed,
-            errors: result.errors.length,
-          });
-        } catch (err) {
-          logger.warn('Reddit ingestion failed (using seed data as fallback)', {
-            error: String(err),
-          });
-        }
-      };
 
-      // Run immediately, then every 6 hours
-      runIngestion();
-      setInterval(runIngestion, 6 * 60 * 60 * 1000);
     }
 
     const ranker = new Ranker(
@@ -357,6 +327,17 @@ await pgDocStore.initialize();
     const gracefulShutdown = new GracefulShutdown(server, undefined, upstashCache);
     gracefulShutdown.register();
 
+    // Setup Reddit Collector for Background Jobs (Trigger or Standalone)
+    const { RedditCollector } = await import('./services/reddit-collector');
+    const collector = new RedditCollector(
+      {
+        userAgent: config.reddit.userAgent,
+        subreddits: config.reddit.subreddits,
+        maxPostsPerSubreddit: config.reddit.maxPostsPerSubreddit,
+      },
+      documentStore
+    );
+
     // Setup Trigger.dev Background Jobs if configured
     if (config.trigger.apiKey) {
       const { TriggerClient } = await import('@trigger.dev/sdk');
@@ -366,20 +347,24 @@ await pgDocStore.initialize();
       });
       const { registerRedditCollectionJob } = await import('./jobs/reddit-collection-job');
 
-      const { RedditCollector } = await import('./services/reddit-collector');
-      const collector = new RedditCollector(
-        {
-          userAgent: config.reddit.userAgent,
-          subreddits: config.reddit.subreddits,
-          maxPostsPerSubreddit: config.reddit.maxPostsPerSubreddit,
-        },
-        documentStore
-      );
-
       registerRedditCollectionJob(triggerClient, {
         popularQueries: ['programming', 'technology'],
         onCollect: async () => {
           const res = await collector.runCollectionCycle();
+          
+          // Index newly collected documents
+          const allDocs = await documentStore.getAll();
+          let indexed = 0;
+          for (const doc of allDocs) {
+            if (!doc.processed) {
+              const processedDoc = textProcessor.processDocument(doc);
+              indexer.indexDocument(processedDoc);
+              await documentStore.store({ ...doc, processed: true });
+              indexed++;
+            }
+          }
+          logger.info(`Trigger.dev ingestion complete`, { indexed });
+          
           return { postsCollected: res.documentsCollected };
         },
         onInvalidateCache: async () => {}, // Cache naturally invalidates via TTL
@@ -388,6 +373,38 @@ await pgDocStore.initialize();
       logger.info(
         'Trigger.dev skipped. Standalone collector daemon will handle background scraping.'
       );
+      
+      const runIngestion = async () => {
+        try {
+          logger.info('Starting Reddit data ingestion...');
+          const result = await collector.runCollectionCycle();
+          
+          // In production with PostgreSQL, documentStore.getAll() might be expensive or not fully implemented
+          // but we can just fetch all unprocessed directly if there was an API.
+          // Since there isn't, we'll fetch all and filter.
+          const allDocs = await documentStore.getAll();
+          let indexed = 0;
+          for (const doc of allDocs) {
+            if (!doc.processed) {
+              const processedDoc = textProcessor.processDocument(doc);
+              indexer.indexDocument(processedDoc);
+              await documentStore.store({ ...doc, processed: true });
+              indexed++;
+            }
+          }
+          logger.info(`Reddit ingestion complete`, {
+            collected: result.documentsCollected,
+            indexed,
+            errors: result.errors.length,
+          });
+        } catch (err) {
+          logger.error('Reddit ingestion failed', { error: String(err) });
+        }
+      };
+
+      // Run immediately, then every 6 hours
+      runIngestion();
+      setInterval(runIngestion, 6 * 60 * 60 * 1000);
     }
   } catch (error: any) {
     logger.error('Failed to start server', { 
