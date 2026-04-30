@@ -183,7 +183,7 @@ export function createApp(
   });
 
   // POST /api/v1/search endpoint (Requirement 13.1, 13.6, 16.2)
-  app.post('/api/v1/search', clerkAuth.requireAuth, async (req: Request, res: Response) => {
+  app.post('/api/v1/search', clerkAuth.optionalAuth, async (req: Request, res: Response) => {
     try {
       const { query, page = 1, pageSize = 10, filters } = req.body;
 
