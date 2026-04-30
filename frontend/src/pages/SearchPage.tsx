@@ -1,5 +1,6 @@
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useAuth } from '@clerk/clerk-react';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
 
@@ -7,30 +8,50 @@ export default function SearchPage() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
   const navigate = useNavigate();
+  const { getToken } = useAuth();
   const [results, setResults] = useState<any[]>([]);
   const [metadata, setMetadata] = useState<any>({ totalCount: 0, queryTimeMs: 0 });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!query) return;
-    setLoading(true);
-    fetch(`${API_BASE}/search`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query, page: 1, pageSize: 20 }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
+
+    const performSearch = async () => {
+      setLoading(true);
+      try {
+        const token = await getToken();
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const res = await fetch(`${API_BASE}/search`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ query, page: 1, pageSize: 20 }),
+        });
+        
+        if (!res.ok) {
+           throw new Error(`API returned status: ${res.status}`);
+        }
+
+        const data = await res.json();
         setResults(data.results || []);
         // Backend returns totalCount and queryTimeMs at the root, not inside 'metadata'
         setMetadata({
           totalCount: data.totalCount ?? 0,
           queryTimeMs: data.queryTimeMs ?? 0,
         });
+      } catch (error) {
+        console.error('Search failed:', error);
+      } finally {
         setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, [query]);
+      }
+    };
+
+    performSearch();
+  }, [query, getToken]);
+
 
   return (
     <div className="flex-1 flex flex-col md:flex-row bg-[#0A0A0A]">
