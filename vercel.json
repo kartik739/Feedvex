@@ -1,4 +1,7 @@
 {
+  "env": {
+    "VITE_API_URL": "https://feedvex-api.onrender.com/api/v1"
+  },
   "installCommand": "npm install",
   "buildCommand": "npm run vercel-build",
   "outputDirectory": "dist",

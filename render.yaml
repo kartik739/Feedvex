@@ -20,3 +20,5 @@ services:
         sync: false
       - key: CLERK_WEBHOOK_SECRET
         sync: false
+      - key: CORS_ORIGINS
+        value: "https://feedvex.vercel.app"

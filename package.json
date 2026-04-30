@@ -7,7 +7,7 @@
     "build": "npm run build:frontend",
     "vercel-build": "npm run build:frontend",
     "build:backend": "tsc",
-    "build:frontend": "npx vite build frontend --outDir dist",
+    "build:frontend": "VITE_API_URL=https://feedvex-api.onrender.com/api/v1 npx vite build frontend --outDir dist",
     "build:all": "npm run build:backend && npm run build:frontend",
     "start": "node backend/dist/server.js",
     "dev": "ts-node backend/src/server.ts",
