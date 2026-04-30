@@ -31,7 +31,7 @@ export const envSchema = z.object({
   // Reddit OAuth
   REDDIT_CLIENT_ID: z.string().optional(),
   REDDIT_CLIENT_SECRET: z.string().optional(),
-  REDDIT_USER_AGENT: z.string().default('FeedVex/1.0.0'),
+  REDDIT_USER_AGENT: z.string().default('web:com.feedvex.app:v1.0.0 (by /u/feedvex_admin)'),
 
   // Resend Email
   RESEND_API_KEY: z.string().optional(),
